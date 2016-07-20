@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">EatSafe</string>
+
+    <string name="action_login">Log In</string>
+    <string name="action_sensitivities">Sensitivities</string>
+</resources>

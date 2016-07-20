@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Results Fragment"
+        android:id="@+id/textView"
+        android:textAlignment="center"
+        android:textSize="@dimen/abc_text_size_headline_material"
+        android:textStyle="bold"
+        android:padding="48dp" />
+</FrameLayout>
