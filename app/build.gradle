@@ -28,4 +28,13 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile "com.android.support:appcompat-v7:${supportLibVersion}"
     compile "com.android.support:design:${supportLibVersion}"
+
+
+
+    compile 'com.fasterxml.jackson.core:jackson-core:2.7.3'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.7.3'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.7.3'
+    compile 'me.dm7.barcodescanner:zxing:1.8.4'
+    compile 'com.hkm.loyalslider:library:1.8.8'
+    compile 'com.android.support:support-v4:24.1.0'
 }

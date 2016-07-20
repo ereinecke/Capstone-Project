@@ -3,4 +3,10 @@
 
     <string name="action_login">Log In</string>
     <string name="action_sensitivities">Sensitivities</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="results">Results</string>
+    <string name="upload">Upload</string>
+    <string name="search">Search</string>
 </resources>
