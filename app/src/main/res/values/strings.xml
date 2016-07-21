@@ -1,12 +1,26 @@
 <resources>
     <string name="app_name">EatSafe</string>
 
+    <!-- Menu actions -->
     <string name="action_login">Log In</string>
     <string name="action_sensitivities">Sensitivities</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Tab names -->
     <string name="results">Results</string>
     <string name="upload">Upload</string>
     <string name="search">Search</string>
+
+    <!-- Button text -->
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="scan_barcode">Scan Barcode</string>
+
+    <!-- prompts -->
+    <string name="upload_prompt">Upload product photos with UPC Code</string>
+    <string name="no_internet">Internet connection is required to look up product.</string>
+    <string name="result_succeeded">Scan successful</string>
+    <string name="result_failed">Scan failed</string>
+    <string name="result_failed_why">Don\'t know why</string>
+    <string name="upc_validation_failed">UPC code \"%1$s\" is invalid.  It should be 12 numeric digits.</string>
+
 </resources>

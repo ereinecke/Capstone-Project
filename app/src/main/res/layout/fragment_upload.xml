@@ -1,18 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.ereinecke.eatsafe.ui.UploadFragment">
+    tools:context="com.ereinecke.eatsafe.ui.UploadFragment"
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Upload Fragment"
-        android:id="@+id/textView"
-        android:textAlignment="center"
-        android:textSize="@dimen/abc_text_size_headline_material"
-        android:textStyle="bold"
-        android:padding="48dp"
-        android:layout_gravity="center" />
-</FrameLayout>
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Upload product photos with UPC Code"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/camera"
+        android:id="@+id/button"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:paddingRight="24dp"
+        android:paddingLeft="24dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/gallery"
+        android:id="@+id/button2"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:paddingRight="24dp"
+        android:paddingLeft="24dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/upload"
+        android:id="@+id/button3"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:paddingRight="24dp"
+        android:paddingLeft="24dp" />
+</LinearLayout>

@@ -1,18 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.ereinecke.eatsafe.ui.SearchFragment">
+    android:orientation="vertical"
+    tools:context="com.ereinecke.eatsafe.ui.SearchFragment"
+    android:clickable="false"
+    android:forceHasOverlappingRendering="true">
 
-    <TextView
+
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Results Fragment"
-        android:id="@+id/textView"
-        android:textAlignment="center"
-        android:textSize="@dimen/abc_text_size_headline_material"
-        android:textStyle="bold"
-        android:padding="48dp"
-        android:layout_gravity="center" />
-</FrameLayout>
+        android:text="@string/scan_barcode"
+        android:id="@+id/scan_button"
+        android:layout_gravity="center"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="40dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:onClick="launchScanner" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Space
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/search_icon"
+            android:src="@android:drawable/ic_menu_search"
+            android:layout_gravity="right"
+            android:paddingTop="8dp"
+            android:tint="#333333" />
+
+        <EditText
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:id="@+id/upc"
+            android:layout_gravity="center_horizontal"
+            android:imeOptions="actionSearch"
+            android:hint="Enter or speak UPC code"
+            android:numeric="integer|decimal"
+            android:maxLength="13" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/mic_icon"
+            android:src="@android:drawable/ic_btn_speak_now"
+            android:paddingTop="6dp" />
+
+        <Space
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+</LinearLayout>
