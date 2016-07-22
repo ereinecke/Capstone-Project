@@ -2,6 +2,7 @@ package com.ereinecke.eatsafe.ui;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -16,6 +17,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.ereinecke.eatsafe.R;
+import com.ereinecke.eatsafe.services.OpenFoodService;
+import com.ereinecke.eatsafe.util.Constants;
 import com.ereinecke.eatsafe.util.Utility;
 
 /**
@@ -62,32 +65,21 @@ public class SearchFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                String upcStr = s.toString();
-                // TODO: Is this necessary with food and cosmetics products?
-                // catch isbn10 numbers
-                if (upcStr.length() == 10 && !upcStr.startsWith("978")) {
-                    upcStr = "978" + upcStr;
-                }
+                String barcodeStr = s.toString();
 
-                if (Utility.validateUPC(upcStr)) {
-                    // TODO: launch search
-                } else {
+                if (!Utility.validateBarcode(barcodeStr)) {
                     // TODO: This snackbar should probably be LENGTH_INDEFINITE
-                    Snackbar.make(rootView, getString(R.string.upc_validation_failed, upcStr),
-                    Snackbar.LENGTH_LONG)
+                    Snackbar.make(rootView, getString(R.string.upc_validation_failed, barcodeStr),
+                            Snackbar.LENGTH_LONG)
                             .setAction("Action", null).setDuration(5000).show();
+                  } else if (checkConnectivity()) {
+                        //Once we have an ISBN, start a book intent
+                        Intent bookIntent = new Intent(getActivity(), OpenFoodService.class);
+                        bookIntent.putExtra(Constants.BARCODE, barcodeStr);
+                        bookIntent.setAction(Constants.FETCH_PRODUCT);
+                        getActivity().startService(bookIntent);
+                        getActivity().getSupportFragmentManager().popBackStack();
                 }
-
-                /* TODO: ProductService yet to be defined
-                if (checkConnectivity()) {
-                    //Once we have an ISBN, start a book intent
-                    Intent bookIntent = new Intent(getActivity(), ProductService.class);
-                    bookIntent.putExtra(ProductService.EAN, upcStr);
-                    bookIntent.setAction(ProductService.FETCH_BOOK);
-                    getActivity().startService(bookIntent);
-                    AddBook.this.restartLoader();
-                }
-                */
             }
         });
 
