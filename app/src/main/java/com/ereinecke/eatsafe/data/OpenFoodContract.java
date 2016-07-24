@@ -11,40 +11,61 @@ import android.provider.BaseColumns;
 public class OpenFoodContract {
 
     public static final String CONTENT_AUTHORITY = "com.ereinecke.eatsafe";
-
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
-
     public static final String PATH_PRODUCTS = "products";
-    public static final String PATH_CATEGORIES = "categories";
-
-    public static final String PATH_FULLBOOK = "fullbook";
+    public static final String PATH_INGREDIENTS = "ingredients";
+    public static final String PATH_ALLERGENS = "allergens";
 
     public static final class ProductEntry implements BaseColumns {
-        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_PRODUCTS).build();
-
-        public static final Uri FULL_CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_FULLBOOK).build();
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon()
+                .appendPath(PATH_PRODUCTS).build();
 
         public static final String CONTENT_TYPE =
                 "vnd.android.cursor.dir/" + CONTENT_AUTHORITY + "/" + PATH_PRODUCTS;
         public static final String CONTENT_ITEM_TYPE =
                 "vnd.android.cursor.item/" + CONTENT_AUTHORITY + "/" + PATH_PRODUCTS;
 
-        public static final String TABLE_NAME = "books";
+        public static final String TABLE_NAME = "products";
+        public static final String PRODUCT_NAME = "product_name";
+        public static final String IMAGE_URL = "img_small_url";
+        public static final String THUMB_URL = "img_front_thumb_url";
 
-        public static final String TITLE = "title";
-
-        public static final String IMAGE_URL = "imgurl";
-
-        public static final String SUBTITLE = "subtitle";
-
-        public static final String DESC = "description";
-
-        public static Uri buildProjectUri(long id) {
+        public static Uri buildProductUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
+    }
 
-        public static Uri buildFullBookUri(long id) {
-            return ContentUris.withAppendedId(FULL_CONTENT_URI, id);
+    public static final class IngredientEntry implements BaseColumns {
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon()
+                .appendPath(PATH_INGREDIENTS).build();
+
+        public static final String CONTENT_TYPE =
+                "vnd.android.cursor.dir/" + CONTENT_AUTHORITY + "/" + PATH_INGREDIENTS;
+        public static final String CONTENT_ITEM_TYPE =
+                "vnd.android.cursor.item/" + CONTENT_AUTHORITY + "/" + PATH_INGREDIENTS;
+
+        public static final String TABLE_NAME = "ingredients";
+        public static final String INGREDIENT = "ingredient";
+
+        public static Uri buildIngredientUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+    }
+
+    public static final class AllergenEntry implements BaseColumns {
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon()
+                .appendPath(PATH_ALLERGENS).build();
+
+        public static final String CONTENT_TYPE =
+                "vnd.android.cursor.dir/" + CONTENT_AUTHORITY + "/" + PATH_ALLERGENS;
+        public static final String CONTENT_ITEM_TYPE =
+                "vnd.android.cursor.item/" + CONTENT_AUTHORITY + "/" + PATH_ALLERGENS;
+
+        public static final String TABLE_NAME = "allergens";
+        public static final String ALLERGEN = "allergen";
+
+        public static Uri buildAllergenUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }
 }

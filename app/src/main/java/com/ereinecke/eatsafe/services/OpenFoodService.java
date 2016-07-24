@@ -1,12 +1,19 @@
 package com.ereinecke.eatsafe.services;
 
 import android.app.IntentService;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.ereinecke.eatsafe.R;
+import com.ereinecke.eatsafe.data.OpenFoodContract;
 import com.ereinecke.eatsafe.util.Constants;
 import com.ereinecke.eatsafe.util.Utility;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -45,14 +52,14 @@ public class OpenFoodService extends IntentService {
      * Handle action fetchProduct in the provided background thread with the provided
      * parameters.
      */
-    private void fetchProduct(String barcode) {
+    private boolean fetchProduct(String barcode) {
 
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
         String productJsonString = null;
 
         if (!Utility.validateBarcode(barcode)) {
-            return;
+            return false;
         }
 
         /* Get from local database if present
@@ -94,14 +101,14 @@ public class OpenFoodService extends IntentService {
                 urlConnection.connect();
             } catch (Exception e) {
                 Log.d(LOG_TAG, "Network connection error");
-                return;
+                return false;
             }
 
             InputStream inputStream = urlConnection.getInputStream();
             StringBuffer buffer = new StringBuffer();
             if (inputStream == null) {
                 Log.d(LOG_TAG, "Input buffer null");
-                return;
+                return false;
             }
 
             reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -112,7 +119,7 @@ public class OpenFoodService extends IntentService {
             }
 
             if (buffer.length() == 0) {
-                return;
+                return false;
             }
             productJsonString = buffer.toString();
         } catch (Exception e) {
@@ -128,62 +135,54 @@ public class OpenFoodService extends IntentService {
                     Log.e(LOG_TAG, "Error closing stream", e);
                 }
             }
-
         }
 
         Log.d(LOG_TAG, productJsonString);
 
-        /*  TODO: JSON parsing happens here
-          try {
+        /*  JSON parsing happens here */
+        try {
             JSONObject productJson = new JSONObject(productJsonString);
-            JSONArray productArray;
-            if(productJson.has(ITEMS)){
-                productArray = productJson.getJSONArray(ITEMS);
+            JSONObject productObject;
+
+            if(productJson.has(Constants.STATUS)) {
+                if (productJson.getInt(Constants.STATUS) == 1)
+                    Log.d(LOG_TAG, "Product status: found");
+                    productObject = productJson.getJSONObject(Constants.PRODUCT);
             } else {
+                // TODO: Figure out what this is for....
                 Intent messageIntent = new Intent(Constants.MESSAGE_EVENT);
-                messageIntent.putExtra(Constants.MESSAGE_KEY,getResources().getString(R.string.not_found));
-                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(messageIntent);
-                return;
+                messageIntent.putExtra(Constants.MESSAGE_KEY,getResources()
+                        .getString(R.string.not_found));
+                LocalBroadcastManager.getInstance(getApplicationContext())
+                        .sendBroadcast(messageIntent);
+                return false;
             }
 
-            String title = productInfo.getString(TITLE);
+            // TODO:  Add more items
+            String productId = productJson.getString(Constants.CODE);
+            String productName = productObject.getString(Constants.PRODUCT_NAME);
+            String imgUrl =  productObject.getString(Constants.IMG_URL);
+            String thumbUrl = productObject.getString(Constants.IMG_THUMB_URL);
 
-
-            String desc="";
-            if(productEntry.has(DESC)){
-                desc = productEntry.getString(DESC);
-            }
-
-            String imgUrl = "";
-            if(productEntry.has(IMG_URL_PATH) && productEntry.getJSONObject(IMG_URL_PATH).has(IMG_URL)) {
-                imgUrl = productEntry.getJSONObject(IMG_URL_PATH).getString(IMG_URL);
-            }
-
-            writeBackProject(barcode, title, subtitle, desc, imgUrl);
-
-            if(productEntry.has(AUTHORS)) {
-                writeBackAuthors(barcode, productEntry.getJSONArray(AUTHORS));
-            }
-            if(productEntry.has(CATEGORIES)){
-                writeBackCategories(barcode,productEntry.getJSONArray(CATEGORIES) );
-            }
-
+            writeBackProduct(productId, productName, imgUrl, thumbUrl);
         } catch (JSONException e) {
-            Log.e(LOG_TAG, "Error ", e);
+                Log.e(LOG_TAG, "Error ", e);
         }
-
+        return true;
     }
 
-    private void writeBackProject(String ean, String title, String subtitle, String desc, String imgUrl) {
+    private void writeBackProduct(String productId, String productName, String imgUrl,
+                                  String thumbUrl) {
         ContentValues values= new ContentValues();
-        values.put(OpenFoodContract.ProductEntry._ID, ean);
-        values.put(OpenFoodContract.ProductEntry.TITLE, title);
+        values.put(OpenFoodContract.ProductEntry._ID, productId);
+        values.put(OpenFoodContract.ProductEntry.PRODUCT_NAME, productName);
         values.put(OpenFoodContract.ProductEntry.IMAGE_URL, imgUrl);
-        values.put(OpenFoodContract.ProductEntry.SUBTITLE, subtitle);
-        values.put(OpenFoodContract.ProductEntry.DESC, desc);
-        getContentResolver().insert(OpenFoodContract.ProductEntry.CONTENT_URI,values);
+        values.put(OpenFoodContract.ProductEntry.THUMB_URL, thumbUrl);
+        Log.d(LOG_TAG, "writeBackProject: values=" + values.toString());
+        // getContentResolver().insert(OpenFoodContract.ProductEntry.CONTENT_URI,values);
     }
 
+    /*
     private void writeBackAuthors(String ean, JSONArray jsonArray) throws JSONException {
         ContentValues values= new ContentValues();
         for (int i = 0; i < jsonArray.length(); i++) {
@@ -192,16 +191,5 @@ public class OpenFoodService extends IntentService {
             getContentResolver().insert(OpenFoodContract.AuthorEntry.CONTENT_URI, values);
             values= new ContentValues();
         }
-    }
-
-    private void writeBackCategories(String ean, JSONArray jsonArray) throws JSONException {
-        ContentValues values= new ContentValues();
-        for (int i = 0; i < jsonArray.length(); i++) {
-            values.put(OpenFoodContract.CategoryEntry._ID, ean);
-            values.put(OpenFoodContract.CategoryEntry.CATEGORY, jsonArray.getString(i));
-            getContentResolver().insert(OpenFoodContract.CategoryEntry.CONTENT_URI, values);
-            values= new ContentValues();
-        }
-    */
-    }
+    } */
 }

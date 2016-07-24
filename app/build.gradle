@@ -10,6 +10,7 @@ android {
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -22,6 +23,7 @@ android {
 ext {
     supportLibVersion = "24.1.0"
     jacksonLibVersion = "2.7.3"
+    testLibVersion = "0.5"
 }
 
 dependencies {
@@ -48,4 +50,13 @@ dependencies {
     // Fancy toast
     compile 'net.steamcrafted:load-toast:1.0.10'
 
+    androidTestCompile "com.android.support.test:runner:${testLibVersion}"
+    // Set this dependency to use JUnit 4 rules
+    // androidTestCompile "com.android.support.test:rules:${testLibVersion}"
+    // Set this dependency to build and run Espresso tests
+    // androidTestCompile "com.android.support.test.espresso:espresso-core:2.2.2"
+
+    configurations.all {
+        resolutionStrategy.force "com.android.support:support-annotations:23.0.1"
+    }
 }

@@ -21,6 +21,7 @@
     <string name="result_succeeded">Scan successful</string>
     <string name="result_failed">Scan failed</string>
     <string name="result_failed_why">Don\'t know why</string>
-    <string name="upc_validation_failed">UPC code \"%1$s\" is invalid.  It should be 12 numeric digits.</string>
+    <string name="not_found">Product not found</string>
+    <string name="upc_validation_failed">Barcode code \"%1$s\" is invalid.</string>
 
 </resources>

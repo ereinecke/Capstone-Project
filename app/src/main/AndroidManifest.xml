@@ -24,12 +24,11 @@
             </intent-filter>
         </activity>
 
-        <!--
         <provider
             android:name=".data.OpenFoodProvider"
-            android:authorities="it.jaschke.alexandria"
+            android:authorities="com.ereinecke.eatsafe"
             android:exported="false" />
-        -->
+
         <service
             android:name=".services.OpenFoodService"
             android:exported="false" >
