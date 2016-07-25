@@ -5,10 +5,6 @@ package com.ereinecke.eatsafe.util;
  */
 public class Constants {
 
-    public static final String MESSAGE_EVENT = "MESSAGE_EVENT";
-    public static final String MESSAGE_KEY = "MESSAGE_EXTRA";
-
-
     // TODO: Change write URLs to openfoodfacts.org when out of test
     public static final String PRODUCTS_BASE_URL = "http://world.openfoodfacts.org/api/v0/product/";
 
@@ -22,4 +18,9 @@ public class Constants {
     public static final String CODE = "code";
     public static final String IMG_URL = "image_small_url";
     public static final String IMG_THUMB_URL = "image_front_thumb_url";
+
+    // Defines a custom Intent action
+    public static final String MESSAGE_EVENT = "message_event";
+    public static final String MESSAGE_KEY = "message_extra";
+    public static final String RESULT_KEY = "result_key";
 }

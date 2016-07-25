@@ -15,13 +15,26 @@
     <string name="gallery">Gallery</string>
     <string name="scan_barcode">Scan Barcode</string>
 
-    <!-- prompts -->
+    <!-- Prompts -->
     <string name="upload_prompt">Upload product photos with UPC Code</string>
     <string name="no_internet">Internet connection is required to look up product.</string>
     <string name="result_succeeded">Scan successful</string>
     <string name="result_failed">Scan failed</string>
     <string name="result_failed_why">Don\'t know why</string>
     <string name="not_found">Product not found</string>
-    <string name="upc_validation_failed">Barcode code \"%1$s\" is invalid.</string>
+    <string name="barcode_validation_failed">Barcode code \"%1$s\" is invalid.</string>
+
+    <!-- Content descriptions -->
+    <string name="mic_image">Speak product code</string>
+    <string name="product_image">Product Image</string>
+    <string name="search_hint">Enter or speak UPC code</string>
+    <string name="product_name">Product Name</string>
+    <string name="brand">Brand</string>
+    <string name="origin">Origin</string>
+    <string name="allergens">Allergens</string>
+    <string name="ingredients">Ingredients</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

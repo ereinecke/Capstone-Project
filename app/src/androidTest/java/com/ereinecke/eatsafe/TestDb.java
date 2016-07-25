@@ -13,9 +13,10 @@ import java.util.Set;
 
 
 /**
- * Created by ereinecke on 7/23/16.
+ * TestDb tests creation of database as well as insertion of a record
  */
 
+@SuppressWarnings("deprecation")
 public class TestDb extends AndroidTestCase {
     public static final String LOG_TAG = TestDb.class.getSimpleName();
 

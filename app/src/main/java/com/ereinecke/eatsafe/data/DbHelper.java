@@ -6,13 +6,13 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 /**
- * Created by ereinecke on 7/23/16.
+ * DbHelper creates or upgrades the database as needed
  */
 
 public class DbHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "eatsafe.db";
+    public  static final String DATABASE_NAME = "eatsafe.db";
 
     public DbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

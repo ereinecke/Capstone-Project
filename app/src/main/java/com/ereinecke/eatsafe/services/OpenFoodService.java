@@ -3,11 +3,11 @@ package com.ereinecke.eatsafe.services;
 import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.ereinecke.eatsafe.R;
 import com.ereinecke.eatsafe.data.OpenFoodContract;
 import com.ereinecke.eatsafe.util.Constants;
 import com.ereinecke.eatsafe.util.Utility;
@@ -25,8 +25,7 @@ import java.net.URL;
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread.
- * <p/>
- */
+  */
 public class OpenFoodService extends IntentService {
 
     private final String LOG_TAG = OpenFoodService.class.getSimpleName();
@@ -42,15 +41,18 @@ public class OpenFoodService extends IntentService {
             final String action = intent.getAction();
             if (Constants.FETCH_PRODUCT.equals(action)) {
                 final String barcode = intent.getStringExtra(Constants.BARCODE);
+                // returns true if product found - not sure if I want to do anything with that here
                 fetchProduct(barcode);
             }
         }
     }
 
-
     /**
      * Handle action fetchProduct in the provided background thread with the provided
-     * parameters.
+     * parameters.  Returns:
+     *      true if product found, either in ContentProvider or downloaded
+     *          from OpenFoodFacts.org.
+     *      false if product not found for whatever reason.
      */
     private boolean fetchProduct(String barcode) {
 
@@ -62,29 +64,26 @@ public class OpenFoodService extends IntentService {
             return false;
         }
 
-        /* Get from local database if present
-         * TODO: Uncomment once OpenFoodProvider is done
-
+        /* Get from local database if present */
         Cursor productEntry = getContentResolver().query(
-                OpenFoodContract.ProductEntry.buildProjectUri(Long.parseLong(barcode)),
+                OpenFoodContract.ProductEntry.buildProductUri(Long.parseLong(barcode)),
                 null, // leaving "columns" null just returns all the columns.
                 null, // cols for "where" clause
                 null, // values for "where" clause
                 null  // sort order
         );
 
-        if(productEntry.getCount() > 0){
+        assert productEntry != null;
+        if(productEntry.getCount() > 0) {
+            Log.d(LOG_TAG, "Product " + barcode + " already downloaded");
+            // TODO: Decide whether to give user feedback or just go to ProductFragment
             productEntry.close();
-            return;
+            return true;
         }
 
         productEntry.close();
-        */
 
         /* pull down JSON */
-
-        /*  The below is a framework from Alexandria as a starting point */
-
         try {
             Uri builtUri = Uri.parse(Constants.PRODUCTS_BASE_URL).buildUpon()
                     .appendPath(barcode + ".json")
@@ -105,7 +104,7 @@ public class OpenFoodService extends IntentService {
             }
 
             InputStream inputStream = urlConnection.getInputStream();
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             if (inputStream == null) {
                 Log.d(LOG_TAG, "Input buffer null");
                 return false;
@@ -149,29 +148,37 @@ public class OpenFoodService extends IntentService {
                     Log.d(LOG_TAG, "Product status: found");
                     productObject = productJson.getJSONObject(Constants.PRODUCT);
             } else {
-                // TODO: Figure out what this is for....
-                Intent messageIntent = new Intent(Constants.MESSAGE_EVENT);
-                messageIntent.putExtra(Constants.MESSAGE_KEY,getResources()
-                        .getString(R.string.not_found));
-                LocalBroadcastManager.getInstance(getApplicationContext())
-                        .sendBroadcast(messageIntent);
+                // Returns result
+                returnResult("Product not found", -1);
                 return false;
             }
 
             // TODO:  Add more items
-            String productId = productJson.getString(Constants.CODE);
+            long productId = productJson.getLong(Constants.CODE);
             String productName = productObject.getString(Constants.PRODUCT_NAME);
             String imgUrl =  productObject.getString(Constants.IMG_URL);
             String thumbUrl = productObject.getString(Constants.IMG_THUMB_URL);
 
-            writeBackProduct(productId, productName, imgUrl, thumbUrl);
+            writeProduct(productId, productName, imgUrl, thumbUrl);
+
+            // Broadcast result
+            returnResult("Product found", productId);
+
         } catch (JSONException e) {
                 Log.e(LOG_TAG, "Error ", e);
         }
         return true;
     }
 
-    private void writeBackProduct(String productId, String productName, String imgUrl,
+    private void returnResult(String message, long productId) {
+        Intent messageIntent = new Intent(Constants.MESSAGE_EVENT);
+        messageIntent.putExtra(Constants.MESSAGE_KEY, message);
+        messageIntent.putExtra(Constants.BARCODE, productId);
+        LocalBroadcastManager.getInstance(getApplicationContext())
+                .sendBroadcast(messageIntent);
+    }
+
+    private void writeProduct(long productId, String productName, String imgUrl,
                                   String thumbUrl) {
         ContentValues values= new ContentValues();
         values.put(OpenFoodContract.ProductEntry._ID, productId);
@@ -179,7 +186,7 @@ public class OpenFoodService extends IntentService {
         values.put(OpenFoodContract.ProductEntry.IMAGE_URL, imgUrl);
         values.put(OpenFoodContract.ProductEntry.THUMB_URL, thumbUrl);
         Log.d(LOG_TAG, "writeBackProject: values=" + values.toString());
-        // getContentResolver().insert(OpenFoodContract.ProductEntry.CONTENT_URI,values);
+        getContentResolver().insert(OpenFoodContract.ProductEntry.CONTENT_URI,values);
     }
 
     /*

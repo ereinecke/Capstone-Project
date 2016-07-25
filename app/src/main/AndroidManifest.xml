@@ -33,7 +33,7 @@
             android:name=".services.OpenFoodService"
             android:exported="false" >
         </service>
-
+    <!-- TODO: Add ACTION-VIEW intent filter for App Indexing -->
     </application>
 
 </manifest>

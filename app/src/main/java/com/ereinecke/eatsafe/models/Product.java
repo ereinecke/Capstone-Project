@@ -125,21 +125,21 @@ import java.util.Map;
 public class Product implements Serializable{
 
     @JsonProperty("last_edit_dates_tags")
-    private List<String> lastEditDatesTags = new ArrayList<String>();
+    private List<String> lastEditDatesTags = new ArrayList<>();
     @JsonProperty("labels_hierarchy")
-    private List<Object> labelsHierarchy = new ArrayList<Object>();
+    private List<Object> labelsHierarchy = new ArrayList<>();
     @JsonProperty("_id")
     private String Id;
     @JsonProperty("categories_hierarchy")
-    private List<String> categoriesHierarchy = new ArrayList<String>();
+    private List<String> categoriesHierarchy = new ArrayList<>();
     @JsonProperty("pnns_groups_1")
     private String pnnsGroups1;
     @JsonProperty("checkers_tags")
-    private List<Object> checkersTags = new ArrayList<Object>();
+    private List<Object> checkersTags = new ArrayList<>();
     @JsonProperty("states_tags")
-    private List<String> statesTags = new ArrayList<String>();
+    private List<String> statesTags = new ArrayList<>();
     @JsonProperty("labels_tags")
-    private List<Object> labelsTags = new ArrayList<Object>();
+    private List<Object> labelsTags = new ArrayList<>();
     @JsonProperty("image_small_url")
     private String imageSmallUrl;
     @JsonProperty("image_nutrition_url")
@@ -153,47 +153,47 @@ public class Product implements Serializable{
     @JsonProperty("code")
     private String code;
     @JsonProperty("traces_tags")
-    private List<String> tracesTags = new ArrayList<String>();
+    private List<String> tracesTags = new ArrayList<>();
     @JsonProperty("lang")
     private String lang;
     @JsonProperty("photographers")
-    private List<String> photographers = new ArrayList<String>();
+    private List<String> photographers = new ArrayList<>();
     @JsonProperty("ingredients_that_may_be_from_palm_oil_tags")
-    private List<String> ingredientsThatMayBeFromPalmOilTags = new ArrayList<String>();
+    private List<String> ingredientsThatMayBeFromPalmOilTags = new ArrayList<>();
     @JsonProperty("generic_name")
     private String genericName;
     @JsonProperty("old_additives_tags")
-    private List<String> oldAdditivesTags = new ArrayList<String>();
+    private List<String> oldAdditivesTags = new ArrayList<>();
     @JsonProperty("rev")
     private long rev;
     @JsonProperty("_keywords")
-    private List<String> Keywords = new ArrayList<String>();
+    private List<String> Keywords = new ArrayList<>();
     @JsonProperty("emb_codes")
     private String embCodes;
     @JsonProperty("editors")
-    private List<String> editors = new ArrayList<String>();
+    private List<String> editors = new ArrayList<>();
     @JsonProperty("max_imgid")
     private String maxImgid;
     @JsonProperty("additives_tags")
-    private List<String> additivesTags = new ArrayList<String>();
+    private List<String> additivesTags = new ArrayList<>();
     @JsonProperty("emb_codes_orig")
     private String embCodesOrig;
     @JsonProperty("nutrient_levels_tags")
-    private List<String> nutrientLevelsTags = new ArrayList<String>();
+    private List<String> nutrientLevelsTags = new ArrayList<>();
     @JsonProperty("informers_tags")
-    private List<String> informersTags = new ArrayList<String>();
+    private List<String> informersTags = new ArrayList<>();
     @JsonProperty("photographers_tags")
-    private List<String> photographersTags = new ArrayList<String>();
+    private List<String> photographersTags = new ArrayList<>();
     @JsonProperty("additives_n")
     private long additivesN;
     @JsonProperty("allergens_hierarchy")
-    private List<String> allergensHierarchy = new ArrayList<String>();
+    private List<String> allergensHierarchy = new ArrayList<>();
     @JsonProperty("pnns_groups_2_tags")
-    private List<String> pnnsGroups2Tags = new ArrayList<String>();
+    private List<String> pnnsGroups2Tags = new ArrayList<>();
     @JsonProperty("unknown_nutrients_tags")
-    private List<Object> unknownNutrientsTags = new ArrayList<Object>();
+    private List<Object> unknownNutrientsTags = new ArrayList<>();
     @JsonProperty("packaging_tags")
-    private List<String> packagingTags = new ArrayList<String>();
+    private List<String> packagingTags = new ArrayList<>();
     @JsonProperty("manufacturing_places")
     private String manufacturingPlaces;
     @JsonProperty("unique_scans_n")
@@ -201,19 +201,19 @@ public class Product implements Serializable{
     @JsonProperty("nutriments")
     private Nutriments nutriments;
     @JsonProperty("countries_tags")
-    private List<String> countriesTags = new ArrayList<String>();
+    private List<String> countriesTags = new ArrayList<>();
     @JsonProperty("ingredients_from_palm_oil_tags")
-    private List<Object> ingredientsFromPalmOilTags = new ArrayList<Object>();
+    private List<Object> ingredientsFromPalmOilTags = new ArrayList<>();
     @JsonProperty("purchase_places")
     private String purchasePlaces;
     @JsonProperty("emb_codes_tags")
-    private List<Object> embCodesTags = new ArrayList<Object>();
+    private List<Object> embCodesTags = new ArrayList<>();
     @JsonProperty("brands_tags")
-    private List<String> brandsTags = new ArrayList<String>();
+    private List<String> brandsTags = new ArrayList<>();
     @JsonProperty("pnns_groups_2")
     private String pnnsGroups2;
     @JsonProperty("countries_hierarchy")
-    private List<String> countriesHierarchy = new ArrayList<String>();
+    private List<String> countriesHierarchy = new ArrayList<>();
     @JsonProperty("traces")
     private String traces;
     @JsonProperty("categories")
@@ -251,11 +251,11 @@ public class Product implements Serializable{
     @JsonProperty("id")
     private String id;
     @JsonProperty("stores_tags")
-    private List<Object> storesTags = new ArrayList<Object>();
+    private List<Object> storesTags = new ArrayList<>();
     @JsonProperty("countries")
     private String countries;
     @JsonProperty("purchase_places_tags")
-    private List<Object> purchasePlacesTags = new ArrayList<Object>();
+    private List<Object> purchasePlacesTags = new ArrayList<>();
     @JsonProperty("fruits-vegetables-nuts_100g_estimate")
     private double fruitsVegetablesNuts100gEstimate;
     @JsonProperty("interface_version_modified")
@@ -269,25 +269,25 @@ public class Product implements Serializable{
     @JsonProperty("countries.20131227")
     private Object countries20131227;
     @JsonProperty("correctors_tags")
-    private List<String> correctorsTags = new ArrayList<String>();
+    private List<String> correctorsTags = new ArrayList<>();
     @JsonProperty("new_additives_debug")
     private String newAdditivesDebug;
     @JsonProperty("correctors")
-    private List<String> correctors = new ArrayList<String>();
+    private List<String> correctors = new ArrayList<>();
     @JsonProperty("brands")
     private String brands;
     @JsonProperty("ingredients_tags")
-    private List<String> ingredientsTags = new ArrayList<String>();
+    private List<String> ingredientsTags = new ArrayList<>();
     @JsonProperty("new_additives_tags")
-    private List<String> newAdditivesTags = new ArrayList<String>();
+    private List<String> newAdditivesTags = new ArrayList<>();
     @JsonProperty("informers")
-    private List<String> informers = new ArrayList<String>();
+    private List<String> informers = new ArrayList<>();
     @JsonProperty("states")
     private String states;
     @JsonProperty("entry_dates_tags")
-    private List<String> entryDatesTags = new ArrayList<String>();
+    private List<String> entryDatesTags = new ArrayList<>();
     @JsonProperty("nutrition_grades_tags")
-    private List<String> nutritionGradesTags = new ArrayList<String>();
+    private List<String> nutritionGradesTags = new ArrayList<>();
     @JsonProperty("ingredients_text_with_allergens")
     private String ingredientsTextWithAllergens;
     @JsonProperty("packaging")
@@ -295,9 +295,9 @@ public class Product implements Serializable{
     @JsonProperty("serving_quantity")
     private double servingQuantity;
     @JsonProperty("manufacturing_places_tags")
-    private List<Object> manufacturingPlacesTags = new ArrayList<Object>();
+    private List<Object> manufacturingPlacesTags = new ArrayList<>();
     @JsonProperty("origins_tags")
-    private List<String> originsTags = new ArrayList<String>();
+    private List<String> originsTags = new ArrayList<>();
     @JsonProperty("scans_n")
     private long scansN;
     @JsonProperty("nutrition_data_per")
@@ -307,11 +307,11 @@ public class Product implements Serializable{
     @JsonProperty("link")
     private String link;
     @JsonProperty("cities_tags")
-    private List<Object> citiesTags = new ArrayList<Object>();
+    private List<Object> citiesTags = new ArrayList<>();
     @JsonProperty("emb_codes_20141016")
     private String embCodes20141016;
     @JsonProperty("categories_tags")
-    private List<String> categoriesTags = new ArrayList<String>();
+    private List<String> categoriesTags = new ArrayList<>();
     @JsonProperty("quantity")
     private String quantity;
     @JsonProperty("expiration_date")
@@ -319,11 +319,11 @@ public class Product implements Serializable{
     @JsonProperty("ingredients_that_may_be_from_palm_oil_n")
     private long ingredientsThatMayBeFromPalmOilN;
     @JsonProperty("states_hierarchy")
-    private List<String> statesHierarchy = new ArrayList<String>();
+    private List<String> statesHierarchy = new ArrayList<>();
     @JsonProperty("emb_code")
     private String embCode;
     @JsonProperty("allergens_tags")
-    private List<Object> allergensTags = new ArrayList<Object>();
+    private List<Object> allergensTags = new ArrayList<>();
     @JsonProperty("ingredients_from_palm_oil_n")
     private long ingredientsFromPalmOilN;
     @JsonProperty("image_url")
@@ -331,15 +331,15 @@ public class Product implements Serializable{
     @JsonProperty("lc")
     private String lc;
     @JsonProperty("ingredients")
-    private List<Ingredient> ingredients = new ArrayList<Ingredient>();
+    private List<Ingredient> ingredients = new ArrayList<>();
     @JsonProperty("pnns_groups_1_tags")
-    private List<String> pnnsGroups1Tags = new ArrayList<String>();
+    private List<String> pnnsGroups1Tags = new ArrayList<>();
     @JsonProperty("checkers")
-    private List<Object> checkers = new ArrayList<Object>();
+    private List<Object> checkers = new ArrayList<>();
     @JsonProperty("complete")
     private long complete;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
      *

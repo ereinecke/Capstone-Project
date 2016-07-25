@@ -1,7 +1,7 @@
 package com.ereinecke.eatsafe;
 
 /**
- * Created by ereinecke on 7/23/16.
+ * ContentProvider tests
  */
 
 import android.content.ContentUris;
@@ -16,6 +16,7 @@ import com.ereinecke.eatsafe.data.OpenFoodContract;
 /**
  * 
  */
+@SuppressWarnings("deprecation")
 public class TestProvider extends AndroidTestCase {
     public static final String LOG_TAG = TestProvider.class.getSimpleName();
 
@@ -48,6 +49,7 @@ public class TestProvider extends AndroidTestCase {
                 null,
                 null
         );
+        assert cursor != null;
         assertEquals(0, cursor.getCount());
         cursor.close();
 
@@ -58,6 +60,7 @@ public class TestProvider extends AndroidTestCase {
                 null,
                 null
         );
+        assert cursor != null;
         assertEquals(0, cursor.getCount());
         cursor.close();
 
@@ -68,6 +71,7 @@ public class TestProvider extends AndroidTestCase {
                 null,
                 null
         );
+        assert cursor != null;
         assertEquals(0, cursor.getCount());
         cursor.close();
     }

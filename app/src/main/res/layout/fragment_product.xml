@@ -1,28 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:id="@+id/imageView"
-        android:background="@color/accent_material_light" />
+        android:background="@color/accent_material_light"
+        android:contentDescription="@string/product_image"
+        tools:ignore="PrivateResource" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/scrollView" >
-
-        <TextView
+        android:id="@+id/scrollView"
+        android:textAlignment="textStart">
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Info Fragment"
-            android:id="@+id/textView"
-            android:textAlignment="center"
-            android:textSize="@dimen/abc_text_size_headline_material"
-            android:textStyle="bold"
-            android:padding="48dp" />
+            android:layout_height="match_parent">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/product_name"
+                android:id="@+id/product_name"
+                android:textAlignment="textStart"
+                android:textSize="@dimen/abc_text_size_headline_material"
+                android:textStyle="bold"
+                android:padding="8dp"
+                tools:ignore="PrivateResource" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/brand"
+                android:id="@+id/brand"
+                android:textAlignment="textStart"
+                android:textSize="@dimen/abc_text_size_medium_material"
+                android:padding="8dp"
+                tools:ignore="PrivateResource" />
+            
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/allergens"
+                android:id="@+id/allergens"
+                android:textAlignment="textStart"
+                android:textSize="@dimen/abc_text_size_medium_material"
+                android:padding="8dp"
+                tools:ignore="PrivateResource" />
+    
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/ingredients"
+                android:id="@+id/ingredients"
+                android:textAlignment="textStart"
+                android:textSize="@dimen/abc_text_size_medium_material"
+                android:padding="8dp"
+                tools:ignore="PrivateResource" />
+    
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/origin"
+                android:id="@+id/origin"
+                android:textAlignment="textStart"
+                android:textSize="@dimen/abc_text_size_medium_material"
+                android:padding="8dp"
+                tools:ignore="PrivateResource" />
+
+        </LinearLayout>        
     </ScrollView>
 </LinearLayout>

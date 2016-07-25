@@ -12,6 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
-        android:text="TempText" />
+        android:text="TempText"
+        tools:ignore="HardcodedText" />
 
 </android.support.v4.widget.NestedScrollView>

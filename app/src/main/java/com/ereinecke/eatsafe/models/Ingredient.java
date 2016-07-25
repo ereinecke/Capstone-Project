@@ -29,7 +29,7 @@ public class Ingredient implements Serializable {
     @JsonProperty("percent")
     private String percent;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
      *

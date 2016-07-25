@@ -29,8 +29,8 @@ import com.ereinecke.eatsafe.util.Utility;
 public class SearchFragment extends Fragment {
 
     private static final String LOG_TAG = SearchFragment.class.getSimpleName();
-    private static final String UPC_CONTENT = "eanContent";
-    private EditText upc;
+    private static final String BARCODE_CONTENT = "barcodeContent";
+    private EditText barcode;
     private static View rootView;
 
     public SearchFragment() {
@@ -50,9 +50,9 @@ public class SearchFragment extends Fragment {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_search, container, false);
 
-        upc = (EditText) rootView.findViewById(R.id.upc);
+        barcode = (EditText) rootView.findViewById(R.id.barcode);
 
-        upc.addTextChangedListener(new TextWatcher() {
+        barcode.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 //no need
@@ -68,17 +68,16 @@ public class SearchFragment extends Fragment {
                 String barcodeStr = s.toString();
 
                 if (!Utility.validateBarcode(barcodeStr)) {
-                    // TODO: This snackbar should probably be LENGTH_INDEFINITE
-                    Snackbar.make(rootView, getString(R.string.upc_validation_failed, barcodeStr),
+                    // TODO: This Snackbar should probably be LENGTH_INDEFINITE
+                    Snackbar.make(rootView, getString(R.string.barcode_validation_failed, barcodeStr),
                             Snackbar.LENGTH_LONG)
                             .setAction("Action", null).setDuration(5000).show();
                   } else if (checkConnectivity()) {
-                        //Once we have an ISBN, start a book intent
+                        // Have a (potentially) valid barcode, fetch product info
                         Intent bookIntent = new Intent(getActivity(), OpenFoodService.class);
                         bookIntent.putExtra(Constants.BARCODE, barcodeStr);
                         bookIntent.setAction(Constants.FETCH_PRODUCT);
                         getActivity().startService(bookIntent);
-                        getActivity().getSupportFragmentManager().popBackStack();
                 }
             }
         });
@@ -88,7 +87,6 @@ public class SearchFragment extends Fragment {
             public void onClick(View view) {
                 // ZXing is called here
                 Context context = getActivity();
-                int duration = Toast.LENGTH_SHORT;
 
                 // TODO: IntentIntegrator part of ZXing, currently not being recognized.
                 /*
@@ -113,17 +111,18 @@ public class SearchFragment extends Fragment {
         });
 
         if (savedInstanceState != null) {
-            upc.setText(savedInstanceState.getString(UPC_CONTENT));
+            barcode.setText(savedInstanceState.getString(BARCODE_CONTENT));
         }
 
         return rootView;
     }
 
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (upc != null) {
-            outState.putString(UPC_CONTENT, upc.getText().toString());
+        if (barcode != null) {
+            outState.putString(BARCODE_CONTENT, barcode.getText().toString());
         }
     }
 

@@ -29,7 +29,7 @@ public class State implements Serializable {
     @JsonProperty("code")
     private String code;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
      *

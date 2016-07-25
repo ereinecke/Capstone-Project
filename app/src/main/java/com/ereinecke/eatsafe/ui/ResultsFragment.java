@@ -6,19 +6,25 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.ereinecke.eatsafe.R;
 
 /**
- * A simple {@link Fragment} subclass.
+ * ResultsFragment shows all products stored in ContentReceiver.  In future, there will be a
+ * search function to return specific items.
+ *
+ * // TODO: Add search (product_name || brand)
  */
-public class ResultsFragment extends Fragment {
-
+public class ResultsFragment extends Fragment  {
+    private static final String LOG_TAG = ResultsFragment.class.getSimpleName();
+    private static final int LOADER_ID = 1;
+    private EditText barcode;
+    private static View rootView;
 
     public ResultsFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -31,5 +37,6 @@ public class ResultsFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_results, container, false);
     }
+
 
 }

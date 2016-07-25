@@ -1,50 +1,47 @@
 package com.ereinecke.eatsafe.ui;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.ereinecke.eatsafe.R;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.ereinecke.eatsafe.util.Constants;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Toolbar toolbar;
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
+    public static boolean isTablet = false;
+    private BroadcastReceiver messageReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        messageReceiver = new MessageReceiver();
+        IntentFilter filter = new IntentFilter(Constants.MESSAGE_EVENT);
+        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, filter);
 
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
-        setupViewPager(viewPager);
+        if (findViewById(R.id.fragment_container) != null) {
+            if (savedInstanceState != null) {
+                return;
+            }
 
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
-    }
+            TabPagerFragment tabPagerFragment = new TabPagerFragment();
 
-    private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new SearchFragment(), getResources().getString(R.string.search));
-        adapter.addFragment(new UploadFragment(), getResources().getString(R.string.upload));
-        adapter.addFragment(new ResultsFragment(), getResources().getString(R.string.results));
-        viewPager.setAdapter(adapter);
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.fragment_container, tabPagerFragment).commit();
+        }
     }
 
     @Override
@@ -66,39 +63,20 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
-        if (id == R.id.action_sensitivities) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return id == R.id.action_sensitivities || super.onOptionsItemSelected(item);
     }
 
-    class ViewPagerAdapter extends FragmentPagerAdapter {
-
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
-
-        public ViewPagerAdapter(FragmentManager manager) {
-            super(manager);
-        }
-
+    private class MessageReceiver extends BroadcastReceiver {
         @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getStringExtra(Constants.MESSAGE_KEY) != null){
+                // TODO: Change to Snackbar or fancy toast
+                Toast.makeText(MainActivity.this,
+                intent.getStringExtra(Constants.MESSAGE_KEY), Toast.LENGTH_LONG).show();
 
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
+                // Pass barcode to ProductFragment
 
-        public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
+            }
         }
     }
 }

@@ -13,5 +13,6 @@
         android:textAlignment="center"
         android:textSize="@dimen/abc_text_size_headline_material"
         android:textStyle="bold"
-        android:padding="48dp"  />
+        android:padding="48dp"
+        tools:ignore="HardcodedText,PrivateResource" />
 </FrameLayout>

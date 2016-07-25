@@ -26,6 +26,7 @@ public class Utility {
     /* UPC validation checks for 8 to 13 numeric digits 0-9.  Even though android:inputType =
      * "number" enforces numeric entry, that could include '-' and '.'.
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean validateBarcode(String barcode) {
 
         if (barcode.length() > MAX_UPC_LENGTH || barcode.length() < MIN_UPC_LENGTH) {
@@ -34,8 +35,8 @@ public class Utility {
         } else if (barcode.contains(".")) {
             Log.d(LOG_TAG, "Barcode contains \'.\'");
             return false;
+        } else {
+            return true;
         }
-
-        return true;
     }
 }

@@ -26,6 +26,7 @@ public class OpenFoodContract {
                 "vnd.android.cursor.item/" + CONTENT_AUTHORITY + "/" + PATH_PRODUCTS;
 
         public static final String TABLE_NAME = "products";
+        public static final String CODE = "code";
         public static final String PRODUCT_NAME = "product_name";
         public static final String IMAGE_URL = "img_small_url";
         public static final String THUMB_URL = "img_front_thumb_url";
