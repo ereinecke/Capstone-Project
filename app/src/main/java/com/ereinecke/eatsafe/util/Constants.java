@@ -11,16 +11,24 @@ public class Constants {
     public static final String BARCODE = "com.ereinecke.eatsafe.services.extra.barcode";
     public static final String FETCH_PRODUCT = "com.ereinecke.eatsafe.services.action.FETCH_PRODUCT";
 
+    public static final String BARCODE_KEY = "barcode_key";
+
     // JSON keys
     public static final String STATUS = "status";
     public static final String PRODUCT = "product";
     public static final String PRODUCT_NAME = "product_name";
     public static final String CODE = "code";
     public static final String IMG_URL = "image_small_url";
-    public static final String IMG_THUMB_URL = "image_front_thumb_url";
+    public static final String THUMB_URL ="image_thumb_url";
+    public static final String BRANDS = "brands";
+    public static final String SERVING_SIZE = "serving_size";
+    public static final String LABELS = "labels";
+    public static final String ALLERGENS = "allergens";
+    public static final String INGREDIENTS = "ingredients_text";
+    public static final String ORIGINS = "origins";
 
     // Defines a custom Intent action
     public static final String MESSAGE_EVENT = "message_event";
-    public static final String MESSAGE_KEY = "message_extra";
+    public static final String MESSAGE_KEY = "message_key";
     public static final String RESULT_KEY = "result_key";
 }

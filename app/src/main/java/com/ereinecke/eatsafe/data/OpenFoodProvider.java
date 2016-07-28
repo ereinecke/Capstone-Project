@@ -23,6 +23,7 @@ public class OpenFoodProvider extends ContentProvider {
     private static final int INGREDIENT = 201;
 
     private static final int ALLERGEN_ID = 300;
+
     private static final int ALLERGEN = 301;
 
     private static final UriMatcher uriMatcher = buildUriMatcher();
@@ -47,7 +48,6 @@ public class OpenFoodProvider extends ContentProvider {
     }
     */
 
-
     private static UriMatcher buildUriMatcher() {
 
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -55,19 +55,6 @@ public class OpenFoodProvider extends ContentProvider {
 
         matcher.addURI(authority, OpenFoodContract.PATH_PRODUCTS, PRODUCT);
         matcher.addURI(authority, OpenFoodContract.PATH_PRODUCTS+"/#", PRODUCT);
-
-        /* example from Alexandria
-        matcher.addURI(authority, OpenFoodContract.PATH_BOOKS+"/#", BOOK_ID);
-        matcher.addURI(authority, OpenFoodContract.PATH_AUTHORS+"/#", AUTHOR_ID);
-        matcher.addURI(authority, OpenFoodContract.PATH_CATEGORIES+"/#", CATEGORY_ID);
-
-        matcher.addURI(authority, OpenFoodContract.PATH_BOOKS, BOOK);
-        matcher.addURI(authority, OpenFoodContract.PATH_AUTHORS, AUTHOR);
-        matcher.addURI(authority, OpenFoodContract.PATH_CATEGORIES, CATEGORY);
-
-        matcher.addURI(authority, OpenFoodContract.PATH_FULLBOOK +"/#", BOOK_FULLDETAIL);
-        matcher.addURI(authority, OpenFoodContract.PATH_FULLBOOK, BOOK_FULL);
-        */
 
         return matcher;
     }
@@ -80,7 +67,8 @@ public class OpenFoodProvider extends ContentProvider {
     }
 
     @Override
-    public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection,
+                        String[] selectionArgs, String sortOrder) {
         Cursor retCursor;
         switch (uriMatcher.match(uri)) {
             case PRODUCT:

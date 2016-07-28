@@ -5,14 +5,54 @@
     android:layout_height="match_parent"
     tools:context="com.ereinecke.eatsafe.ui.ResultsFragment">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Results Fragment"
-        android:id="@+id/textView"
-        android:textAlignment="center"
-        android:textSize="@dimen/abc_text_size_headline_material"
-        android:textStyle="bold"
-        android:padding="48dp"
-        tools:ignore="HardcodedText,PrivateResource" />
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center_horizontal|top">
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/searchButton"
+            android:src="@android:drawable/ic_menu_search"
+            android:contentDescription="@string/search"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_marginTop="5dp"
+            android:layout_alignParentEnd="true"
+            android:tint="#333333" />
+
+        <EditText
+            android:layout_width = "fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/searchText"
+            android:inputType="text"
+            android:saveEnabled="true"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_toLeftOf="@+id/searchButton"
+            android:layout_toStartOf="@+id/searchButton"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp" />
+
+
+        <ListView android:id="@+id/listOfProducts"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="0dp"
+            android:layout_marginStart="0dp"
+            android:layout_below="@+id/searchText"
+            android:layout_alignRight="@id/searchButton"
+            android:layout_alignEnd="@id/searchButton"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_toEndOf="@id/searchButton"
+            android:layout_toRightOf="@id/searchButton"/>
+
+    </RelativeLayout>
+
 </FrameLayout>

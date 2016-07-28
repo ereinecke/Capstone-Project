@@ -30,19 +30,63 @@
                 android:textAlignment="textStart"
                 android:textSize="@dimen/abc_text_size_headline_material"
                 android:textStyle="bold"
-                android:padding="8dp"
-                tools:ignore="PrivateResource" />
+                tools:ignore="PrivateResource"
+                android:paddingLeft="12dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:paddingRight="12dp"
+                android:paddingEnd="12dp"
+                android:paddingStart="12dp"
+                android:phoneNumber="false" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/brand"
-                android:id="@+id/brand"
+                android:hint="@string/brands"
+                android:id="@+id/brands"
                 android:textAlignment="textStart"
                 android:textSize="@dimen/abc_text_size_medium_material"
-                android:padding="8dp"
-                tools:ignore="PrivateResource" />
-            
+                tools:ignore="PrivateResource"
+                android:paddingLeft="12dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:paddingRight="12dp"
+                android:paddingEnd="12dp"
+                android:paddingStart="12dp"
+                android:phoneNumber="false" />
+
+            <TextView
+                tools:ignore="PrivateResource"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/labels"
+                android:id="@+id/labels"
+                android:textAlignment="textStart"
+                android:textSize="@dimen/abc_text_size_medium_material"
+                android:paddingLeft="12dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:paddingRight="12dp"
+                android:paddingEnd="12dp"
+                android:paddingStart="12dp"
+                android:phoneNumber="false" />
+
+            <TextView
+                tools:ignore="PrivateResource"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/serving_size"
+                android:id="@+id/serving_size"
+                android:textAlignment="textStart"
+                android:textSize="@dimen/abc_text_size_medium_material"
+                android:paddingLeft="12dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:paddingRight="12dp"
+                android:paddingEnd="12dp"
+                android:paddingStart="12dp"
+                android:phoneNumber="false" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -50,9 +94,15 @@
                 android:id="@+id/allergens"
                 android:textAlignment="textStart"
                 android:textSize="@dimen/abc_text_size_medium_material"
-                android:padding="8dp"
-                tools:ignore="PrivateResource" />
-    
+                tools:ignore="PrivateResource"
+                android:paddingLeft="12dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:paddingRight="12dp"
+                android:paddingEnd="12dp"
+                android:paddingStart="12dp"
+                android:phoneNumber="false" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -60,18 +110,51 @@
                 android:id="@+id/ingredients"
                 android:textAlignment="textStart"
                 android:textSize="@dimen/abc_text_size_medium_material"
-                android:padding="8dp"
-                tools:ignore="PrivateResource" />
-    
+                tools:ignore="PrivateResource"
+                android:paddingLeft="12dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:paddingRight="12dp"
+                android:paddingEnd="12dp"
+                android:paddingStart="12dp"
+                android:phoneNumber="false" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/origin"
-                android:id="@+id/origin"
+                android:hint="@string/origins"
+                android:id="@+id/origins"
                 android:textAlignment="textStart"
                 android:textSize="@dimen/abc_text_size_medium_material"
-                android:padding="8dp"
-                tools:ignore="PrivateResource" />
+                tools:ignore="PrivateResource"
+                android:paddingLeft="12dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:paddingRight="12dp"
+                android:paddingEnd="12dp"
+                android:paddingStart="12dp"
+                android:phoneNumber="false" />
+
+            <TextView
+                tools:ignore="PrivateResource"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/barcode"
+                android:id="@+id/code"
+                android:textAlignment="textStart"
+                android:textSize="@dimen/abc_text_size_medium_material"
+                android:text="@string/barcode"
+                android:paddingLeft="12dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:paddingRight="12dp"
+                android:paddingEnd="12dp"
+                android:paddingStart="12dp"
+                android:phoneNumber="false" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="40px" />
 
         </LinearLayout>        
     </ScrollView>

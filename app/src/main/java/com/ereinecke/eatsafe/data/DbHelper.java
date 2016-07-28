@@ -26,9 +26,15 @@ public class DbHelper extends SQLiteOpenHelper {
                 OpenFoodContract.ProductEntry.PRODUCT_NAME+ " TEXT NOT NULL," +
                 OpenFoodContract.ProductEntry.IMAGE_URL + " TEXT ," +
                 OpenFoodContract.ProductEntry.THUMB_URL + " TEXT ," +
+                OpenFoodContract.ProductEntry.BRANDS + " TEXT ," +
+                OpenFoodContract.ProductEntry.SERVING_SIZE + " TEXT ," +
+                OpenFoodContract.ProductEntry.LABELS + " TEXT ," +
+                OpenFoodContract.ProductEntry.ALLERGENS + " TEXT ," +
+                OpenFoodContract.ProductEntry.INGREDIENTS + " TEXT ," +
+                OpenFoodContract.ProductEntry.ORIGINS + " TEXT ," +
                 "UNIQUE ("+ OpenFoodContract.ProductEntry._ID +") ON CONFLICT IGNORE)";
 
-        // TODO: Review the next two statements carefully
+        /* TODO: Review the next two statements carefully
         final String SQL_CREATE_INGREDIENT_TABLE = "CREATE TABLE " + OpenFoodContract.IngredientEntry.TABLE_NAME + " ("+
                 OpenFoodContract.IngredientEntry._ID + " INTEGER," +
                 OpenFoodContract.IngredientEntry.INGREDIENT + " TEXT," +
@@ -40,21 +46,32 @@ public class DbHelper extends SQLiteOpenHelper {
                 OpenFoodContract.AllergenEntry.ALLERGEN + " TEXT," +
                 " FOREIGN KEY (" + OpenFoodContract.AllergenEntry._ID + ") REFERENCES " +
                 OpenFoodContract.ProductEntry.TABLE_NAME + " (" + OpenFoodContract.ProductEntry._ID + "))";
-
+           */
 
         Log.d("sql-statements",SQL_CREATE_PRODUCT_TABLE);
+        db.execSQL(SQL_CREATE_PRODUCT_TABLE);
+
+        /*
         Log.d("sql-statements",SQL_CREATE_INGREDIENT_TABLE);
         Log.d("sql-statements",SQL_CREATE_ALLERGEN_TABLE);
-
-        db.execSQL(SQL_CREATE_PRODUCT_TABLE);
         db.execSQL(SQL_CREATE_INGREDIENT_TABLE);
         db.execSQL(SQL_CREATE_ALLERGEN_TABLE);
-
+        */
     }
 
     // TODO: Need this!
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        if (oldVersion < DATABASE_VERSION) {
+            final String ALTER_TBL =
+                    "ALTER TABLE " + OpenFoodContract.ProductEntry.TABLE_NAME +
+                    " ADD COLUMN " + OpenFoodContract.ProductEntry.BRANDS + " TEXT ," +
+                    " ADD COLUMN " + OpenFoodContract.ProductEntry.SERVING_SIZE + " TEXT ," +
+                    " ADD COLUMN " + OpenFoodContract.ProductEntry.LABELS + " TEXT ," +
+                    " ADD COLUMN " + OpenFoodContract.ProductEntry.ALLERGENS + " TEXT ," +
+                    " ADD COLUMN " + OpenFoodContract.ProductEntry.INGREDIENTS + " TEXT ," +
+                    " ADD COLUMN " + OpenFoodContract.ProductEntry.ORIGINS + " TEXT;";
+            db.execSQL(ALTER_TBL);
+        }
     }
 }

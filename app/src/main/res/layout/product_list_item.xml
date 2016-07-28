@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="?android:attr/listPreferredItemHeight"
+    android:padding="6dip" >
+
+    <ImageView
+        android:id="@+id/product_image"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="6dip"
+        android:layout_marginEnd="6dip"
+        android:contentDescription="@string/product_image"
+        android:src="@mipmap/ic_launcher"/>
+
+    <TextView
+        android:id="@+id/product_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_toRightOf="@id/product_image"
+        android:layout_toEndOf="@id/product_image"
+        android:gravity="center_vertical"
+        android:ellipsize="end"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
+        android:maxLines="1"
+        android:textSize="16sp"
+        android:text="Product Name" />
+
+    <TextView
+        android:id="@+id/product_brand"
+        android:layout_width="wrap_content"
+        android:layout_height="26dip"
+        android:singleLine="true"
+        android:textSize="12sp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/product_image"
+        android:layout_toEndOf="@id/product_image"
+        android:text="Brand" />
+
+    <TextView
+        android:id="@+id/code"
+        android:layout_width="wrap_content"
+        android:layout_height="26dip"
+        android:singleLine="true"
+        android:textSize="12sp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/product_brand"
+        android:layout_toEndOf="@id/product_brand"
+        android:text="Barcode" />
+
+</RelativeLayout>

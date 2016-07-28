@@ -8,13 +8,13 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.ereinecke.eatsafe.R;
 import com.ereinecke.eatsafe.services.OpenFoodService;
@@ -30,13 +30,12 @@ public class SearchFragment extends Fragment {
 
     private static final String LOG_TAG = SearchFragment.class.getSimpleName();
     private static final String BARCODE_CONTENT = "barcodeContent";
-    private EditText barcode;
+    private EditText barcodeView;
     private static View rootView;
 
     public SearchFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,37 +49,37 @@ public class SearchFragment extends Fragment {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_search, container, false);
 
-        barcode = (EditText) rootView.findViewById(R.id.barcode);
+        barcodeView = (EditText) rootView.findViewById(R.id.barcode);
 
-        barcode.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                //no need
-            }
+        // TODO: requires a press on search button.  Add a button handler to search icon.
+        barcodeView.setOnEditorActionListener(
+            new EditText.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                        actionId == EditorInfo.IME_ACTION_DONE ||
+                        event.getAction() == KeyEvent.ACTION_DOWN &&
+                        event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                        String barcodeStr = v.getText().toString();
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                //no need
-            }
+                        if (!Utility.validateBarcode(barcodeStr)) {
 
-            @Override
-            public void afterTextChanged(Editable s) {
-                String barcodeStr = s.toString();
-
-                if (!Utility.validateBarcode(barcodeStr)) {
-                    // TODO: This Snackbar should probably be LENGTH_INDEFINITE
-                    Snackbar.make(rootView, getString(R.string.barcode_validation_failed, barcodeStr),
-                            Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).setDuration(5000).show();
-                  } else if (checkConnectivity()) {
-                        // Have a (potentially) valid barcode, fetch product info
-                        Intent bookIntent = new Intent(getActivity(), OpenFoodService.class);
-                        bookIntent.putExtra(Constants.BARCODE, barcodeStr);
-                        bookIntent.setAction(Constants.FETCH_PRODUCT);
-                        getActivity().startService(bookIntent);
+                            // TODO: This Snackbar should probably be LENGTH_INDEFINITE
+                            Snackbar.make(rootView, getString(R.string.barcode_validation_failed, barcodeStr),
+                                    Snackbar.LENGTH_LONG)
+                                    .setAction("Action", null).setDuration(5000).show();
+                        } else if (checkConnectivity()) {
+                            // Have a (potentially) valid barcode, fetch product info
+                            Intent bookIntent = new Intent(getActivity(), OpenFoodService.class);
+                            bookIntent.putExtra(Constants.BARCODE, barcodeStr);
+                            bookIntent.setAction(Constants.FETCH_PRODUCT);
+                            getActivity().startService(bookIntent);
+                        }
+                        return true; // consume.
+                    }
+                    return false; // pass on to other listeners.
                 }
-            }
-        });
+            });
 
         rootView.findViewById(R.id.scan_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,9 +110,8 @@ public class SearchFragment extends Fragment {
         });
 
         if (savedInstanceState != null) {
-            barcode.setText(savedInstanceState.getString(BARCODE_CONTENT));
+            barcodeView.setText(savedInstanceState.getString(BARCODE_CONTENT));
         }
-
         return rootView;
     }
 
@@ -121,8 +119,8 @@ public class SearchFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (barcode != null) {
-            outState.putString(BARCODE_CONTENT, barcode.getText().toString());
+        if (barcodeView != null) {
+            outState.putString(BARCODE_CONTENT, barcodeView.getText().toString());
         }
     }
 
@@ -131,7 +129,6 @@ public class SearchFragment extends Fragment {
         // Check to see if internet connection available
         Context context = getActivity();
         CharSequence text;
-        int duration = Toast.LENGTH_SHORT;
         boolean isConnected;
 
         ConnectivityManager cm = (ConnectivityManager) context.
@@ -143,8 +140,8 @@ public class SearchFragment extends Fragment {
             isConnected = true;
         } else {
             isConnected = false;
-            Toast toast = Toast.makeText(context, text, duration);
-            toast.show();
+            Snackbar.make(rootView, text, Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
         }
 
         return isConnected;

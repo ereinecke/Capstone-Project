@@ -68,15 +68,15 @@ public class OpenFoodService extends IntentService {
         Cursor productEntry = getContentResolver().query(
                 OpenFoodContract.ProductEntry.buildProductUri(Long.parseLong(barcode)),
                 null, // leaving "columns" null just returns all the columns.
-                null, // cols for "where" clause
-                null, // values for "where" clause
+                OpenFoodContract.ProductEntry._ID + "=?", // cols for "where" clause
+                new String[] {barcode}, // values for "where" clause
                 null  // sort order
         );
 
         assert productEntry != null;
         if(productEntry.getCount() > 0) {
             Log.d(LOG_TAG, "Product " + barcode + " already downloaded");
-            // TODO: Decide whether to give user feedback or just go to ProductFragment
+            returnResult("Product already downloaded.", Long.parseLong(barcode));
             productEntry.close();
             return true;
         }
@@ -149,7 +149,7 @@ public class OpenFoodService extends IntentService {
                     productObject = productJson.getJSONObject(Constants.PRODUCT);
             } else {
                 // Returns result
-                returnResult("Product not found", -1);
+                returnResult("Product not found", -1L);
                 return false;
             }
 
@@ -157,9 +157,16 @@ public class OpenFoodService extends IntentService {
             long productId = productJson.getLong(Constants.CODE);
             String productName = productObject.getString(Constants.PRODUCT_NAME);
             String imgUrl =  productObject.getString(Constants.IMG_URL);
-            String thumbUrl = productObject.getString(Constants.IMG_THUMB_URL);
+            String thumbUrl = productObject.getString(Constants.THUMB_URL);
+            String brands = productObject.getString(Constants.BRANDS);
+            String labels = productObject.getString(Constants.LABELS);
+            String servingSize = productObject.getString(Constants.SERVING_SIZE);
+            String allergens = productObject.getString(Constants.ALLERGENS);
+            String ingredients = getIngredients(productObject);
+            String origins = productObject.getString(Constants.ORIGINS);
 
-            writeProduct(productId, productName, imgUrl, thumbUrl);
+            writeProduct(productId, productName, imgUrl, thumbUrl, brands, labels, servingSize,
+                    allergens, ingredients, origins);
 
             // Broadcast result
             returnResult("Product found", productId);
@@ -173,30 +180,48 @@ public class OpenFoodService extends IntentService {
     private void returnResult(String message, long productId) {
         Intent messageIntent = new Intent(Constants.MESSAGE_EVENT);
         messageIntent.putExtra(Constants.MESSAGE_KEY, message);
-        messageIntent.putExtra(Constants.BARCODE, productId);
+        messageIntent.putExtra(Constants.RESULT_KEY, productId);
         LocalBroadcastManager.getInstance(getApplicationContext())
                 .sendBroadcast(messageIntent);
     }
 
     private void writeProduct(long productId, String productName, String imgUrl,
-                                  String thumbUrl) {
+                              String thumbUrl, String brands, String labels, String servingSize,
+                              String allergens, String ingredients, String origins) {
         ContentValues values= new ContentValues();
         values.put(OpenFoodContract.ProductEntry._ID, productId);
         values.put(OpenFoodContract.ProductEntry.PRODUCT_NAME, productName);
         values.put(OpenFoodContract.ProductEntry.IMAGE_URL, imgUrl);
         values.put(OpenFoodContract.ProductEntry.THUMB_URL, thumbUrl);
+        values.put(OpenFoodContract.ProductEntry.BRANDS, brands);
+        values.put(OpenFoodContract.ProductEntry.LABELS, labels);
+        values.put(OpenFoodContract.ProductEntry.SERVING_SIZE, servingSize);
+        values.put(OpenFoodContract.ProductEntry.ALLERGENS, allergens);
+        values.put(OpenFoodContract.ProductEntry.INGREDIENTS, ingredients);
+        values.put(OpenFoodContract.ProductEntry.ORIGINS, origins);
+
         Log.d(LOG_TAG, "writeBackProject: values=" + values.toString());
         getContentResolver().insert(OpenFoodContract.ProductEntry.CONTENT_URI,values);
     }
 
     /*
-    private void writeBackAuthors(String ean, JSONArray jsonArray) throws JSONException {
-        ContentValues values= new ContentValues();
-        for (int i = 0; i < jsonArray.length(); i++) {
-            values.put(OpenFoodContract.AuthorEntry._ID, ean);
-            values.put(OpenFoodContract.AuthorEntry.AUTHOR, jsonArray.getString(i));
-            getContentResolver().insert(OpenFoodContract.AuthorEntry.CONTENT_URI, values);
-            values= new ContentValues();
+     * getIngredients tries to handle the multilingual versions of product ingredients
+     * Currently will try to get english, but will fall back to native language
+     * TODO: decode and use "languages_tags"
+     */
+    private String getIngredients(JSONObject product) {
+        String languageCode = "en";
+        String ingredients = "";
+
+        try {
+            ingredients = product.getString(Constants.INGREDIENTS + "_" + languageCode);
+        } catch(JSONException e) {
+            try {
+                ingredients = product.getString(Constants.INGREDIENTS);
+            } catch(JSONException j) {
+                Log.d(LOG_TAG, "Ingredients not found.");
+            }
         }
-    } */
+        return ingredients;
+    }
 }

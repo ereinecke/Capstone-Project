@@ -1,24 +1,38 @@
 package com.ereinecke.eatsafe.ui;
 
-
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v7.widget.Toolbar;
+import android.text.Html;
+import android.text.Spanned;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.ereinecke.eatsafe.R;
+import com.ereinecke.eatsafe.data.OpenFoodContract;
+import com.ereinecke.eatsafe.util.Constants;
 
 /**
- * A simple {@link Fragment} subclass.
+ * ProductFragment displays detailed information for a product, whose barcode is passed to
+ * ProductFragment as an argument.
  */
-public class ProductFragment extends Fragment {
+public class ProductFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    private final static String LOG_TAG = ProductFragment.class.getSimpleName();
+    private static final int LOADER_ID = 1;
+    private long barcode;
+    private View rootView;
 
 
     public ProductFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -28,8 +42,113 @@ public class ProductFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        Bundle args = getArguments();
+        long barcode = args.getLong(Constants.BARCODE_KEY);
+        Log.d(LOG_TAG, "inOnCreateView, barcode (long): " + barcode);
+
+        if (args != null) {
+            getLoaderManager().restartLoader(LOADER_ID, args, this);
+        }
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_product, container, false);
+        rootView = inflater.inflate(R.layout.fragment_product, container, false);
+        return rootView;
     }
 
+    // private void restartLoader() {
+    //    getLoaderManager().restartLoader(LOADER_ID, null, this);
+    // }
+
+    @Override
+    public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        long barcode = args.getLong(Constants.BARCODE_KEY);
+        Log.d(LOG_TAG, "in onCreateLoader, barcodeStr = " + barcode);
+        String barcodeStr = Long.toString(barcode);
+
+        return new CursorLoader (
+                getActivity(),
+                OpenFoodContract.ProductEntry.buildProductUri(barcode),
+                null,
+                OpenFoodContract.ProductEntry._ID + "=?",
+                new String[] {barcodeStr},
+                null
+        );
+    }
+
+    @Override
+    public void onLoadFinished(android.support.v4.content.Loader<Cursor> loader, Cursor data) {
+        if (!data.moveToFirst()) {
+            return;
+        }
+
+        String imgUrl = data.getString(data.getColumnIndex(OpenFoodContract.ProductEntry.IMAGE_URL));
+        Log.d(LOG_TAG, "ImageUrl: " + imgUrl);
+
+        // TODO: get image somehow
+        String productName = data.getString(data.getColumnIndex(OpenFoodContract.ProductEntry.PRODUCT_NAME));
+        ((TextView) rootView.findViewById(R.id.product_name)).setText(productName);
+
+        String brands = data.getString(data.getColumnIndex(OpenFoodContract.ProductEntry.BRANDS));
+        ((TextView) rootView.findViewById(R.id.brands)).setText(prefixLabel(R.string.brands, brands));
+
+        String servingSize = data.getString(data.getColumnIndex(OpenFoodContract.ProductEntry.SERVING_SIZE));
+        ((TextView) rootView.findViewById(R.id.serving_size))
+                .setText(prefixLabel(R.string.serving_size, servingSize));
+
+        String labels = data.getString(data.getColumnIndex(OpenFoodContract.ProductEntry.LABELS));
+        ((TextView) rootView.findViewById(R.id.labels))
+                .setText(prefixLabel(R.string.labels, labels));
+
+        String allergens = data.getString(data.getColumnIndex(OpenFoodContract.ProductEntry.ALLERGENS));
+        ((TextView) rootView.findViewById(R.id.allergens))
+                .setText(prefixLabel(R.string.allergens, allergens));
+
+        String ingredients = data.getString(data.getColumnIndex(OpenFoodContract.ProductEntry.INGREDIENTS));
+        ((TextView) rootView.findViewById(R.id.ingredients))
+                .setText(prefixLabel(R.string.ingredients, ingredients));
+
+        String origins = data.getString(data.getColumnIndex(OpenFoodContract.ProductEntry.ORIGINS));
+        ((TextView) rootView.findViewById(R.id.origins))
+                .setText(prefixLabel(R.string.origins, origins));
+
+        String barcode = data.getString(data.getColumnIndex(OpenFoodContract.ProductEntry._ID));
+        ((TextView) rootView.findViewById(R.id.code))
+                .setText(prefixLabel(R.string.code, barcode));
+    }
+
+    @Override
+    public void onLoaderReset(android.support.v4.content.Loader<Cursor> loader) {
+
+    }
+
+    /* prefixLabel formats a string, prepending fieldName in bold and concatenating fieldContents
+     * Returns a spannable suitable for insertion into a TextView.
+     */
+    public Spanned prefixLabel(int fieldName, String fieldContents) {
+
+        Spanned result;
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            result = Html.fromHtml("<b>" + getResources().getString(fieldName) + ": </b>" +
+                    fieldContents, Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            result = Html.fromHtml("<b>" + getResources().getString(fieldName) + ": </b>" +
+                    fieldContents);
+        }
+        return result;
+    }
+
+    private void clearFields() {
+        ((TextView) rootView.findViewById(R.id.product_name)).setText("");
+        ((TextView) rootView.findViewById(R.id.brands)).setText("");
+        ((TextView) rootView.findViewById(R.id.code)).setText("");
+        ((TextView) rootView.findViewById(R.id.serving_size)).setText("");
+        ((TextView) rootView.findViewById(R.id.labels)).setText("");
+        ((TextView) rootView.findViewById(R.id.allergens)).setText("");
+        ((TextView) rootView.findViewById(R.id.ingredients)).setText("");
+        ((TextView) rootView.findViewById(R.id.origins)).setText("");
+        // TODO: how to clear image field?
+    }
 }

@@ -29,12 +29,16 @@
     <string name="product_image">Product Image</string>
     <string name="search_hint">Enter or speak UPC code</string>
     <string name="product_name">Product Name</string>
-    <string name="brand">Brand</string>
-    <string name="origin">Origin</string>
+    <string name="brands">Brands</string>
+    <string name="origins">Origins</string>
     <string name="allergens">Allergens</string>
     <string name="ingredients">Ingredients</string>
+    <string name="code">Product Code</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="serving_size">Serving size</string>
+    <string name="barcode">Barcode</string>
+    <string name="labels">Labels</string>
 
 </resources>

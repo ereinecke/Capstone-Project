@@ -35,8 +35,14 @@ public class Utility {
         } else if (barcode.contains(".")) {
             Log.d(LOG_TAG, "Barcode contains \'.\'");
             return false;
-        } else {
-            return true;
         }
+        return true;
+    }
+
+    /*
+     * Callback interface for list item selection.
+     */
+    public interface Callback {
+        public void onItemSelected(String barcode);
     }
 }
