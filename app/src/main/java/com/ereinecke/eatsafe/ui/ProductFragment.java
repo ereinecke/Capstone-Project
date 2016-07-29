@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
-import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
@@ -45,7 +44,6 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
         Bundle args = getArguments();
         long barcode = args.getLong(Constants.BARCODE_KEY);
-        Log.d(LOG_TAG, "inOnCreateView, barcode (long): " + barcode);
 
         if (args != null) {
             getLoaderManager().restartLoader(LOADER_ID, args, this);
@@ -64,7 +62,6 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
         long barcode = args.getLong(Constants.BARCODE_KEY);
-        Log.d(LOG_TAG, "in onCreateLoader, barcodeStr = " + barcode);
         String barcodeStr = Long.toString(barcode);
 
         return new CursorLoader (

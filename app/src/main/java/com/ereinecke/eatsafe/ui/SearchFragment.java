@@ -20,6 +20,7 @@ import com.ereinecke.eatsafe.R;
 import com.ereinecke.eatsafe.services.OpenFoodService;
 import com.ereinecke.eatsafe.util.Constants;
 import com.ereinecke.eatsafe.util.Utility;
+import com.google.zxing.integration.android.IntentIntegrator;
 
 /**
  * SearchFragment allows the user to search the database by UPC code.  The code can be scanned
@@ -53,42 +54,38 @@ public class SearchFragment extends Fragment {
 
         // TODO: requires a press on search button.  Add a button handler to search icon.
         barcodeView.setOnEditorActionListener(
-            new EditText.OnEditorActionListener() {
-                @Override
-                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                    if (actionId == EditorInfo.IME_ACTION_SEARCH ||
-                        actionId == EditorInfo.IME_ACTION_DONE ||
-                        event.getAction() == KeyEvent.ACTION_DOWN &&
-                        event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-                        String barcodeStr = v.getText().toString();
+                new EditText.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                        if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                                actionId == EditorInfo.IME_ACTION_DONE ||
+                                event.getAction() == KeyEvent.ACTION_DOWN &&
+                                        event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                            String barcodeStr = v.getText().toString();
 
-                        if (!Utility.validateBarcode(barcodeStr)) {
+                            if (!Utility.validateBarcode(barcodeStr)) {
 
-                            // TODO: This Snackbar should probably be LENGTH_INDEFINITE
-                            Snackbar.make(rootView, getString(R.string.barcode_validation_failed, barcodeStr),
-                                    Snackbar.LENGTH_LONG)
-                                    .setAction("Action", null).setDuration(5000).show();
-                        } else if (checkConnectivity()) {
-                            // Have a (potentially) valid barcode, fetch product info
-                            Intent bookIntent = new Intent(getActivity(), OpenFoodService.class);
-                            bookIntent.putExtra(Constants.BARCODE, barcodeStr);
-                            bookIntent.setAction(Constants.FETCH_PRODUCT);
-                            getActivity().startService(bookIntent);
+                                // TODO: This Snackbar should probably be LENGTH_INDEFINITE
+                                Snackbar.make(rootView, getString(R.string.barcode_validation_failed, barcodeStr),
+                                        Snackbar.LENGTH_LONG)
+                                        .setAction("Action", null).setDuration(5000).show();
+                            } else if (checkConnectivity()) {
+                                // Have a (potentially) valid barcode, fetch product info
+                                callFetchProduct(barcodeStr);
+                            }
+                            return true; // consume.
                         }
-                        return true; // consume.
+                        return false; // pass on to other listeners.
                     }
-                    return false; // pass on to other listeners.
-                }
-            });
+                });
 
+        /* Scan barcode button  */
         rootView.findViewById(R.id.scan_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // ZXing is called here
                 Context context = getActivity();
 
-                // TODO: IntentIntegrator part of ZXing, currently not being recognized.
-                /*
                 if (checkConnectivity()) {
                     try {
                         IntentIntegrator integrator = new IntentIntegrator(getActivity());
@@ -98,14 +95,7 @@ public class SearchFragment extends Fragment {
                                 Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
                     }
-                } */
-            }
-        });
-
-        rootView.findViewById(R.id.scan_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Utility.launchScanner(view);
+                }
             }
         });
 
@@ -115,7 +105,6 @@ public class SearchFragment extends Fragment {
         return rootView;
     }
 
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -123,6 +112,23 @@ public class SearchFragment extends Fragment {
             outState.putString(BARCODE_CONTENT, barcodeView.getText().toString());
         }
     }
+
+    public void handleScanResult(String result) {
+        ((TextView) rootView.findViewById(R.id.barcode)).setText(result);
+
+        //Once we have a barcode, start a book intent
+        callFetchProduct(result);
+        // AddBook.this.restartLoader();
+    }
+
+    /* Sends an intent to OpenFoodService to fetch product info */
+    public void callFetchProduct(String barcodeStr) {
+        // Have a (potentially) valid barcode, fetch product info
+        Intent productIntent = new Intent(getActivity(), OpenFoodService.class);
+        productIntent.putExtra(Constants.BARCODE_KEY, barcodeStr);
+        productIntent.setAction(Constants.FETCH_PRODUCT);
+        getActivity().startService(productIntent);
+     }
 
     /* Returns a boolean representing internet connectivity */
     private boolean checkConnectivity() {

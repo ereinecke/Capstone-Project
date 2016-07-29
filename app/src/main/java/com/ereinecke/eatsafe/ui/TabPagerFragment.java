@@ -18,6 +18,8 @@ import java.util.List;
 
 /**
  * TabPagerFragment holds ViewPager with tabbed views for search, upload and results
+ * TODO: Tabs refresh very slowly when coming back from ProductFragment
+ *
  */
 public class TabPagerFragment extends Fragment {
 

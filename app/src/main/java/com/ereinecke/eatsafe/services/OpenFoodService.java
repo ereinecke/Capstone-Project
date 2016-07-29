@@ -40,7 +40,7 @@ public class OpenFoodService extends IntentService {
         if (intent != null) {
             final String action = intent.getAction();
             if (Constants.FETCH_PRODUCT.equals(action)) {
-                final String barcode = intent.getStringExtra(Constants.BARCODE);
+                final String barcode = intent.getStringExtra(Constants.BARCODE_KEY);
                 // returns true if product found - not sure if I want to do anything with that here
                 fetchProduct(barcode);
             }
@@ -141,42 +141,46 @@ public class OpenFoodService extends IntentService {
         /*  JSON parsing happens here */
         try {
             JSONObject productJson = new JSONObject(productJsonString);
-            JSONObject productObject;
+            JSONObject productObject = null;
 
             if(productJson.has(Constants.STATUS)) {
-                if (productJson.getInt(Constants.STATUS) == 1)
+                if (productJson.getInt(Constants.STATUS) == 1) {
                     Log.d(LOG_TAG, "Product status: found");
                     productObject = productJson.getJSONObject(Constants.PRODUCT);
-            } else {
-                // Returns result
-                returnResult("Product not found", -1L);
-                return false;
+                } else {
+                    // Returns result
+                    returnResult("Product not found", -1L);
+                    return false;
+                }
             }
 
-            // TODO:  Add more items
-            long productId = productJson.getLong(Constants.CODE);
-            String productName = productObject.getString(Constants.PRODUCT_NAME);
-            String imgUrl =  productObject.getString(Constants.IMG_URL);
-            String thumbUrl = productObject.getString(Constants.THUMB_URL);
-            String brands = productObject.getString(Constants.BRANDS);
-            String labels = productObject.getString(Constants.LABELS);
-            String servingSize = productObject.getString(Constants.SERVING_SIZE);
-            String allergens = productObject.getString(Constants.ALLERGENS);
-            String ingredients = getIngredients(productObject);
-            String origins = productObject.getString(Constants.ORIGINS);
+            if (productObject != null ) {
+                long productId = productJson.getLong(Constants.CODE);
+                String productName = productObject.getString(Constants.PRODUCT_NAME);
+                String imgUrl = productObject.getString(Constants.IMG_URL);
+                String thumbUrl = productObject.getString(Constants.THUMB_URL);
+                String brands = productObject.getString(Constants.BRANDS);
+                String labels = productObject.getString(Constants.LABELS);
+                String servingSize = productObject.getString(Constants.SERVING_SIZE);
+                String allergens = productObject.getString(Constants.ALLERGENS);
+                String ingredients = getIngredients(productObject);
+                String origins = productObject.getString(Constants.ORIGINS);
 
-            writeProduct(productId, productName, imgUrl, thumbUrl, brands, labels, servingSize,
-                    allergens, ingredients, origins);
+                writeProduct(productId, productName, imgUrl, thumbUrl, brands, labels, servingSize,
+                        allergens, ingredients, origins);
 
-            // Broadcast result
-            returnResult("Product found", productId);
+                // Broadcast result
+                returnResult("Product found", productId);
+            }
 
-        } catch (JSONException e) {
+            } catch (JSONException e) {
                 Log.e(LOG_TAG, "Error ", e);
-        }
+                return false;
+            }
         return true;
     }
 
+    /* Broadcast Intent to MainActivity.MessageReceiver with barcode */
     private void returnResult(String message, long productId) {
         Intent messageIntent = new Intent(Constants.MESSAGE_EVENT);
         messageIntent.putExtra(Constants.MESSAGE_KEY, message);

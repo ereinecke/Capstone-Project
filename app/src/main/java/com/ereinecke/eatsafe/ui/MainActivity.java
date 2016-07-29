@@ -5,17 +5,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.view.View;
 
 import com.ereinecke.eatsafe.R;
-import com.ereinecke.eatsafe.util.Utility.Callback;
+import com.ereinecke.eatsafe.services.OpenFoodService;
 import com.ereinecke.eatsafe.util.Constants;
+import com.ereinecke.eatsafe.util.Utility.Callback;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+
 
 public class MainActivity extends AppCompatActivity implements Callback {
 
@@ -52,7 +57,9 @@ public class MainActivity extends AppCompatActivity implements Callback {
     @Override
     public void onStart() {
         super.onStart();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        }
     }
 
     @Override
@@ -87,28 +94,55 @@ public class MainActivity extends AppCompatActivity implements Callback {
             Log.e(LOG_TAG, e.toString());
         }
     }
-
+    
+    /* MessageReceiver is listening for an intent from OpenFoodService, containing a product
+     *   barcode
+     */
     private class MessageReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             if(intent.getStringExtra(Constants.MESSAGE_KEY) != null) {
                 long barcode = intent.getLongExtra(Constants.RESULT_KEY, -1L);
+                View rootView = findViewById(android.R.id.content);
 
                 if (barcode != -1L) {
-                    // TODO: Change to Snackbar or fancy toast
-                    Toast.makeText(MainActivity.this,
-                    intent.getStringExtra(Constants.MESSAGE_KEY), Toast.LENGTH_LONG).show();
+                   Snackbar.make(rootView, getString(R.string.barcode_found, barcode),
+                            Snackbar.LENGTH_SHORT)
+                        .setAction("Action", null).show();
                     launchProductFragment(barcode);
                 } else {
+                    // TODO: Give Snackbar an action to launch UploadFragment or not
                     Log.d(LOG_TAG, "In MessageReceiver, no valid barcode received.");
+                    Snackbar.make(findViewById(android.R.id.content),
+                            getString(R.string.barcode_not_found),
+                            Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 }
             }
         }
     }
 
-    public void launchProductFragment(long barcode) {
+    /* Receives intents.  If FETCH_PRODUCT, it's the result of a product search */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        
+        if (result != null) {
+            String contents = result.getContents();
+            if (contents != null) {
+                Log.d(LOG_TAG, "Scan result: " + result.toString());
+                // Have a (potentially) valid barcode, fetch product info
+                Intent productIntent = new Intent(this, OpenFoodService.class);
+                productIntent.putExtra(Constants.BARCODE_KEY, result.getContents().toString());
+                productIntent.setAction(Constants.FETCH_PRODUCT);
+                startService(productIntent);
 
-        Log.d(LOG_TAG, "in launchProductFragment, barcode = " + barcode);
+            } else {
+                Log.d(LOG_TAG, "Scan failed");
+            }
+        }
+    }
+
+    public void launchProductFragment(long barcode) {
 
         // Turn on back button in ActionBar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
