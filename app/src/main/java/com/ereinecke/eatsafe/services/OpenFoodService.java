@@ -30,7 +30,6 @@ public class OpenFoodService extends IntentService {
 
     private final String LOG_TAG = OpenFoodService.class.getSimpleName();
 
-
     public OpenFoodService() {
         super("EatSafe");   // TODO: ???
     }

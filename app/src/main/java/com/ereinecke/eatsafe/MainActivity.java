@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -75,15 +76,25 @@ public class MainActivity extends AppCompatActivity implements Callback {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_login) {
-            return true;
+        switch (item.getItemId()) {
+            // respond to the action bar's Up/Home button
+
+            case android.R.id.home:
+                FragmentManager fm = getSupportFragmentManager();
+                fm.popBackStackImmediate();
+                return true;
+
+            //noinspection SimplifiableIfStatement
+            case R.id.action_login:
+                return true;
+
+            case R.id.action_sensitivities:
+                return true;
         }
-
-        return id == R.id.action_sensitivities || super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item);
     }
+
 
     @Override
     public void onItemSelected(String barcode) {

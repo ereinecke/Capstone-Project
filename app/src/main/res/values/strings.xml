@@ -25,6 +25,7 @@
     <string name="barcode_validation_failed">Barcode code \"%1$d\" is invalid.</string>
     <string name="barcode_found">Product \"%1$d\" found.</string>
     <string name="barcode_not_found">Product not found.  Upload product?</string>
+    <string name="product_results_prompt">Search by product name or brand</string>
 
     <!-- Content descriptions -->
     <string name="mic_image">Speak product code</string>
@@ -36,9 +37,6 @@
     <string name="allergens">Allergens</string>
     <string name="ingredients">Ingredients</string>
     <string name="code">Product Code</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="serving_size">Serving size</string>
     <string name="barcode">Barcode</string>
     <string name="labels">Labels</string>

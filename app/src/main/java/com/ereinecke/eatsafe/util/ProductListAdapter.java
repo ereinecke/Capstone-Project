@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.ereinecke.eatsafe.R;
 import com.ereinecke.eatsafe.data.OpenFoodContract;
+import com.squareup.picasso.Picasso;
 
 /**
  * List adapter to display list of products downloaded to this device
@@ -18,11 +19,14 @@ import com.ereinecke.eatsafe.data.OpenFoodContract;
 
 public class ProductListAdapter extends CursorAdapter {
 
+    private final static String LOG_TAG = ProductListAdapter.class.getSimpleName();
+
     public static class ViewHolder {
         public ImageView productImage = null;
         public TextView productName = null;
         public TextView productBrand = null;
         public TextView productCode = null;
+        public int productImageSize;
 
         public ViewHolder(View view) {
             productImage = (ImageView) view.findViewById(R.id.product_image);
@@ -41,9 +45,13 @@ public class ProductListAdapter extends CursorAdapter {
 
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
+        // TODO: Figure out how big to make the thumbnail, depends on listPreferredItemHeight
         String imgUrl = cursor.getString(cursor.getColumnIndex(OpenFoodContract.ProductEntry.IMAGE_URL));
-        // TODO: get image download working
-        // new DownloadImage(viewHolder.productImage).execute(imgUrl);
+        Picasso.with(context).load(imgUrl)
+                // Want a square thumbnail: not sure how to get the right size
+                .resize(200, 200)
+                .centerCrop()
+                .into(viewHolder.productImage);
 
         String productName = cursor.getString(cursor.getColumnIndex(OpenFoodContract.ProductEntry.PRODUCT_NAME));
         viewHolder.productName.setText(productName);

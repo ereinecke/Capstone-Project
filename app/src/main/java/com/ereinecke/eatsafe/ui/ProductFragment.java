@@ -28,6 +28,7 @@ import java.util.ArrayList;
 /**
  * ProductFragment displays detailed information for a product, whose barcode is passed to
  * ProductFragment as an argument.
+ * TODO: add Share button
  */
 public class ProductFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -59,6 +60,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_product, container, false);
+
         return rootView;
     }
 
@@ -174,17 +176,5 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
                     fieldContents);
         }
         return result;
-    }
-
-    private void clearFields() {
-        ((TextView) rootView.findViewById(R.id.product_name)).setText("");
-        ((TextView) rootView.findViewById(R.id.brands)).setText("");
-        ((TextView) rootView.findViewById(R.id.code)).setText("");
-        ((TextView) rootView.findViewById(R.id.serving_size)).setText("");
-        ((TextView) rootView.findViewById(R.id.labels)).setText("");
-        ((TextView) rootView.findViewById(R.id.allergens)).setText("");
-        ((TextView) rootView.findViewById(R.id.ingredients)).setText("");
-        ((TextView) rootView.findViewById(R.id.origins)).setText("");
-        // TODO: how to clear image field?
     }
 }

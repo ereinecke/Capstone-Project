@@ -37,29 +37,8 @@ public class DbHelper extends SQLiteOpenHelper {
                 OpenFoodContract.ProductEntry.ORIGINS + " TEXT ," +
                 "UNIQUE ("+ OpenFoodContract.ProductEntry._ID +") ON CONFLICT IGNORE)";
 
-        /* TODO: Review the next two statements carefully
-        final String SQL_CREATE_INGREDIENT_TABLE = "CREATE TABLE " + OpenFoodContract.IngredientEntry.TABLE_NAME + " ("+
-                OpenFoodContract.IngredientEntry._ID + " INTEGER," +
-                OpenFoodContract.IngredientEntry.INGREDIENT + " TEXT," +
-                " FOREIGN KEY (" + OpenFoodContract.IngredientEntry._ID + ") REFERENCES " +
-                OpenFoodContract.ProductEntry.TABLE_NAME + " (" + OpenFoodContract.ProductEntry._ID + "))";
-
-        final String SQL_CREATE_ALLERGEN_TABLE = "CREATE TABLE " + OpenFoodContract.AllergenEntry.TABLE_NAME + " ("+
-                OpenFoodContract.AllergenEntry._ID + " INTEGER," +
-                OpenFoodContract.AllergenEntry.ALLERGEN + " TEXT," +
-                " FOREIGN KEY (" + OpenFoodContract.AllergenEntry._ID + ") REFERENCES " +
-                OpenFoodContract.ProductEntry.TABLE_NAME + " (" + OpenFoodContract.ProductEntry._ID + "))";
-           */
-
         Log.d("sql-statements",SQL_CREATE_PRODUCT_TABLE);
         db.execSQL(SQL_CREATE_PRODUCT_TABLE);
-
-        /*
-        Log.d("sql-statements",SQL_CREATE_INGREDIENT_TABLE);
-        Log.d("sql-statements",SQL_CREATE_ALLERGEN_TABLE);
-        db.execSQL(SQL_CREATE_INGREDIENT_TABLE);
-        db.execSQL(SQL_CREATE_ALLERGEN_TABLE);
-        */
     }
 
 

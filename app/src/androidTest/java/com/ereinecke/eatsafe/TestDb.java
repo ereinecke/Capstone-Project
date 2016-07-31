@@ -136,25 +136,4 @@ public class TestDb extends AndroidTestCase {
 
         return values;
     }
-
-    // TODO: Flesh this out after defining full contract
-    /*
-    public static ContentValues getIngredientValues() {
-
-        final ContentValues values= new ContentValues();
-        values.put(OpenFoodContract.IngredientEntry._ID, barcode);
-        values.put(OpenFoodContract.IngredientEntry.INGREDIENT, author);
-
-        return values;
-    }
-
-    public static ContentValues getCategoryValues() {
-
-        final ContentValues values= new ContentValues();
-        values.put(OpenFoodContract.AllergenEntry._ID, barcode);
-        values.put(OpenFoodContract.AllergenEntry.ALLERGEN, category);
-
-        return values;
-    }
-    */
 }

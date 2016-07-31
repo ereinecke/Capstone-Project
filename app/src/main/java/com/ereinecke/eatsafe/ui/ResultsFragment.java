@@ -61,9 +61,7 @@ public class ResultsFragment extends Fragment implements LoaderManager.LoaderCal
                 null  // sort order
         );
 
-        if (cursor != null) {
-            Log.d(LOG_TAG, "Cursor returned " + cursor.getCount());
-        } else {
+        if (cursor == null) {
             Log.d(LOG_TAG, "Cursor returned 0 results.");
         }
 
