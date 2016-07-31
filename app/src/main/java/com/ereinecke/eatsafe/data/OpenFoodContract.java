@@ -30,6 +30,8 @@ public class OpenFoodContract {
         public static final String PRODUCT_NAME = "product_name";
         public static final String IMAGE_URL = "img_small_url";
         public static final String THUMB_URL = "img_front_thumb_url";
+        public static final String INGREDIENTS_IMG_URL = "img_ingredients_url";
+        public static final String NUTRITION_IMG_URL = "img_nutrition_url";
         public static final String BRANDS = "brands";
         public static final String SERVING_SIZE = "servingSize";
         public static final String LABELS = "labels";

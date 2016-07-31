@@ -12,7 +12,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginRight="6dip"
         android:layout_marginEnd="6dip"
-        android:contentDescription="@string/product_image"
+        android:contentDescription="@string/product_images"
         android:src="@mipmap/ic_launcher"/>
 
     <TextView

@@ -11,7 +11,8 @@ import android.util.Log;
 
 public class DbHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    private static final String LOG_TAG = DbHelper.class.getSimpleName();
+    private static final int DATABASE_VERSION = 2;
     public  static final String DATABASE_NAME = "eatsafe.db";
 
     public DbHelper(Context context) {
@@ -26,6 +27,8 @@ public class DbHelper extends SQLiteOpenHelper {
                 OpenFoodContract.ProductEntry.PRODUCT_NAME+ " TEXT NOT NULL," +
                 OpenFoodContract.ProductEntry.IMAGE_URL + " TEXT ," +
                 OpenFoodContract.ProductEntry.THUMB_URL + " TEXT ," +
+                OpenFoodContract.ProductEntry.INGREDIENTS_IMG_URL + " TEXT ," +
+                OpenFoodContract.ProductEntry.NUTRITION_IMG_URL + " TEXT ," +
                 OpenFoodContract.ProductEntry.BRANDS + " TEXT ," +
                 OpenFoodContract.ProductEntry.SERVING_SIZE + " TEXT ," +
                 OpenFoodContract.ProductEntry.LABELS + " TEXT ," +
@@ -59,18 +62,16 @@ public class DbHelper extends SQLiteOpenHelper {
         */
     }
 
-    // TODO: Need this!
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion < DATABASE_VERSION) {
             final String ALTER_TBL =
                     "ALTER TABLE " + OpenFoodContract.ProductEntry.TABLE_NAME +
-                    " ADD COLUMN " + OpenFoodContract.ProductEntry.BRANDS + " TEXT ," +
-                    " ADD COLUMN " + OpenFoodContract.ProductEntry.SERVING_SIZE + " TEXT ," +
-                    " ADD COLUMN " + OpenFoodContract.ProductEntry.LABELS + " TEXT ," +
-                    " ADD COLUMN " + OpenFoodContract.ProductEntry.ALLERGENS + " TEXT ," +
-                    " ADD COLUMN " + OpenFoodContract.ProductEntry.INGREDIENTS + " TEXT ," +
-                    " ADD COLUMN " + OpenFoodContract.ProductEntry.ORIGINS + " TEXT;";
+                    " ADD " + OpenFoodContract.ProductEntry.INGREDIENTS_IMG_URL + " TEXT ," +
+                    " ADD " + OpenFoodContract.ProductEntry.NUTRITION_IMG_URL + " TEXT;";
+            Log.d(LOG_TAG, "Upgrading database to version " + newVersion + " with SQL statement: " +
+                    ALTER_TBL);
             db.execSQL(ALTER_TBL);
         }
     }

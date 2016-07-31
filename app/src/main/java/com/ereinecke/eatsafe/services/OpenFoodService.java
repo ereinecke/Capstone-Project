@@ -156,17 +156,20 @@ public class OpenFoodService extends IntentService {
 
             if (productObject != null ) {
                 long productId = productJson.getLong(Constants.CODE);
-                String productName = productObject.getString(Constants.PRODUCT_NAME);
-                String imgUrl = productObject.getString(Constants.IMG_URL);
-                String thumbUrl = productObject.getString(Constants.THUMB_URL);
-                String brands = productObject.getString(Constants.BRANDS);
-                String labels = productObject.getString(Constants.LABELS);
-                String servingSize = productObject.getString(Constants.SERVING_SIZE);
-                String allergens = productObject.getString(Constants.ALLERGENS);
+                String productName = getProductItem(productObject, Constants.PRODUCT_NAME);
+                String imgUrl = getProductItem(productObject, Constants.IMG_URL);
+                String thumbUrl = getProductItem(productObject, Constants.THUMB_URL);
+                String ingredientsImgUrl = getProductItem(productObject, Constants.INGREDIENTS_IMG_URL);
+                String nutritionImgUrl = getProductItem(productObject, Constants.NUTRITION_IMG_URL);
+                String brands = getProductItem(productObject, Constants.BRANDS);
+                String labels = getProductItem(productObject, Constants.LABELS);
+                String servingSize = getProductItem(productObject, Constants.SERVING_SIZE);
+                String allergens = getProductItem(productObject, Constants.ALLERGENS);
                 String ingredients = getIngredients(productObject);
-                String origins = productObject.getString(Constants.ORIGINS);
+                String origins = getProductItem(productObject, Constants.ORIGINS);
 
-                writeProduct(productId, productName, imgUrl, thumbUrl, brands, labels, servingSize,
+                writeProduct(productId, productName, imgUrl, thumbUrl, ingredientsImgUrl,
+                        nutritionImgUrl, brands, labels, servingSize,
                         allergens, ingredients, origins);
 
                 // Broadcast result
@@ -174,45 +177,29 @@ public class OpenFoodService extends IntentService {
             }
 
             } catch (JSONException e) {
-                Log.e(LOG_TAG, "Error ", e);
+                Log.e(LOG_TAG, "Error " + e.getMessage());
                 return false;
             }
         return true;
     }
 
-    /* Broadcast Intent to MainActivity.MessageReceiver with barcode */
-    private void returnResult(String message, long productId) {
-        Intent messageIntent = new Intent(Constants.MESSAGE_EVENT);
-        messageIntent.putExtra(Constants.MESSAGE_KEY, message);
-        messageIntent.putExtra(Constants.RESULT_KEY, productId);
-        LocalBroadcastManager.getInstance(getApplicationContext())
-                .sendBroadcast(messageIntent);
-    }
+    /* Gets item by key from specified JSONObject, catching JSONExceptiopn */
+    private String getProductItem(JSONObject productObject, String key) {
+        String result;
 
-    private void writeProduct(long productId, String productName, String imgUrl,
-                              String thumbUrl, String brands, String labels, String servingSize,
-                              String allergens, String ingredients, String origins) {
-        ContentValues values= new ContentValues();
-        values.put(OpenFoodContract.ProductEntry._ID, productId);
-        values.put(OpenFoodContract.ProductEntry.PRODUCT_NAME, productName);
-        values.put(OpenFoodContract.ProductEntry.IMAGE_URL, imgUrl);
-        values.put(OpenFoodContract.ProductEntry.THUMB_URL, thumbUrl);
-        values.put(OpenFoodContract.ProductEntry.BRANDS, brands);
-        values.put(OpenFoodContract.ProductEntry.LABELS, labels);
-        values.put(OpenFoodContract.ProductEntry.SERVING_SIZE, servingSize);
-        values.put(OpenFoodContract.ProductEntry.ALLERGENS, allergens);
-        values.put(OpenFoodContract.ProductEntry.INGREDIENTS, ingredients);
-        values.put(OpenFoodContract.ProductEntry.ORIGINS, origins);
-
-        Log.d(LOG_TAG, "writeBackProject: values=" + values.toString());
-        getContentResolver().insert(OpenFoodContract.ProductEntry.CONTENT_URI,values);
+        try {
+            return productObject.getString(key);
+        } catch(JSONException e) {
+            Log.e(LOG_TAG, "Error " + e.getMessage());
+            return "";
+        }
     }
 
     /*
-     * getIngredients tries to handle the multilingual versions of product ingredients
-     * Currently will try to get english, but will fall back to native language
-     * TODO: decode and use "languages_tags"
-     */
+ * getIngredients tries to handle the multilingual versions of product ingredients
+ * Currently will try to get english, but will fall back to native language
+ * TODO: decode and use "languages_tags"
+ */
     private String getIngredients(JSONObject product) {
         String languageCode = "en";
         String ingredients = "";
@@ -227,5 +214,36 @@ public class OpenFoodService extends IntentService {
             }
         }
         return ingredients;
+    }
+
+    /* Broadcast Intent to MainActivity.MessageReceiver with barcode */
+    private void returnResult(String message, long productId) {
+        Intent messageIntent = new Intent(Constants.MESSAGE_EVENT);
+        messageIntent.putExtra(Constants.MESSAGE_KEY, message);
+        messageIntent.putExtra(Constants.RESULT_KEY, productId);
+        LocalBroadcastManager.getInstance(getApplicationContext())
+                .sendBroadcast(messageIntent);
+    }
+
+    private void writeProduct(long productId, String productName, String imgUrl,
+                              String thumbUrl, String ingredientsImgUrl,
+                              String nutritionImgUrl, String brands, String labels, String servingSize,
+                              String allergens, String ingredients, String origins) {
+        ContentValues values= new ContentValues();
+        values.put(OpenFoodContract.ProductEntry._ID, productId);
+        values.put(OpenFoodContract.ProductEntry.PRODUCT_NAME, productName);
+        values.put(OpenFoodContract.ProductEntry.IMAGE_URL, imgUrl);
+        values.put(OpenFoodContract.ProductEntry.THUMB_URL, thumbUrl);
+        values.put(OpenFoodContract.ProductEntry.INGREDIENTS_IMG_URL, ingredientsImgUrl);
+        values.put(OpenFoodContract.ProductEntry.NUTRITION_IMG_URL, nutritionImgUrl);
+        values.put(OpenFoodContract.ProductEntry.BRANDS, brands);
+        values.put(OpenFoodContract.ProductEntry.LABELS, labels);
+        values.put(OpenFoodContract.ProductEntry.SERVING_SIZE, servingSize);
+        values.put(OpenFoodContract.ProductEntry.ALLERGENS, allergens);
+        values.put(OpenFoodContract.ProductEntry.INGREDIENTS, ingredients);
+        values.put(OpenFoodContract.ProductEntry.ORIGINS, origins);
+
+        Log.d(LOG_TAG, "writeBackProject: values=" + values.toString());
+        getContentResolver().insert(OpenFoodContract.ProductEntry.CONTENT_URI,values);
     }
 }

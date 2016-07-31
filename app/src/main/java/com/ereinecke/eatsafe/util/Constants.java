@@ -20,6 +20,8 @@ public class Constants {
     public static final String CODE = "code";
     public static final String IMG_URL = "image_small_url";
     public static final String THUMB_URL ="image_thumb_url";
+    public static final String INGREDIENTS_IMG_URL = "image_ingredients_small_url";
+    public static final String NUTRITION_IMG_URL = "image_nutrition_small_url";
     public static final String BRANDS = "brands";
     public static final String SERVING_SIZE = "serving_size";
     public static final String LABELS = "labels";

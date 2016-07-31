@@ -1,4 +1,4 @@
-package com.ereinecke.eatsafe.ui;
+package com.ereinecke.eatsafe;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,8 +14,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.ereinecke.eatsafe.R;
 import com.ereinecke.eatsafe.services.OpenFoodService;
+import com.ereinecke.eatsafe.ui.ProductFragment;
+import com.ereinecke.eatsafe.ui.TabPagerFragment;
 import com.ereinecke.eatsafe.util.Constants;
 import com.ereinecke.eatsafe.util.Utility.Callback;
 import com.google.zxing.integration.android.IntentIntegrator;

@@ -1,16 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
+    <com.hkm.slider.SliderLayout
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:id="@+id/imageView"
-        android:background="@color/accent_material_light"
-        android:contentDescription="@string/product_image"
+        android:id="@+id/slider"
+        custom:pager_animation_span="2000"
+        android:background="@color/image_background"
+        android:contentDescription="@string/product_images"
+        android:elevation="6dp"
         tools:ignore="PrivateResource" />
+
+    <com.hkm.slider.Indicators.PagerIndicator
+        android:id="@+id/custom_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_gravity="center"
+        custom:selected_color="@color/color_slider_selected"
+        custom:unselected_color="@color/color_slider_unselected"
+        custom:shape="rect"
+        custom:selected_padding_left="2dp"
+        custom:selected_padding_right="2dp"
+        custom:unselected_padding_left="2dp"
+        custom:unselected_padding_right="2dp"
+        custom:selected_width="6dp"
+        custom:selected_height="6dp"
+        custom:unselected_width="6dp"
+        custom:unselected_height="6dp" />
 
     <ScrollView
         android:layout_width="match_parent"

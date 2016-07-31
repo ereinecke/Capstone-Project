@@ -47,7 +47,7 @@ dependencies {
     // compile 'com.journeyapps:zxing-android-integration:3.3.0'
 
     // Image slider
-    compile 'com.hkm.loyalslider:library:1.8.8'
+    compile 'com.hkm.loyalslider:library:1.9.4'
 
     // Fancy toast
     compile 'net.steamcrafted:load-toast:1.0.10'

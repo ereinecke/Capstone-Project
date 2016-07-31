@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
+import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
@@ -16,6 +17,13 @@ import android.widget.TextView;
 import com.ereinecke.eatsafe.R;
 import com.ereinecke.eatsafe.data.OpenFoodContract;
 import com.ereinecke.eatsafe.util.Constants;
+import com.hkm.slider.Animations.DescriptionAnimation;
+import com.hkm.slider.Indicators.PagerIndicator;
+import com.hkm.slider.SliderLayout;
+import com.hkm.slider.SliderTypes.AdjustableSlide;
+import com.hkm.slider.SliderTypes.BaseSliderView;
+
+import java.util.ArrayList;
 
 /**
  * ProductFragment displays detailed information for a product, whose barcode is passed to
@@ -27,7 +35,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     private static final int LOADER_ID = 1;
     private long barcode;
     private View rootView;
-
+    private Bundle args;
 
     public ProductFragment() {
         // Required empty public constructor
@@ -42,7 +50,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        Bundle args = getArguments();
+        args = getArguments();
         long barcode = args.getLong(Constants.BARCODE_KEY);
 
         if (args != null) {
@@ -80,10 +88,41 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
             return;
         }
 
-        String imgUrl = data.getString(data.getColumnIndex(OpenFoodContract.ProductEntry.IMAGE_URL));
-        Log.d(LOG_TAG, "ImageUrl: " + imgUrl);
+        PagerIndicator pagerIndicator = (PagerIndicator) rootView.findViewById(R.id.custom_indicator);
 
-        // TODO: get image somehow
+        // Load images into slider
+        ArrayList<String> urlImages = new ArrayList<>();
+        urlImages.add(data.getString(data.getColumnIndex(OpenFoodContract.ProductEntry.IMAGE_URL)));
+        urlImages.add(data.getString(data.getColumnIndex(OpenFoodContract.ProductEntry.INGREDIENTS_IMG_URL)));
+        urlImages.add(data.getString(data.getColumnIndex(OpenFoodContract.ProductEntry.NUTRITION_IMG_URL)));
+
+        ArrayList<AdjustableSlide> list = new ArrayList<>();
+
+        // TODO: If there are no product images, substitute OpenFoodFacts logo
+        if (urlImages.size() == 0) {
+            Log.d(LOG_TAG, "No images found.");
+        } else {
+            for (int i = 0; i < urlImages.size(); i++) {
+                String imgUrl = urlImages.get(i);
+                // Some images may not be present
+                if (imgUrl.length() != 0) {
+                    AdjustableSlide sliderView = new AdjustableSlide(getContext());
+                    sliderView
+                            .image(urlImages.get(i))
+                            .setScaleType(BaseSliderView.ScaleType.FitCenterCrop);
+                    list.add(sliderView);
+                }
+            }
+        }
+
+        SliderLayout sliderLayout = (SliderLayout) rootView.findViewById(R.id.slider);
+        sliderLayout.loadSliderList(list);
+        sliderLayout.setCustomAnimation(new DescriptionAnimation());
+        sliderLayout.setSliderTransformDuration(1000, new LinearOutSlowInInterpolator());
+        sliderLayout.setCustomIndicator(pagerIndicator);
+        sliderLayout.setDuration(5500);
+        sliderLayout.startAutoCycle();
+
         String productName = data.getString(data.getColumnIndex(OpenFoodContract.ProductEntry.PRODUCT_NAME));
         ((TextView) rootView.findViewById(R.id.product_name)).setText(productName);
 
