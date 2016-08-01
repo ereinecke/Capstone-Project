@@ -38,8 +38,9 @@ public class OpenFoodService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             final String action = intent.getAction();
-            if (Constants.FETCH_PRODUCT.equals(action)) {
+            if (Constants.ACTION_FETCH_PRODUCT.equals(action)) {
                 final String barcode = intent.getStringExtra(Constants.BARCODE_KEY);
+                Log.d(LOG_TAG, "Handling intent ACTION_FETCH_PRODUCT " + barcode);
                 // returns true if product found - not sure if I want to do anything with that here
                 fetchProduct(barcode);
             }
@@ -184,7 +185,6 @@ public class OpenFoodService extends IntentService {
 
     /* Gets item by key from specified JSONObject, catching JSONExceptiopn */
     private String getProductItem(JSONObject productObject, String key) {
-        String result;
 
         try {
             return productObject.getString(key);

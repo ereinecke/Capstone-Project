@@ -30,18 +30,17 @@ public class ResultsFragment extends Fragment implements LoaderManager.LoaderCal
 
     private static final String LOG_TAG = ResultsFragment.class.getSimpleName();
     private ProductListAdapter productListAdapter;
-    private ListView productList;
     final int position = ListView.INVALID_POSITION;
     final int LOADER_ID = 10;
-    private static View rootView;
     private EditText searchText;
     private Cursor cursor;
-
+    ListView productList;
 
     public ResultsFragment() {
         // Required empty public constructor
     }
 
+    @SuppressWarnings("EmptyMethod")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +50,7 @@ public class ResultsFragment extends Fragment implements LoaderManager.LoaderCal
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        rootView = inflater.inflate(R.layout.fragment_results, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_results, container, false);
 
         cursor = getActivity().getContentResolver().query(
                 OpenFoodContract.ProductEntry.CONTENT_URI,
@@ -65,6 +64,7 @@ public class ResultsFragment extends Fragment implements LoaderManager.LoaderCal
             Log.d(LOG_TAG, "Cursor returned 0 results.");
         }
 
+        productList = (ListView) rootView.findViewById(R.id.product_list);
         productListAdapter = new ProductListAdapter(getActivity(), cursor, 0);
 
         /* TODO: Needs work
@@ -79,7 +79,7 @@ public class ResultsFragment extends Fragment implements LoaderManager.LoaderCal
         );
         */
 
-        productList = (ListView) rootView.findViewById(R.id.listOfProducts);
+        ListView productList = (ListView) rootView.findViewById(R.id.product_list);
         productList.setAdapter(productListAdapter);
 
         productList.setOnItemClickListener(new AdapterView.OnItemClickListener() {

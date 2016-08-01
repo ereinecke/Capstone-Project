@@ -9,12 +9,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 /**
  * ContentProvider for EatSafe
  */
 
 public class OpenFoodProvider extends ContentProvider {
+
+    private static final String LOG_TAG = OpenFoodProvider.class.getSimpleName();
 
     private static final int PRODUCT_ID = 100;
     private static final int PRODUCT = 101;
@@ -98,8 +101,11 @@ public class OpenFoodProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
-        retCursor.setNotificationUri(getContext().getContentResolver(), uri);
-
+        try {
+            retCursor.setNotificationUri(getContext().getContentResolver(), uri);
+        } catch(NullPointerException e) {
+            Log.d(LOG_TAG, e.getMessage());
+        }
         return retCursor;
     }
 
@@ -132,8 +138,12 @@ public class OpenFoodProvider extends ContentProvider {
                 } else {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 }
-                getContext().getContentResolver().notifyChange(OpenFoodContract.ProductEntry
-                        .buildProductUri(_id), null);
+                try {
+                    getContext().getContentResolver().notifyChange(OpenFoodContract.ProductEntry
+                            .buildProductUri(_id), null);
+                } catch(NullPointerException e) {
+                    Log.d(LOG_TAG, e.getMessage());
+                }
                 break;
             }
             default:
@@ -163,7 +173,11 @@ public class OpenFoodProvider extends ContentProvider {
         }
         // Because a null deletes all rows
         if (selection == null || rowsDeleted != 0) {
-            getContext().getContentResolver().notifyChange(uri, null);
+            try {
+                getContext().getContentResolver().notifyChange(uri, null);
+            } catch(NullPointerException e) {
+                Log.d(LOG_TAG, e.getMessage());
+            }
         }
         return rowsDeleted;
     }
@@ -182,7 +196,11 @@ public class OpenFoodProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         if (rowsUpdated != 0) {
-            getContext().getContentResolver().notifyChange(uri, null);
+            try {
+                getContext().getContentResolver().notifyChange(uri, null);
+            } catch(NullPointerException e) {
+                Log.d(LOG_TAG, e.getMessage());
+            }
         }
         return rowsUpdated;
     }

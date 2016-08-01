@@ -17,6 +17,7 @@ import android.view.View;
 
 import com.ereinecke.eatsafe.services.OpenFoodService;
 import com.ereinecke.eatsafe.ui.ProductFragment;
+import com.ereinecke.eatsafe.ui.SearchFragment;
 import com.ereinecke.eatsafe.ui.TabPagerFragment;
 import com.ereinecke.eatsafe.util.Constants;
 import com.ereinecke.eatsafe.util.Utility.Callback;
@@ -28,17 +29,18 @@ public class MainActivity extends AppCompatActivity implements Callback {
 
     private final static String LOG_TAG = MainActivity.class.getSimpleName();
     public static boolean isTablet = false;
-    private BroadcastReceiver messageReceiver;
+    private View rootView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        rootView = findViewById(android.R.id.content);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        messageReceiver = new MessageReceiver();
+        BroadcastReceiver messageReceiver = new MessageReceiver();
         IntentFilter filter = new IntentFilter(Constants.MESSAGE_EVENT);
         LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, filter);
 
@@ -115,8 +117,6 @@ public class MainActivity extends AppCompatActivity implements Callback {
         public void onReceive(Context context, Intent intent) {
             if(intent.getStringExtra(Constants.MESSAGE_KEY) != null) {
                 long barcode = intent.getLongExtra(Constants.RESULT_KEY, -1L);
-                View rootView = findViewById(android.R.id.content);
-
                 if (barcode != -1L) {
                    Snackbar.make(rootView, getString(R.string.barcode_found, barcode),
                             Snackbar.LENGTH_SHORT)
@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
                 } else {
                     // TODO: Give Snackbar an action to launch UploadFragment or not
                     Log.d(LOG_TAG, "In MessageReceiver, no valid barcode received.");
-                    Snackbar.make(findViewById(android.R.id.content),
+                    Snackbar.make(rootView,
                             getString(R.string.barcode_not_found),
                             Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 }
@@ -133,24 +133,30 @@ public class MainActivity extends AppCompatActivity implements Callback {
         }
     }
 
-    /* Receives intents.  If FETCH_PRODUCT, it's the result of a product search */
+    /* Receives intent results.  */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        Log.d(LOG_TAG, "requestCode: " + requestCode + "; resultCode: " + resultCode +
+            "; intent: " + intent.toString());
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-        
-        if (result != null) {
-            String contents = result.getContents();
-            if (contents != null) {
-                Log.d(LOG_TAG, "Scan result: " + result.toString());
-                // Have a (potentially) valid barcode, fetch product info
-                Intent productIntent = new Intent(this, OpenFoodService.class);
-                productIntent.putExtra(Constants.BARCODE_KEY, result.getContents().toString());
-                productIntent.setAction(Constants.FETCH_PRODUCT);
-                startService(productIntent);
+        Log.d(LOG_TAG, "IntentResult: " + result.toString());
 
+        if (result != null) {
+            String barcode = result.getContents();
+            if (result.getContents() == null) {
+                Snackbar.make(rootView, getString(R.string.result_failed),
+                    Snackbar.LENGTH_LONG).setAction("Action", null).show();
             } else {
-                Log.d(LOG_TAG, "Scan failed");
+                Log.d(LOG_TAG, "Scan result: " + result.toString());
+                // Have a (potentially) valid barcode, update text view and fetch product info
+                SearchFragment.handleScanResult(barcode);
+                Intent productIntent = new Intent(this, OpenFoodService.class);
+                productIntent.putExtra(Constants.BARCODE_KEY, barcode);
+                productIntent.setAction(Constants.ACTION_FETCH_PRODUCT);
+                startService(productIntent);
             }
+        } else {
+            super.onActivityResult(requestCode, resultCode, intent);
         }
     }
 
@@ -170,6 +176,8 @@ public class MainActivity extends AppCompatActivity implements Callback {
             ProductFragment ProductFragment = new ProductFragment();
             ProductFragment.setArguments(args);
 
+            // TODO: Figure out intermittent crash at this call
+            // IllegalStateException: Can not perform this action after onSaveInstanceState
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, ProductFragment)
                     .addToBackStack(null)

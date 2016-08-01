@@ -7,30 +7,25 @@
     tools:context="com.ereinecke.eatsafe.ui.UploadFragment"
     android:orientation="vertical">
 
+    <!-- TODO: add slider for images and bottom bar for buttons -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/search_hint"
+        android:text="@string/upload_prompt"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="40dp"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="16dp"
+        android:paddingLeft="@dimen/horizontal_padding"
+        android:paddingRight="@dimen/horizontal_padding"
+        android:paddingEnd="@dimen/horizontal_padding"
+        android:paddingStart="@dimen/horizontal_padding" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/camera"
-        android:id="@+id/button"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp"
-        android:paddingRight="24dp"
-        android:paddingLeft="24dp" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/gallery"
-        android:id="@+id/button2"
+        android:text="@string/camera_button"
+        android:id="@+id/camera_button"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
         android:paddingRight="24dp"
@@ -39,8 +34,18 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/upload"
-        android:id="@+id/button3"
+        android:text="@string/gallery_button"
+        android:id="@+id/gallery_button"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:paddingRight="24dp"
+        android:paddingLeft="24dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/upload_button"
+        android:id="@+id/upload_button"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
         android:paddingRight="24dp"

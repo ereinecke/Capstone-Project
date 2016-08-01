@@ -8,8 +8,12 @@ public class Constants {
     // TODO: Change write URLs to openfoodfacts.org when out of test
     public static final String PRODUCTS_BASE_URL = "http://world.openfoodfacts.org/api/v0/product/";
 
-    public static final String BARCODE = "com.ereinecke.eatsafe.services.extra.barcode";
-    public static final String FETCH_PRODUCT = "com.ereinecke.eatsafe.services.action.FETCH_PRODUCT";
+    public static final String ACTION_SCAN_BARCODE = "com.ereinecke.eatsafe.services.extra.barcode";
+    public static final String ACTION_FETCH_PRODUCT = "com.ereinecke.eatsafe.services.action.FETCH_PRODUCT";
+    public static final String ACTION_DELETE_PRODUCT = "com.ereinecke.eatsafe.services.action.DELETE_PRODUCT";
+
+    public static final int CAPTURE_BARCODE_REQUEST = 100;
+    public static final int CAPTURE_IMAGE_REQUEST   = 200;
 
     public static final String BARCODE_KEY = "barcode_key";
 

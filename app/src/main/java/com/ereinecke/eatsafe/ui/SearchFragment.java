@@ -8,6 +8,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,7 @@ public class SearchFragment extends Fragment {
         // Required empty public constructor
     }
 
+    @SuppressWarnings("EmptyMethod")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +54,7 @@ public class SearchFragment extends Fragment {
 
         barcodeView = (EditText) rootView.findViewById(R.id.barcode);
 
-        // TODO: requires a press on search button.  Add a button handler to search icon.
+        // TODO: requires a press on keyboard search button.  Add a button handler to search icon.
         barcodeView.setOnEditorActionListener(
                 new EditText.OnEditorActionListener() {
                     @Override
@@ -83,9 +85,8 @@ public class SearchFragment extends Fragment {
         rootView.findViewById(R.id.scan_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // ZXing is called here
-                Context context = getActivity();
 
+                // ZXing is called here
                 if (checkConnectivity()) {
                     try {
                         IntentIntegrator integrator = new IntentIntegrator(getActivity());
@@ -113,20 +114,18 @@ public class SearchFragment extends Fragment {
         }
     }
 
-    public void handleScanResult(String result) {
-        ((TextView) rootView.findViewById(R.id.barcode)).setText(result);
+    public static void handleScanResult(String result) {
 
-        //Once we have a barcode, start a book intent
-        callFetchProduct(result);
-        // AddBook.this.restartLoader();
+        ((TextView) rootView.findViewById(R.id.barcode)).setText(result);
     }
 
     /* Sends an intent to OpenFoodService to fetch product info */
     public void callFetchProduct(String barcodeStr) {
+        Log.d(LOG_TAG, "in callFetchProduct: " + barcodeStr);
         // Have a (potentially) valid barcode, fetch product info
         Intent productIntent = new Intent(getActivity(), OpenFoodService.class);
         productIntent.putExtra(Constants.BARCODE_KEY, barcodeStr);
-        productIntent.setAction(Constants.FETCH_PRODUCT);
+        productIntent.setAction(Constants.ACTION_FETCH_PRODUCT);
         getActivity().startService(productIntent);
      }
 

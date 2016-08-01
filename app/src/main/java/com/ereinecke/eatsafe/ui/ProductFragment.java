@@ -36,12 +36,12 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     private static final int LOADER_ID = 1;
     private long barcode;
     private View rootView;
-    private Bundle args;
 
     public ProductFragment() {
         // Required empty public constructor
     }
 
+    @SuppressWarnings("EmptyMethod")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,8 +51,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        args = getArguments();
-        long barcode = args.getLong(Constants.BARCODE_KEY);
+        Bundle args = getArguments();
 
         if (args != null) {
             getLoaderManager().restartLoader(LOADER_ID, args, this);
@@ -172,6 +171,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
             result = Html.fromHtml("<b>" + getResources().getString(fieldName) + ": </b>" +
                     fieldContents, Html.FROM_HTML_MODE_LEGACY);
         } else {
+            //noinspection deprecation
             result = Html.fromHtml("<b>" + getResources().getString(fieldName) + ": </b>" +
                     fieldContents);
         }
