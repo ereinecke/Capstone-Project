@@ -30,6 +30,16 @@
         </activity>
 
         <provider
+            android:name="com.commonsware.cwac.provider.StreamProvider"
+            android:authorities="com.ereinecke.eatsafe.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true" >
+            <meta-data
+                android:name="com.commonsware.cwac.provider.STREAM_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <provider
             android:name=".data.OpenFoodProvider"
             android:authorities="com.ereinecke.eatsafe"
             android:exported="false" />

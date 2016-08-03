@@ -31,12 +31,21 @@ ext {
     testLibVersion = "0.5"
 }
 
+repositories {
+    maven {
+        url "https://s3.amazonaws.com/repo.commonsware.com"
+    }
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile "com.android.support:appcompat-v7:${supportLibVersion}"
     compile "com.android.support:design:${supportLibVersion}"
     compile "com.android.support:support-v4:${supportLibVersion}"
+
+    // StreamProvider, workaround for FileProvider issues
+    compile 'com.commonsware.cwac:provider:0.4.0'
 
     // Sugar ORM
     compile "com.github.satyan:sugar:1.5"

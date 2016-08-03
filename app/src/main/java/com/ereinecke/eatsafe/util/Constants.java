@@ -12,9 +12,16 @@ public class Constants {
     public static final String ACTION_FETCH_PRODUCT = "com.ereinecke.eatsafe.services.action.FETCH_PRODUCT";
     public static final String ACTION_DELETE_PRODUCT = "com.ereinecke.eatsafe.services.action.DELETE_PRODUCT";
 
-    public static final int CAPTURE_BARCODE_REQUEST = 100;
-    public static final int CAPTURE_IMAGE_REQUEST   = 200;
+    // Camera constants
+    public static final int CAPTURE_IMAGE_REQUEST   = 100;
+    public static final String IMG_PREFIX = "ES_IMG_";
+    public static final int PHOTO_TEST = 0;
+    public static final int PHOTO_FRONT = 1;
+    public static final int PHOTO_INGREDIENT = 2;
+    public static final int PHOTO_NUTRITION = 3;
+    public static final int PHOTO_OTHER = 4;
 
+    // Scanner constants
     public static final String BARCODE_KEY = "barcode_key";
 
     // JSON keys
@@ -33,7 +40,7 @@ public class Constants {
     public static final String INGREDIENTS = "ingredients_text";
     public static final String ORIGINS = "origins";
 
-    // Defines a custom Intent action
+    // Define a custom Intent action
     public static final String MESSAGE_EVENT = "message_event";
     public static final String MESSAGE_KEY = "message_key";
     public static final String RESULT_KEY = "result_key";

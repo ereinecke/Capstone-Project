@@ -1,10 +1,15 @@
 package com.ereinecke.eatsafe;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
@@ -14,22 +19,35 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
+import com.commonsware.cwac.provider.StreamProvider;
 import com.ereinecke.eatsafe.services.OpenFoodService;
 import com.ereinecke.eatsafe.ui.ProductFragment;
 import com.ereinecke.eatsafe.ui.SearchFragment;
 import com.ereinecke.eatsafe.ui.TabPagerFragment;
+import com.ereinecke.eatsafe.ui.UploadFragment.PhotoRequest;
+import com.ereinecke.eatsafe.util.App;
 import com.ereinecke.eatsafe.util.Constants;
 import com.ereinecke.eatsafe.util.Utility.Callback;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-public class MainActivity extends AppCompatActivity implements Callback {
+/* TODO: Need to tell users to provide Camera and Storage positions on API > 23  */
+
+public class MainActivity extends AppCompatActivity implements Callback, PhotoRequest {
 
     private final static String LOG_TAG = MainActivity.class.getSimpleName();
     public static boolean isTablet = false;
+    private String mCurrentPhotoPath;
+    private String photoReceived;
     private View rootView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,27 +155,61 @@ public class MainActivity extends AppCompatActivity implements Callback {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         Log.d(LOG_TAG, "requestCode: " + requestCode + "; resultCode: " + resultCode +
-            "; intent: " + intent.toString());
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-        Log.d(LOG_TAG, "IntentResult: " + result.toString());
+                "; intent: " + intent.toString());
 
-        if (result != null) {
-            String barcode = result.getContents();
-            if (result.getContents() == null) {
-                Snackbar.make(rootView, getString(R.string.result_failed),
-                    Snackbar.LENGTH_LONG).setAction("Action", null).show();
-            } else {
-                Log.d(LOG_TAG, "Scan result: " + result.toString());
-                // Have a (potentially) valid barcode, update text view and fetch product info
-                SearchFragment.handleScanResult(barcode);
-                Intent productIntent = new Intent(this, OpenFoodService.class);
-                productIntent.putExtra(Constants.BARCODE_KEY, barcode);
-                productIntent.setAction(Constants.ACTION_FETCH_PRODUCT);
-                startService(productIntent);
+        /* Catching result from barcode scan */
+        if (requestCode == IntentIntegrator.REQUEST_CODE) {
+            IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+            Log.d(LOG_TAG, "IntentResult: " + result.toString());
+
+            if (result != null) {
+                String barcode = result.getContents();
+                if (result.getContents() == null) {
+                    Snackbar.make(rootView, getString(R.string.result_failed),
+                            Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                } else {
+                    Log.d(LOG_TAG, "Scan result: " + result.toString());
+                    // Have a (potentially) valid barcode, update text view and fetch product info
+                    SearchFragment.handleScanResult(barcode);
+                    Intent productIntent = new Intent(this, OpenFoodService.class);
+                    productIntent.putExtra(Constants.BARCODE_KEY, barcode);
+                    productIntent.setAction(Constants.ACTION_FETCH_PRODUCT);
+                    startService(productIntent);
+                }
+            }
+        }
+
+        /* Catching result from camera */
+        if (requestCode == Constants.CAPTURE_IMAGE_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                photoReceived = mCurrentPhotoPath;
+                ImageView mImageView = (ImageView) findViewById(R.id.imageView);
+                Log.d(LOG_TAG, "Image saved to: " + intent.getData());
+                // Image captured and saved to fileUri specified in the Intent
+                Snackbar.make(rootView, "Image saved to: " + intent.getData(),
+                        Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                Bundle extras = intent.getExtras();
+                if (extras == null) {
+                    Log.d(LOG_TAG, "No extras returned from Camera.");
+                } else {
+                    Bitmap imageBitmap = (Bitmap) extras.get("data");
+                    mImageView.setImageBitmap(imageBitmap);
+                }
+            } else { // capture image request came back with error
+                Log.d(LOG_TAG, "Photo request returned resultCode: " + resultCode);
+
             }
         } else {
             super.onActivityResult(requestCode, resultCode, intent);
         }
+    }
+
+    @Override
+    public String PhotoRequest(int photo) {
+        Log.d(LOG_TAG, "PhotoRequest(" + photo + ") received.");
+        photoReceived = "";
+        launchPhotoIntent(photo);
+        return photoReceived;
     }
 
     public void launchProductFragment(long barcode) {
@@ -183,6 +235,75 @@ public class MainActivity extends AppCompatActivity implements Callback {
                     .addToBackStack(null)
                     .commit();
         }
+    }
+
+    public void launchPhotoIntent(int whichPhoto) {
+        Log.d(LOG_TAG, "Launching intent for photo #" + whichPhoto);
+        // create Intent to take a picture and return control to the calling application
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+
+            // Create the File where the photo should go
+            File photoFile = openOutputMediaFile();
+            Log.d(LOG_TAG, "mCurrentPhotoPath: " + mCurrentPhotoPath);
+
+            if (photoFile != null) {
+
+                Uri photoUri = StreamProvider
+                        .getUriForFile("com.ereinecke.eatsafe.fileprovider", photoFile);
+                Log.d(LOG_TAG, "photoUri: " + photoUri.toString());
+                // set the image file name
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                takePictureIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION |
+                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+                // start the image capture Intent
+                startActivityForResult(takePictureIntent,
+                        Constants.CAPTURE_IMAGE_REQUEST);
+            }
+        }
+    }
+
+    /** Returns a unique, opened file for image; sets mCurrentPhotoPath with filespec */
+    public  File openOutputMediaFile(){
+
+        String appName = App.getContext().getString(R.string.app_name);
+        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            return null;
+        }
+
+        File mediaStorageDir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), appName);
+        Log.d(LOG_TAG, "mediaStorageDir: " + mediaStorageDir.toString());
+
+        // Create the storage directory if it does not exist
+        if (! mediaStorageDir.exists()) {
+            if (! mediaStorageDir.mkdirs()) {
+                Log.d(LOG_TAG, "failed to create directory " + mediaStorageDir);
+                return null;
+            }
+        }
+
+        // Create a media file name
+        @SuppressLint("SimpleDateFormat")
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String fileName = Constants.IMG_PREFIX + timeStamp;
+        File imageFile = null;
+
+        // Open a temp file to pass to Camera
+        try {
+            imageFile = File.createTempFile(fileName, ".jpg", mediaStorageDir);
+            Log.d(LOG_TAG, "imageFile: " + imageFile);
+        } catch(IOException e) {
+            e.printStackTrace();
+            Log.d(LOG_TAG, e.getMessage());
+        }
+
+        // Generate a file: path for use with intent
+        if (imageFile != null) {
+            mCurrentPhotoPath = "file:" + imageFile.getAbsolutePath();
+        }
+        return imageFile;
     }
 }
 
