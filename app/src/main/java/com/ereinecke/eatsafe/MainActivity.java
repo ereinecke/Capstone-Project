@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -19,13 +18,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.commonsware.cwac.provider.StreamProvider;
 import com.ereinecke.eatsafe.services.OpenFoodService;
 import com.ereinecke.eatsafe.ui.ProductFragment;
 import com.ereinecke.eatsafe.ui.SearchFragment;
 import com.ereinecke.eatsafe.ui.TabPagerFragment;
+import com.ereinecke.eatsafe.ui.UploadFragment;
 import com.ereinecke.eatsafe.ui.UploadFragment.PhotoRequest;
 import com.ereinecke.eatsafe.util.App;
 import com.ereinecke.eatsafe.util.Constants;
@@ -44,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements Callback, PhotoRe
 
     private final static String LOG_TAG = MainActivity.class.getSimpleName();
     public static boolean isTablet = false;
-    private String mCurrentPhotoPath;
     private String photoReceived;
     private View rootView;
 
@@ -182,19 +180,9 @@ public class MainActivity extends AppCompatActivity implements Callback, PhotoRe
         /* Catching result from camera */
         if (requestCode == Constants.CAPTURE_IMAGE_REQUEST) {
             if (resultCode == RESULT_OK) {
-                photoReceived = mCurrentPhotoPath;
-                ImageView mImageView = (ImageView) findViewById(R.id.imageView);
-                Log.d(LOG_TAG, "Image saved to: " + intent.getData());
-                // Image captured and saved to fileUri specified in the Intent
-                Snackbar.make(rootView, "Image saved to: " + intent.getData(),
-                        Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                Bundle extras = intent.getExtras();
-                if (extras == null) {
-                    Log.d(LOG_TAG, "No extras returned from Camera.");
-                } else {
-                    Bitmap imageBitmap = (Bitmap) extras.get("data");
-                    mImageView.setImageBitmap(imageBitmap);
-                }
+                photoReceived = photoReceived;
+                scanMedia(photoReceived);
+                UploadFragment.updateImage(photoReceived);
             } else { // capture image request came back with error
                 Log.d(LOG_TAG, "Photo request returned resultCode: " + resultCode);
 
@@ -246,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements Callback, PhotoRe
 
             // Create the File where the photo should go
             File photoFile = openOutputMediaFile();
-            Log.d(LOG_TAG, "mCurrentPhotoPath: " + mCurrentPhotoPath);
+            Log.d(LOG_TAG, "photoReceived: " + photoReceived);
 
             if (photoFile != null) {
 
@@ -265,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements Callback, PhotoRe
         }
     }
 
-    /** Returns a unique, opened file for image; sets mCurrentPhotoPath with filespec */
+    /** Returns a unique, opened file for image; sets photoReceived with filespec */
     public  File openOutputMediaFile(){
 
         String appName = App.getContext().getString(R.string.app_name);
@@ -301,9 +289,23 @@ public class MainActivity extends AppCompatActivity implements Callback, PhotoRe
 
         // Generate a file: path for use with intent
         if (imageFile != null) {
-            mCurrentPhotoPath = "file:" + imageFile.getAbsolutePath();
+            photoReceived = imageFile.getAbsolutePath();
         }
         return imageFile;
+    }
+
+    /**
+     * Sends a broadcast to have the media scanner scan a file
+     *
+     * @param path
+     *            the file to scan
+     */
+    private void scanMedia(String path) {
+        File file = new File(path);
+        Uri uri = Uri.fromFile(file);
+        Intent scanFileIntent = new Intent(
+                Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri);
+        sendBroadcast(scanFileIntent);
     }
 }
 

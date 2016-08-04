@@ -41,5 +41,7 @@
     <string name="serving_size">Serving size</string>
     <string name="barcode">Barcode</string>
     <string name="labels">Labels</string>
+    <string name="share">Share</string>
+    <string name="delete">Delete</string>
 
 </resources>

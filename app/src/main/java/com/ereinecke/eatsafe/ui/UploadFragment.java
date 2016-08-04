@@ -2,11 +2,16 @@ package com.ereinecke.eatsafe.ui;
 
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.ereinecke.eatsafe.R;
 import com.ereinecke.eatsafe.util.Constants;
@@ -20,6 +25,8 @@ public class UploadFragment extends Fragment {
     private static final String LOG_TAG = UploadFragment.class.getSimpleName();
     private PhotoRequest photoRequest;
     private String mCurrentPhoto;
+    private static View rootView;
+    private static ImageView imageView;
 
 
     public UploadFragment() {
@@ -37,7 +44,8 @@ public class UploadFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        final View rootView = inflater.inflate(R.layout.fragment_upload, container, false);
+        rootView = inflater.inflate(R.layout.fragment_upload, container, false);
+        imageView = (ImageView) rootView.findViewById(R.id.imageView);
 
         // Take a product photo
         rootView.findViewById(R.id.camera_button).setOnClickListener(new View.OnClickListener() {
@@ -63,6 +71,22 @@ public class UploadFragment extends Fragment {
         return rootView;
     }
 
+
+    public static void updateImage(String imageFile) {
+        Log.d(LOG_TAG, "Image saved to: " + imageFile);
+
+        Snackbar.make(rootView, "Image saved to: " + imageFile,
+                Snackbar.LENGTH_LONG).setAction("Action", null).show();
+
+        if (imageFile != null) {
+
+            Bitmap imageBitmap = BitmapFactory.decodeFile(imageFile); ;
+            imageView.setImageBitmap(imageBitmap);
+        }
+
+    }
+
+
     @Override
     public void onAttach(Context c) {
         super.onAttach(c);
@@ -79,82 +103,4 @@ public class UploadFragment extends Fragment {
     public interface PhotoRequest {
         public String PhotoRequest(int photo);
     }
-    /*
-    private void launchPhotoIntent(int whichPhoto) {
-        Log.d(LOG_TAG, "Launching intent for photo #" + whichPhoto);
-        // create Intent to take a picture and return control to the calling application
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getContext().getPackageManager()) != null) {
-
-            // Create the File where the photo should go
-            File photoFile = openOutputMediaFile();
-            Log.d(LOG_TAG, "mCurrentPhotoPath: " + mCurrentPhotoPath);
-
-            if (photoFile != null) {
-
-                Uri photoUri = StreamProvider
-                        .getUriForFile("com.ereinecke.eatsafe.fileprovider", photoFile);
-                Log.d(LOG_TAG, "photoUri: " + photoUri.toString());
-                // set the image file name
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-                takePictureIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION |
-                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-
-                // start the image capture Intent
-                getActivity().startActivityForResult(takePictureIntent,
-                        Constants.CAPTURE_IMAGE_REQUEST);
-            }
-        }
-    }
-    */
-
-    /** Returns a unique, opened file for image; sets mCurrentPhotoPath with filespec */
-    /*
-    public File openOutputMediaFile(){
-
-        String appName = App.getContext().getString(R.string.app_name);
-        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            return null;
-        }
-        Log.d(LOG_TAG, "Environment.DIRECTORY_PICTURES: " + Environment.DIRECTORY_PICTURES);
-        Log.d(LOG_TAG, "Environment.getExternalStoragePublicDirectory: " +
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString());
-        Log.d(LOG_TAG, "context.getExternalFilesDir(Environment.DIRECTORY_PICTURES): " +
-                        getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES));
-
-        // Photos will be stored in a subdirectory (app_name) under the photos directory
-        File mediaStorageDir = new File(getContext()
-                .getExternalFilesDir(Environment.DIRECTORY_PICTURES), appName);
-        Log.d(LOG_TAG, "mediaStorageDir: " + mediaStorageDir.toString());
-
-        // Create the storage directory if it does not exist
-        if (! mediaStorageDir.exists()) {
-            if (! mediaStorageDir.mkdirs()) {
-                Log.d(LOG_TAG, "failed to create directory " + mediaStorageDir);
-                return null;
-            }
-        }
-
-        // Create a media file name
-        @SuppressLint("SimpleDateFormat")
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String fileName = "IMG_"+ timeStamp;
-        File imageFile = null;
-        Log.d(LOG_TAG, "Image file name: " + fileName);
-        try {
-            imageFile = File.createTempFile(fileName, ".jpg", mediaStorageDir);
-            Log.d(LOG_TAG, "imageFile: " + imageFile);
-        } catch(IOException e) {
-            e.printStackTrace();
-            Log.d(LOG_TAG, e.getMessage());
-        }
-
-        // Generate a file: path for use with intent
-        if (imageFile != null) {
-            mCurrentPhotoPath = "file:" + imageFile.getAbsolutePath();
-        }
-        return imageFile;
-    }
-    */
 }

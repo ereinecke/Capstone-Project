@@ -1,71 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<!-- TODO: add slider for images -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/fragment_upload"
     tools:context="com.ereinecke.eatsafe.ui.UploadFragment"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:orientation="vertical">
 
-    <!-- TODO: add slider for images and bottom bar for buttons -->
-    <TextView
+
+    <ScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/upload_prompt"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="16dp"
-        android:paddingLeft="@dimen/horizontal_padding"
-        android:paddingRight="@dimen/horizontal_padding"
-        android:paddingEnd="@dimen/horizontal_padding"
-        android:paddingStart="@dimen/horizontal_padding" />
+        android:id="@+id/upload_scrollView"
+        android:layout_alignParentEnd="true">
 
-    <ImageView
+        <FrameLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/upload_textView"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/upload_prompt"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="16dp"
+                android:paddingLeft="@dimen/horizontal_padding"
+                android:paddingRight="@dimen/horizontal_padding"
+                android:paddingEnd="@dimen/horizontal_padding"
+                android:paddingStart="@dimen/horizontal_padding"
+                android:singleLine="false"
+                android:paddingBottom="20dp"
+                android:layout_alignParentTop="true" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView"
+                android:minHeight="180dp"
+                android:layout_below="@+id/upload_textView"
+                android:layout_above="@+id/toolbar_bottom"
+                android:layout_gravity="top" />
+        </FrameLayout>
+    </ScrollView>
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/upload_toolbar_bottom"
+        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:id="@+id/imageView"
-        android:minHeight="180dp"
-        android:layout_weight="1" />
+        android:background="@color/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:layout_alignParentBottom="true" >
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/camera_button"
+                android:id="@+id/camera_button"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:paddingRight="24dp"
+                android:paddingLeft="24dp"
+                android:layout_weight="1"
+                android:background="@color/transparent"
+                android:textColor="@color/white" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/camera_button"
-            android:id="@+id/camera_button"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp"
-            android:paddingRight="24dp"
-            android:paddingLeft="24dp"
-            android:layout_weight="1" />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/gallery_button"
+                android:id="@+id/gallery_button"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:paddingRight="24dp"
+                android:paddingLeft="24dp"
+                android:layout_weight="1"
+                android:background="@color/transparent"
+                android:textColor="@color/white" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/gallery_button"
-            android:id="@+id/gallery_button"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp"
-            android:paddingRight="24dp"
-            android:paddingLeft="24dp"
-            android:layout_weight="1" />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/upload_button"
+                android:id="@+id/upload_button"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:paddingRight="24dp"
+                android:paddingLeft="24dp"
+                android:layout_weight="1"
+                android:background="@color/transparent"
+                android:textColor="@color/white" />
+        </LinearLayout>
+    </android.support.v7.widget.Toolbar>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/upload_button"
-            android:id="@+id/upload_button"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp"
-            android:paddingRight="24dp"
-            android:paddingLeft="24dp"
-            android:layout_weight="1" />
-    </LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>
