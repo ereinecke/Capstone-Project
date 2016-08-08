@@ -33,11 +33,13 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/* TODO: Need to tell users to provide Camera and Storage positions on API > 23  */
+/* TODO: Need to tell users to provide Camera and Storage permissions on API > 23  */
 
 public class MainActivity extends AppCompatActivity implements Callback, PhotoRequest {
 
@@ -81,6 +83,23 @@ public class MainActivity extends AppCompatActivity implements Callback, PhotoRe
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+
+        savedInstanceState.putString(Constants.CURRENT_PHOTO, photoReceived);
+
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        // Always call the superclass so it can restore the view hierarchy
+        super.onRestoreInstanceState(savedInstanceState);
+
+        savedInstanceState.getString(Constants.CURRENT_PHOTO);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -155,48 +174,81 @@ public class MainActivity extends AppCompatActivity implements Callback, PhotoRe
         Log.d(LOG_TAG, "requestCode: " + requestCode + "; resultCode: " + resultCode +
                 "; intent: " + intent.toString());
 
-        /* Catching result from barcode scan */
-        if (requestCode == IntentIntegrator.REQUEST_CODE) {
-            IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-            Log.d(LOG_TAG, "IntentResult: " + result.toString());
+        switch (requestCode) {
 
-            if (result != null) {
-                String barcode = result.getContents();
-                if (result.getContents() == null) {
-                    Snackbar.make(rootView, getString(R.string.result_failed),
-                            Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            case IntentIntegrator.REQUEST_CODE: {
+            /* Catching result from barcode scan */
+                if (resultCode == RESULT_OK) {
+                    IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+                    Log.d(LOG_TAG, "IntentResult: " + result.toString());
+
+                    if (result != null) {
+                        String barcode = result.getContents();
+                        if (result.getContents() == null) {
+                            Snackbar.make(rootView, getString(R.string.result_failed),
+                                    Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                        } else {
+                            Log.d(LOG_TAG, "Scan result: " + result.toString());
+                            // Have a (potentially) valid barcode, update text view and fetch product info
+                            SearchFragment.handleScanResult(barcode);
+                            Intent productIntent = new Intent(this, OpenFoodService.class);
+                            productIntent.putExtra(Constants.BARCODE_KEY, barcode);
+                            productIntent.setAction(Constants.ACTION_FETCH_PRODUCT);
+                            startService(productIntent);
+                        }
+                    }
                 } else {
-                    Log.d(LOG_TAG, "Scan result: " + result.toString());
-                    // Have a (potentially) valid barcode, update text view and fetch product info
-                    SearchFragment.handleScanResult(barcode);
-                    Intent productIntent = new Intent(this, OpenFoodService.class);
-                    productIntent.putExtra(Constants.BARCODE_KEY, barcode);
-                    productIntent.setAction(Constants.ACTION_FETCH_PRODUCT);
-                    startService(productIntent);
+                    Log.d(LOG_TAG, "Error scanning barcode: " + resultCode);
                 }
+                break;
             }
-        }
 
-        /* Catching result from camera */
-        if (requestCode == Constants.CAPTURE_IMAGE_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                photoReceived = photoReceived;
-                scanMedia(photoReceived);
-                UploadFragment.updateImage(photoReceived);
-            } else { // capture image request came back with error
-                Log.d(LOG_TAG, "Photo request returned resultCode: " + resultCode);
-
+            case Constants.CAMERA_IMAGE_REQUEST: {
+            /* Catching result from camera */
+                if (resultCode == RESULT_OK) {
+                    scanMedia(photoReceived);
+                    UploadFragment.updateImage(photoReceived);
+                } else { // capture image request came back with error
+                    Log.d(LOG_TAG, "Error taking photo: " + resultCode);
+                }
+                break;
             }
-        } else {
-            super.onActivityResult(requestCode, resultCode, intent);
+
+            case Constants.GALLERY_IMAGE_REQUEST: {
+            /* Catching result from gallery */
+
+                final InputStream imageStream;
+                if (resultCode == RESULT_OK) {
+                    final Uri imageUri = intent.getData();
+                    try {
+                        imageStream = getContentResolver().openInputStream(imageUri);
+                        Log.d(LOG_TAG, "Gallery image request returned Uri: " + imageUri);
+                        UploadFragment.updateImageFromGallery(imageUri);
+                    } catch (FileNotFoundException e) {
+                        Log.d(LOG_TAG, e.getMessage());
+                    }
+
+                } else {
+                    Log.d(LOG_TAG, "Error picking photo from gallery: " + resultCode);
+                }
+                break;
+            }
+
+            default: {
+                super.onActivityResult(requestCode, resultCode, intent);
+            }
         }
     }
 
     @Override
-    public String PhotoRequest(int photo) {
+    public String PhotoRequest(int source, int photo) {
         Log.d(LOG_TAG, "PhotoRequest(" + photo + ") received.");
         photoReceived = "";
-        launchPhotoIntent(photo);
+        if (source == Constants.CAMERA_IMAGE_REQUEST) {
+            launchPhotoIntent(photo);
+        } else if (source == Constants.GALLERY_IMAGE_REQUEST) {
+            launchGalleryIntent(photo);
+        }
         return photoReceived;
     }
 
@@ -243,15 +295,26 @@ public class MainActivity extends AppCompatActivity implements Callback, PhotoRe
                 Log.d(LOG_TAG, "photoUri: " + photoUri.toString());
                 // set the image file name
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                takePictureIntent.putExtra(Constants.WHICH_PHOTO, whichPhoto);
                 takePictureIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION |
                         Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
                 // start the image capture Intent
                 startActivityForResult(takePictureIntent,
-                        Constants.CAPTURE_IMAGE_REQUEST);
+                        Constants.CAMERA_IMAGE_REQUEST);
             }
         }
     }
+
+    public void launchGalleryIntent(int whichPhoto) {
+        Log.d(LOG_TAG, "Launching intent for photo #" + whichPhoto);
+        // create Intent to take a picture and return control to the calling application
+        Intent pickPictureIntent = new Intent(Intent.ACTION_PICK);
+        pickPictureIntent.setType("image/*");
+
+        startActivityForResult(pickPictureIntent, Constants.GALLERY_IMAGE_REQUEST);
+    }
+
 
     /** Returns a unique, opened file for image; sets photoReceived with filespec */
     public  File openOutputMediaFile(){

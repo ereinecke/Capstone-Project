@@ -4,10 +4,10 @@ package com.ereinecke.eatsafe.ui;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +26,9 @@ public class UploadFragment extends Fragment {
     private PhotoRequest photoRequest;
     private String mCurrentPhoto;
     private static View rootView;
-    private static ImageView imageView;
+    private static String currentImageFile;
+    private static Uri currentImageUri;
+    private static ImageView uploadImageView;
 
 
     public UploadFragment() {
@@ -43,27 +45,34 @@ public class UploadFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        // Inflate the layout for this fragment
-        rootView = inflater.inflate(R.layout.fragment_upload, container, false);
-        imageView = (ImageView) rootView.findViewById(R.id.imageView);
+        if (savedInstanceState == null) {
 
+            // Inflate the layout for this fragment
+            rootView = inflater.inflate(R.layout.fragment_upload, container, false);
+            uploadImageView = (ImageView) rootView.findViewById(R.id.upload_imageView);
+        }
+
+        // Button listeners
         // Take a product photo
         rootView.findViewById(R.id.camera_button).setOnClickListener(new View.OnClickListener() {
             public void onClick(final View view) {
                 takeProductPhotos(0);
                 // TODO: progress indicator?
-
             }
         });
 
+        // Get photos from Gallery
         rootView.findViewById(R.id.gallery_button).setOnClickListener(new View.OnClickListener() {
             public void onClick(final View view) {
+                pickProductPhotos(Constants.PHOTO_TEST);
 
             }
         });
 
+        // Upload info to
         rootView.findViewById(R.id.upload_button).setOnClickListener(new View.OnClickListener() {
             public void onClick(final View view) {
+                uploadProductInfo();
 
             }
         });
@@ -73,19 +82,25 @@ public class UploadFragment extends Fragment {
 
 
     public static void updateImage(String imageFile) {
-        Log.d(LOG_TAG, "Image saved to: " + imageFile);
-
-        Snackbar.make(rootView, "Image saved to: " + imageFile,
-                Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        currentImageFile = imageFile;
 
         if (imageFile != null) {
 
             Bitmap imageBitmap = BitmapFactory.decodeFile(imageFile); ;
-            imageView.setImageBitmap(imageBitmap);
+            uploadImageView.setImageBitmap(imageBitmap);
         }
 
     }
 
+    public static void updateImageFromGallery(Uri imageUri) {
+        currentImageUri = imageUri;
+
+        if (imageUri != null) {
+
+            uploadImageView.setImageURI(imageUri);
+        }
+
+    }
 
     @Override
     public void onAttach(Context c) {
@@ -93,14 +108,29 @@ public class UploadFragment extends Fragment {
         photoRequest = (PhotoRequest) c;
     }
 
+    /* TODO: validate that we have minimum required data and upload to OpenFoodFacts.org */
+    private void uploadProductInfo() {
+        Snackbar.make(rootView, "Upload not yet implemented", Snackbar.LENGTH_LONG)
+            .setAction("Action", null).show();
+    }
+
     /* TODO: Guide user through taking three photos with appropriate prompts (front, ingredients, nutrition panel.)
-     * temporarily using just one with key PHTOTOTEST.
+     * temporarily using just one with key PHTOTO_TEST.
+     */
+    private void pickProductPhotos(int photo) {
+        mCurrentPhoto = photoRequest.PhotoRequest(Constants.GALLERY_IMAGE_REQUEST, photo);
+    }
+
+    /* TODO: Guide user through taking three photos with appropriate prompts (front, ingredients, nutrition panel.)
+     * temporarily using just one with key PHTOTO_TEST.
      */
     private void takeProductPhotos(int photo) {
-        mCurrentPhoto = photoRequest.PhotoRequest(Constants.PHOTO_TEST);
+        mCurrentPhoto = photoRequest.PhotoRequest(Constants.CAMERA_IMAGE_REQUEST, photo);
     }
 
     public interface PhotoRequest {
-        public String PhotoRequest(int photo);
+        public String PhotoRequest(int source, int photo);
     }
+
+
 }

@@ -43,7 +43,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/imageView"
+                android:id="@+id/upload_imageView"
                 android:minHeight="180dp"
                 android:layout_below="@+id/upload_textView"
                 android:layout_above="@+id/toolbar_bottom"
@@ -53,54 +53,51 @@
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/upload_toolbar_bottom"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:layout_width="match_parent"
         android:background="@color/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
         android:layout_alignParentBottom="true" >
+
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <Button
+            <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/camera_button"
+                android:contentDescription="@string/camera_button"
                 android:id="@+id/camera_button"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="16dp"
-                android:paddingRight="24dp"
-                android:paddingLeft="24dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
                 android:layout_weight="1"
                 android:background="@color/transparent"
-                android:textColor="@color/white" />
+                android:src="@android:drawable/ic_menu_camera" />
 
-            <Button
+            <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/gallery_button"
+                android:src="@android:drawable/ic_menu_gallery"
+                android:contentDescription="@string/gallery_button"
                 android:id="@+id/gallery_button"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="16dp"
-                android:paddingRight="24dp"
-                android:paddingLeft="24dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
                 android:layout_weight="1"
-                android:background="@color/transparent"
-                android:textColor="@color/white" />
+                android:background="@color/transparent" />
 
-            <Button
+            <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/upload_button"
+                android:contentDescription="@string/upload_button"
                 android:id="@+id/upload_button"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="16dp"
-                android:paddingRight="24dp"
-                android:paddingLeft="24dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
                 android:layout_weight="1"
                 android:background="@color/transparent"
-                android:textColor="@color/white" />
+                android:src="@android:drawable/ic_menu_upload" />
         </LinearLayout>
     </android.support.v7.widget.Toolbar>
 

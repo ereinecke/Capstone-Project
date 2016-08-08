@@ -3,12 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:id="@+id/search_fragment"
     tools:context="com.ereinecke.eatsafe.ui.SearchFragment"
     android:clickable="false"
     android:forceHasOverlappingRendering="true"
-    tools:targetApi="n">
+    tools:targetApi="n"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
     <LinearLayout
@@ -75,10 +77,9 @@
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar_bottom"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:layout_width="match_parent"
         android:background="@color/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
         android:layout_alignParentBottom="true" >
      </android.support.v7.widget.Toolbar>
 

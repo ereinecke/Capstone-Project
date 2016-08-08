@@ -1,11 +1,13 @@
 package com.ereinecke.eatsafe.ui;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
+import android.support.v7.widget.ShareActionProvider;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 
 import com.ereinecke.eatsafe.R;
 import com.ereinecke.eatsafe.data.OpenFoodContract;
+import com.ereinecke.eatsafe.services.OpenFoodService;
 import com.ereinecke.eatsafe.util.Constants;
 import com.hkm.slider.Animations.DescriptionAnimation;
 import com.hkm.slider.Indicators.PagerIndicator;
@@ -34,8 +37,9 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
     private final static String LOG_TAG = ProductFragment.class.getSimpleName();
     private static final int LOADER_ID = 1;
-    private long barcode;
+    private String barcode;
     private View rootView;
+    private ShareActionProvider shareActionProvider;
 
     public ProductFragment() {
         // Required empty public constructor
@@ -60,8 +64,41 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_product, container, false);
 
+        // Button listeners
+        // Share product
+        rootView.findViewById(R.id.share_button).setOnClickListener(new View.OnClickListener() {
+            public void onClick(final View view) {
+                setShareActionProvider(barcode);
+            }
+        });
+
+        // Delete product from local database
+        rootView.findViewById(R.id.delete_button).setOnClickListener(new View.OnClickListener() {
+            public void onClick(final View view) {
+                Intent productIntent = new Intent(getActivity(), OpenFoodService.class);
+                productIntent.putExtra(Constants.CODE, barcode);
+                productIntent.setAction(Constants.ACTION_DELETE_PRODUCT);
+                getActivity().startService(productIntent);
+                getActivity().getSupportFragmentManager().popBackStack();;
+            }
+        });
+
         return rootView;
     }
+
+    /* TODO: expand the text to include more product information */
+    private void setShareActionProvider(String barcode) {
+        if (shareActionProvider != null) {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text) + barcode);
+            shareActionProvider.setShareIntent(shareIntent);
+        }
+    }
+
+
+
 
     // private void restartLoader() {
     //    getLoaderManager().restartLoader(LOADER_ID, null, this);
@@ -116,7 +153,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
             }
         }
 
-        SliderLayout sliderLayout = (SliderLayout) rootView.findViewById(R.id.slider);
+        SliderLayout sliderLayout = (SliderLayout) rootView.findViewById(R.id.results_slider);
         sliderLayout.loadSliderList(list);
         sliderLayout.setCustomAnimation(new DescriptionAnimation());
         sliderLayout.setSliderTransformDuration(1000, new LinearOutSlowInInterpolator());
@@ -150,9 +187,10 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         ((TextView) rootView.findViewById(R.id.origins))
                 .setText(prefixLabel(R.string.origins, origins));
 
-        String barcode = data.getString(data.getColumnIndex(OpenFoodContract.ProductEntry._ID));
+        barcode = data.getString(data.getColumnIndex(OpenFoodContract.ProductEntry._ID));
         ((TextView) rootView.findViewById(R.id.code))
                 .setText(prefixLabel(R.string.code, barcode));
+
     }
 
     @Override

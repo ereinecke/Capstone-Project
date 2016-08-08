@@ -45,7 +45,7 @@ public class TabPagerFragment extends Fragment {
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getFragmentManager());
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
         adapter.addFragment(new SearchFragment(), getResources().getString(R.string.search));
         adapter.addFragment(new UploadFragment(), getResources().getString(R.string.upload));
         adapter.addFragment(new ResultsFragment(), getResources().getString(R.string.results));

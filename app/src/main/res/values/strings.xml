@@ -27,6 +27,7 @@
     <string name="barcode_found">Product \"%1$d\" found.</string>
     <string name="barcode_not_found">Product not found.  Upload product?</string>
     <string name="product_results_prompt">Search by product name or brand</string>
+    <string name="share_text">Check out this product:\U0200</string>
 
     <!-- Content descriptions -->
     <string name="mic_image">Speak product code</string>

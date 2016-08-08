@@ -12,9 +12,11 @@ public class Constants {
     public static final String ACTION_FETCH_PRODUCT = "com.ereinecke.eatsafe.services.action.FETCH_PRODUCT";
     public static final String ACTION_DELETE_PRODUCT = "com.ereinecke.eatsafe.services.action.DELETE_PRODUCT";
 
-    // Camera constants
-    public static final int CAPTURE_IMAGE_REQUEST   = 100;
+    // Camera & gallery constants
+    public static final int CAMERA_IMAGE_REQUEST = 100;
+    public static final int GALLERY_IMAGE_REQUEST = 200;
     public static final String IMG_PREFIX = "ES_IMG_";
+    public static final String WHICH_PHOTO = "which_photo";
     public static final int PHOTO_TEST = 0;
     public static final int PHOTO_FRONT = 1;
     public static final int PHOTO_INGREDIENT = 2;
@@ -23,6 +25,9 @@ public class Constants {
 
     // Scanner constants
     public static final String BARCODE_KEY = "barcode_key";
+
+    // keys for savedInstanceStates
+    public static final String CURRENT_PHOTO = "current_photo";
 
     // JSON keys
     public static final String STATUS = "status";
