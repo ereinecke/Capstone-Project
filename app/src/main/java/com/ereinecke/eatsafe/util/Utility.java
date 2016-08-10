@@ -3,6 +3,7 @@ package com.ereinecke.eatsafe.util;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
 
 /**
  * Utility functions for EatSafe
@@ -40,6 +41,17 @@ public class Utility {
             return false;
         }
     }
+
+    /**
+     * Hides the soft keyboard
+     */
+    public void hideSoftKeyboard(Context context) {
+
+            InputMethodManager inputMethodManager = (InputMethodManager)
+                   context.getSystemService(Context.INPUT_METHOD_SERVICE);
+            // inputMethodManager.hideSoftInputFromWindow(getActivity()
+            //         .getCurrentFocus().getWindowToken(), 0);
+     }
 
     /*
      * Callback interface for list item selection.

@@ -15,7 +15,9 @@ public class OpenFoodContract {
     public static final String PATH_PRODUCTS = "products";
     public static final String PATH_INGREDIENTS = "ingredients";
     public static final String PATH_ALLERGENS = "allergens";
+    public static final String PATH_PRODUCT = "product";
 
+    // TODO: Add flag to indicate uploaded product and username
     public static final class ProductEntry implements BaseColumns {
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon()
                 .appendPath(PATH_PRODUCTS).build();
@@ -38,7 +40,6 @@ public class OpenFoodContract {
         public static final String ALLERGENS = "allergens";
         public static final String INGREDIENTS = "ingredients";
         public static final String ORIGINS = "origins";
-
 
         public static Uri buildProductUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);

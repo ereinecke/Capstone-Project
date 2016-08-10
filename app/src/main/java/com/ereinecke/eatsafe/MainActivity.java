@@ -23,6 +23,7 @@ import com.commonsware.cwac.provider.StreamProvider;
 import com.ereinecke.eatsafe.services.OpenFoodService;
 import com.ereinecke.eatsafe.ui.ProductFragment;
 import com.ereinecke.eatsafe.ui.SearchFragment;
+import com.ereinecke.eatsafe.ui.SplashFragment;
 import com.ereinecke.eatsafe.ui.TabPagerFragment;
 import com.ereinecke.eatsafe.ui.UploadFragment;
 import com.ereinecke.eatsafe.ui.UploadFragment.PhotoRequest;
@@ -48,7 +49,6 @@ public class MainActivity extends AppCompatActivity implements Callback, PhotoRe
     private String photoReceived;
     private View rootView;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,15 +62,24 @@ public class MainActivity extends AppCompatActivity implements Callback, PhotoRe
         IntentFilter filter = new IntentFilter(Constants.MESSAGE_EVENT);
         LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, filter);
 
+        isTablet = (findViewById(R.id.dual_pane) != null);
+
         if (findViewById(R.id.fragment_container) != null) {
             if (savedInstanceState != null) {
                 return;
             }
 
             TabPagerFragment tabPagerFragment = new TabPagerFragment();
-
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, tabPagerFragment).commit();
+
+            if (isTablet) {
+                SplashFragment splashFragment = new SplashFragment();
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.right_pane_container, splashFragment).commit();
+            }
+
+
         }
     }
 
@@ -242,6 +251,7 @@ public class MainActivity extends AppCompatActivity implements Callback, PhotoRe
 
     @Override
     public String PhotoRequest(int source, int photo) {
+        // TODO: check to make sure we have camera permissions here.
         Log.d(LOG_TAG, "PhotoRequest(" + photo + ") received.");
         photoReceived = "";
         if (source == Constants.CAMERA_IMAGE_REQUEST) {
@@ -254,11 +264,12 @@ public class MainActivity extends AppCompatActivity implements Callback, PhotoRe
 
     public void launchProductFragment(long barcode) {
 
-        // Turn on back button in ActionBar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        if (!isTablet) {
+            // Turn on back button in ActionBar
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         // Pass barcode to ProductFragment
         if (barcode != -1L) {
@@ -270,10 +281,16 @@ public class MainActivity extends AppCompatActivity implements Callback, PhotoRe
 
             // TODO: Figure out intermittent crash at this call
             // IllegalStateException: Can not perform this action after onSaveInstanceState
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, ProductFragment)
-                    .addToBackStack(null)
-                    .commit();
+            if (!isTablet) {  // productFragment replaces TabPagerFragment
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, ProductFragment)
+                        .addToBackStack(null)
+                        .commit();
+            } else {  // productFragment replaces splashFragment
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.right_pane_container, ProductFragment)
+                        .commit();
+            }
         }
     }
 

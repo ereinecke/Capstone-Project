@@ -3,6 +3,7 @@ package com.ereinecke.eatsafe.ui;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -18,7 +19,6 @@ import android.widget.TextView;
 
 import com.ereinecke.eatsafe.R;
 import com.ereinecke.eatsafe.data.OpenFoodContract;
-import com.ereinecke.eatsafe.services.OpenFoodService;
 import com.ereinecke.eatsafe.util.Constants;
 import com.hkm.slider.Animations.DescriptionAnimation;
 import com.hkm.slider.Indicators.PagerIndicator;
@@ -75,11 +75,16 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         // Delete product from local database
         rootView.findViewById(R.id.delete_button).setOnClickListener(new View.OnClickListener() {
             public void onClick(final View view) {
+                /* TODO: following code is not functional
                 Intent productIntent = new Intent(getActivity(), OpenFoodService.class);
-                productIntent.putExtra(Constants.CODE, barcode);
+                productIntent.putExtra(Constants.BARCODE_KEY, barcode);
                 productIntent.setAction(Constants.ACTION_DELETE_PRODUCT);
                 getActivity().startService(productIntent);
-                getActivity().getSupportFragmentManager().popBackStack();;
+                getActivity().getSupportFragmentManager().popBackStack();
+                */
+                Snackbar.make(rootView, getString(R.string.no_delete_yet),
+                        Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
             }
         });
 
@@ -205,14 +210,16 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
         Spanned result;
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+        /* Needed for API 24 x
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.) {
             result = Html.fromHtml("<b>" + getResources().getString(fieldName) + ": </b>" +
                     fieldContents, Html.FROM_HTML_MODE_LEGACY);
         } else {
+        */
             //noinspection deprecation
             result = Html.fromHtml("<b>" + getResources().getString(fieldName) + ": </b>" +
                     fieldContents);
-        }
+        // }
         return result;
     }
 }

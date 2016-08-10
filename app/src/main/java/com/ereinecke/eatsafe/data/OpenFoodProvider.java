@@ -41,16 +41,6 @@ public class OpenFoodProvider extends ContentProvider {
 
     }
 
-    /* example from Alexandria
-    static{
-        bookFull = new SQLiteQueryBuilder();
-        bookFull.setTables(
-                OpenFoodContract.ProductEntry.TABLE_NAME + " LEFT OUTER JOIN " +
-                        OpenFoodContract.AuthorEntry.TABLE_NAME + " USING (" +OpenFoodContract.ProductEntry._ID + ")" +
-                        " LEFT OUTER JOIN " +  OpenFoodContract.CategoryEntry.TABLE_NAME + " USING (" +OpenFoodContract.ProductEntry._ID + ")");
-    }
-    */
-
     private static UriMatcher buildUriMatcher() {
 
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -66,7 +56,6 @@ public class OpenFoodProvider extends ContentProvider {
     public boolean onCreate() {
         dbHelper = new DbHelper(getContext());
         return true;
-
     }
 
     @Override
@@ -110,7 +99,6 @@ public class OpenFoodProvider extends ContentProvider {
     }
 
 
-
     @Override
     public String getType(@NonNull Uri uri) {
         final int match = uriMatcher.match(uri);
@@ -124,6 +112,7 @@ public class OpenFoodProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
     }
+
 
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
@@ -156,6 +145,8 @@ public class OpenFoodProvider extends ContentProvider {
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         final SQLiteDatabase db = dbHelper.getWritableDatabase();
         final int match = uriMatcher.match(uri);
+        Log.d(LOG_TAG, "match: " + match + "; uri: " + uri.toString());
+
         int rowsDeleted;
         switch (match) {
             case PRODUCT:
@@ -163,9 +154,11 @@ public class OpenFoodProvider extends ContentProvider {
                         OpenFoodContract.ProductEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             case PRODUCT_ID:
+                String sqlString = OpenFoodContract.ProductEntry._ID + " = '" + ContentUris.parseId(uri) + "'";
+                Log.d(LOG_TAG, sqlString);
                 rowsDeleted = db.delete(
                         OpenFoodContract.ProductEntry.TABLE_NAME,
-                        OpenFoodContract.ProductEntry._ID + " = '" + ContentUris.parseId(uri) + "'",
+                        sqlString,
                         selectionArgs);
                 break;
             default:
@@ -179,6 +172,7 @@ public class OpenFoodProvider extends ContentProvider {
                 Log.d(LOG_TAG, e.getMessage());
             }
         }
+
         return rowsDeleted;
     }
 

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.ereinecke.eatsafe.ui.ResultsFragment"
+    android:id="@+id/results_fragment"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
