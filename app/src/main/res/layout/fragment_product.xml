@@ -8,52 +8,47 @@
     android:layout_height="wrap_content"
     android:id="@+id/product_fragment"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-    <com.hkm.slider.SliderLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/results_slider_height"
-        android:id="@+id/results_slider"
-        custom:pager_animation_span="2000"
-        android:contentDescription="@string/product_images"
-        android:elevation="6dp"
-        tools:ignore="PrivateResource"
-        tools:targetApi="lollipop"
-        android:layout_alignParentTop="true" />
-
-    <com.hkm.slider.Indicators.PagerIndicator
-        android:id="@+id/custom_indicator"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_gravity="center"
-        custom:selected_color="@color/color_slider_selected"
-        custom:unselected_color="@color/color_slider_unselected"
-        custom:shape="rect"
-        custom:selected_padding_left="2dp"
-        custom:selected_padding_right="2dp"
-        custom:unselected_padding_left="2dp"
-        custom:unselected_padding_right="2dp"
-        custom:selected_width="6dp"
-        custom:selected_height="6dp"
-        custom:unselected_width="6dp"
-        custom:unselected_height="6dp"
-        android:layout_alignParentTop="false"
-        android:layout_alignParentEnd="false"
-        android:layout_below="@+id/results_slider"
-        android:layout_alignParentStart="true" />
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/scrollView"
-        android:textAlignment="textStart"
-        android:layout_below="@+id/custom_indicator"
-        android:layout_above="@+id/results_toolbar_bottom">
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        android:textAlignment="textStart">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.hkm.slider.SliderLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/results_slider_height"
+                android:id="@+id/results_slider"
+                custom:pager_animation_span="0"
+                android:contentDescription="@string/product_images"
+                android:elevation="4dp"
+                tools:ignore="PrivateResource"
+                tools:targetApi="lollipop"
+                android:background="@color/material_grey_100" />
+
+            <com.hkm.slider.Indicators.PagerIndicator
+                android:id="@+id/custom_indicator"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="center"
+                custom:selected_color="@color/color_slider_selected"
+                custom:unselected_color="@color/color_slider_unselected"
+                custom:shape="rect"
+                custom:selected_padding_left="2dp"
+                custom:selected_padding_right="2dp"
+                custom:unselected_padding_left="2dp"
+                custom:unselected_padding_right="2dp"
+                custom:selected_width="6dp"
+                custom:selected_height="6dp"
+                custom:unselected_width="6dp"
+                custom:unselected_height="6dp" />
+
+            // TODO: Go to a cards layout
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -186,14 +181,12 @@
         android:id="@+id/results_toolbar_bottom"
         android:layout_height="?attr/actionBarSize"
         android:layout_width="match_parent"
-        android:background="@color/colorPrimary"
+        android:background="@color/colorTabs"
         android:layout_alignParentBottom="true" >
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-
 
             <ImageButton
                 android:layout_width="wrap_content"

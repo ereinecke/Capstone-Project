@@ -64,22 +64,20 @@ public class MainActivity extends AppCompatActivity implements Callback, PhotoRe
 
         isTablet = (findViewById(R.id.dual_pane) != null);
 
-        if (findViewById(R.id.fragment_container) != null) {
+        if (findViewById(R.id.tab_container) != null) {
             if (savedInstanceState != null) {
                 return;
             }
 
             TabPagerFragment tabPagerFragment = new TabPagerFragment();
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, tabPagerFragment).commit();
+                    .add(R.id.tab_container, tabPagerFragment).commit();
 
             if (isTablet) {
                 SplashFragment splashFragment = new SplashFragment();
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.right_pane_container, splashFragment).commit();
             }
-
-
         }
     }
 
@@ -283,7 +281,7 @@ public class MainActivity extends AppCompatActivity implements Callback, PhotoRe
             // IllegalStateException: Can not perform this action after onSaveInstanceState
             if (!isTablet) {  // productFragment replaces TabPagerFragment
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, ProductFragment)
+                        .replace(R.id.tab_container, ProductFragment)
                         .addToBackStack(null)
                         .commit();
             } else {  // productFragment replaces splashFragment
