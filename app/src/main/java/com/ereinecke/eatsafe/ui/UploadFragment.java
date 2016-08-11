@@ -8,11 +8,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.ereinecke.eatsafe.R;
 import com.ereinecke.eatsafe.util.Constants;
 
@@ -52,6 +55,68 @@ public class UploadFragment extends Fragment {
             uploadImageView = (ImageView) rootView.findViewById(R.id.upload_imageView);
         }
 
+        // Bottom toolbar
+        AHBottomNavigation bottomToolbar =
+                (AHBottomNavigation) rootView.findViewById(R.id.upload_toolbar_bottom);
+        AHBottomNavigationItem cameraButton =
+                new AHBottomNavigationItem(getString(R.string.camera_button),
+                R.drawable.ic_add_a_photo_black_24dp);
+        AHBottomNavigationItem galleryButton =
+                new AHBottomNavigationItem(getString(R.string.gallery_button),
+                R.drawable.ic_delete_black_24dp);
+        AHBottomNavigationItem uploadButton =
+                new AHBottomNavigationItem(getString(R.string.delete),
+                R.drawable.ic_cloud_upload_black_24dp);
+
+        // Add items
+        bottomToolbar.removeAllItems();
+        bottomToolbar.addItem(cameraButton);
+        bottomToolbar.addItem(galleryButton);
+        bottomToolbar.addItem(uploadButton);
+
+        // Set background color
+        bottomToolbar.setDefaultBackgroundColor(getResources().getColor(R.color.colorTabs));
+
+        // Change colors
+        bottomToolbar.setAccentColor(getResources().getColor(R.color.colorSelectedButton));
+        bottomToolbar.setInactiveColor(getResources().getColor(R.color.colorInactiveButton));
+
+        // Disable the translation inside the CoordinatorLayout
+        bottomToolbar.setBehaviorTranslationEnabled(true);
+
+        // Force toolbar to be shown
+        bottomToolbar.restoreBottomNavigation(true);;
+
+        // Force the titles to be displayed (against Material Design guidelines!)
+        bottomToolbar.setForceTitlesDisplay(false);
+
+        // Force to tint the drawable (useful for font with icon for example)
+        bottomToolbar.setForceTint(true);
+
+        // Set listeners
+        bottomToolbar.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
+            @Override
+            public boolean onTabSelected(int position, boolean wasSelected) {
+                switch (position) {
+                    case Constants.UPLOAD_CAMERA_BUTTON:
+                        takeProductPhotos(Constants.PHOTO_TEST);
+                        break;
+                    case Constants.UPLOAD_GALLERY_BUTTON:
+                        pickProductPhotos(Constants.PHOTO_TEST);;
+                        break;
+                    case Constants.UPLOAD_UPLOAD_BUTTON:
+                        Log.d(LOG_TAG, "Pressed upload button.");
+                        break;
+                    default:
+                        uploadProductInfo();
+                        break;
+                }
+                return true;
+            }
+        });
+
+
+        /*
         // Button listeners
         // Take a product photo
         rootView.findViewById(R.id.camera_button).setOnClickListener(new View.OnClickListener() {
@@ -76,7 +141,7 @@ public class UploadFragment extends Fragment {
 
             }
         });
-
+        */
         return rootView;
     }
 

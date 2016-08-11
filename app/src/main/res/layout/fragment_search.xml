@@ -9,72 +9,86 @@
     android:id="@+id/search_fragment"
     tools:context="com.ereinecke.eatsafe.ui.SearchFragment"
     android:clickable="false"
-    tools:targetApi="n"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    tools:targetApi="n" >
 
-
-    <LinearLayout
-        android:orientation="horizontal"
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/search_search_bar"
-        android:layout_alignParentTop="true"
-        android:paddingTop="60dp"
-        android:paddingBottom="40dp">
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView"
+        android:textAlignment="textStart"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <Space
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_weight="1" />
-
-        <ImageView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/search_icon"
-            android:src="@android:drawable/ic_menu_search"
-            android:layout_gravity="end"
-            android:paddingTop="8dp"
-            android:tint="#333333"
-            android:contentDescription="@string/search"/>
+            android:layout_alignParentTop="true"
+            android:paddingTop="60dp"
+            android:paddingBottom="40dp">
 
-        <EditText
-            android:layout_width="220dp"
-            android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
-            android:id="@+id/barcode"
-            android:layout_gravity="center_horizontal"
-            android:imeOptions="actionSearch"
-            android:hint="@string/search_hint"
-            android:maxLength="13" />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/search_search_bar"
+                android:paddingTop="60dp"
+                android:paddingBottom="40dp">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/mic_icon"
-            android:src="@android:drawable/ic_btn_speak_now"
-            android:paddingTop="6dp"
-            android:contentDescription="@string/mic_image"/>
+                <Space
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_weight="1" />
 
-        <Space
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_weight="1" />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/search_icon"
+                    android:src="@android:drawable/ic_menu_search"
+                    android:layout_gravity="end"
+                    android:paddingTop="8dp"
+                    android:tint="#333333"
+                    android:contentDescription="@string/search"/>
 
-    </LinearLayout>
+                <EditText
+                    android:layout_width="220dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:id="@+id/barcode"
+                    android:layout_gravity="center_horizontal"
+                    android:imeOptions="actionSearch"
+                    android:hint="@string/search_hint"
+                    android:maxLength="13" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/scan_barcode"
-        android:id="@+id/scan_button"
-        android:layout_gravity="center"
-        android:layout_marginTop="60dp"
-        android:layout_marginBottom="40dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:layout_below="@+id/search_search_bar"
-        android:layout_centerHorizontal="true" />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/mic_icon"
+                    android:src="@android:drawable/ic_btn_speak_now"
+                    android:paddingTop="6dp"
+                    android:contentDescription="@string/mic_image"/>
 
+                <Space
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/scan_barcode"
+                android:id="@+id/scan_button"
+                android:layout_gravity="center"
+                android:layout_marginTop="60dp"
+                android:layout_marginBottom="40dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:layout_below="@+id/search_search_bar"
+                android:layout_centerHorizontal="true" />
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar_bottom"
         android:layout_height="?attr/actionBarSize"

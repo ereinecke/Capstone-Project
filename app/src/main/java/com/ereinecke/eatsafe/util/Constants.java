@@ -49,4 +49,12 @@ public class Constants {
     public static final String MESSAGE_EVENT = "message_event";
     public static final String MESSAGE_KEY = "message_key";
     public static final String RESULT_KEY = "result_key";
+
+    // Bottom navigation button positions
+    public static final int UPLOAD_CAMERA_BUTTON  = 0;
+    public static final int UPLOAD_GALLERY_BUTTON = 1;
+    public static final int UPLOAD_UPLOAD_BUTTON  = 2;
+    public static final int PRODUCT_SHARE_BUTTON  = 0;
+    public static final int PRODUCT_DELETE_BUTTON = 1;
+
 }

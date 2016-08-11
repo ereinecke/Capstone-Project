@@ -6,13 +6,14 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/product_fragment"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior">
-    <ScrollView
+    android:id="@+id/product_fragment" >
+
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/scrollView"
-        android:textAlignment="textStart">
+        android:textAlignment="textStart"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -39,16 +40,16 @@
                 custom:selected_color="@color/color_slider_selected"
                 custom:unselected_color="@color/color_slider_unselected"
                 custom:shape="rect"
-                custom:selected_padding_left="2dp"
-                custom:selected_padding_right="2dp"
-                custom:unselected_padding_left="2dp"
-                custom:unselected_padding_right="2dp"
-                custom:selected_width="6dp"
-                custom:selected_height="6dp"
-                custom:unselected_width="6dp"
-                custom:unselected_height="6dp" />
+                custom:selected_padding_left="@dimen/slider_indicator_padding"
+                custom:selected_padding_right="@dimen/slider_indicator_padding"
+                custom:unselected_padding_left="@dimen/slider_indicator_padding"
+                custom:unselected_padding_right="@dimen/slider_indicator_padding"
+                custom:selected_width="@dimen/slider_indicator_size"
+                custom:selected_height="@dimen/slider_indicator_size"
+                custom:unselected_width="@dimen/slider_indicator_size"
+                custom:unselected_height="@dimen/slider_indicator_size" />
 
-            // TODO: Go to a cards layout
+            <!-- TODO: Go to a cards layout  -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -176,42 +177,12 @@
                 android:layout_height="40dp" />
 
         </LinearLayout>        
-    </ScrollView>
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/results_toolbar_bottom"
-        android:layout_height="?attr/actionBarSize"
+    </android.support.v4.widget.NestedScrollView>
+
+    <com.aurelhubert.ahbottomnavigation.AHBottomNavigation
+        android:id="@+id/product_toolbar_bottom"
         android:layout_width="match_parent"
-        android:background="@color/colorTabs"
-        android:layout_alignParentBottom="true" >
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/share"
-                android:id="@+id/share_button"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:background="@color/transparent"
-                android:src="@drawable/abc_ic_menu_share_mtrl_alpha"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp" />
-
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/delete"
-                android:id="@+id/delete_button"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="1"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:src="@android:drawable/ic_menu_delete"
-                android:background="@color/transparent" />
-
-        </LinearLayout>
-    </android.support.v7.widget.Toolbar>
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentBottom="true" />
 </RelativeLayout>

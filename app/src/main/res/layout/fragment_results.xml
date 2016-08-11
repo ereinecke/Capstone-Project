@@ -4,56 +4,77 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.ereinecke.eatsafe.ui.ResultsFragment"
     android:id="@+id/results_fragment"
-    android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:layout_gravity="center_horizontal|top"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    android:layout_gravity="center_horizontal|top" >
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/searchButton"
-        android:src="@android:drawable/ic_menu_search"
-        android:contentDescription="@string/search"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        style="?android:attr/buttonBarButtonStyle"
-        android:layout_marginTop="5dp"
-        android:layout_alignParentEnd="true"
-        android:tint="#333333"
-        tools:ignore="RtlHardcoded" />
-
-    <EditText
-        android:layout_width = "fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/searchText"
-        android:hint="@string/product_results_prompt"
-        android:inputType="text"
-        android:saveEnabled="true"
-        android:layout_marginTop="10dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_toLeftOf="@+id/searchButton"
-        android:layout_toStartOf="@+id/searchButton"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
-        tools:ignore="RtlHardcoded" />
-
-
-    <ListView android:id="@+id/product_list"
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="0dp"
-        android:layout_marginStart="0dp"
-        android:layout_below="@+id/searchText"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="false"
-        android:layout_alignParentStart="false"
-        tools:ignore="RtlHardcoded"
-        android:layout_above="@+id/toolbar_bottom" />
+        android:id="@+id/scrollView"
+        android:textAlignment="textStart"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/button_margin_horizontal"
+            android:paddingRight="@dimen/button_margin_horizontal"
+            android:paddingEnd="@dimen/button_margin_horizontal"
+            android:paddingStart="@dimen/button_margin_horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:layout_width = "fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/searchText"
+                    android:hint="@string/product_results_prompt"
+                    android:inputType="text"
+                    android:saveEnabled="true"
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center"
+                    android:layout_toLeftOf="@+id/searchButton"
+                    android:layout_toStartOf="@+id/searchButton"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp"
+                    tools:ignore="RtlHardcoded" />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/searchButton"
+                    android:src="@android:drawable/ic_menu_search"
+                    android:contentDescription="@string/search"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_alignParentEnd="true"
+                    android:tint="#333333"
+                    tools:ignore="RtlHardcoded" />
+
+        </LinearLayout>
+
+        <ListView android:id="@+id/product_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="0dp"
+            android:layout_marginStart="0dp"
+            android:layout_below="@+id/searchText"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentStart="false"
+            tools:ignore="RtlHardcoded"
+            android:layout_above="@+id/toolbar_bottom"
+            android:layout_weight="1" />
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar_bottom"
@@ -62,5 +83,4 @@
         android:background="@color/colorTabs"
         android:layout_alignParentBottom="true" >
     </android.support.v7.widget.Toolbar>
-
 </RelativeLayout>

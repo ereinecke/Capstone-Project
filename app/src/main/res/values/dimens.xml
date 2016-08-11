@@ -5,6 +5,8 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="horizontal_padding">24dp</dimen>
+    <dimen name="vertical_padding">24dp</dimen>
+    <dimen name="upload_image_height">200dp</dimen>
 
     <!-- Tab dimensions -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
@@ -15,6 +17,7 @@
     <dimen name="custom_tab_layout_height">72dp</dimen>
 
     <dimen name="results_slider_height">240dp</dimen>
-    <dimen name="vertical_padding">24dp</dimen>
+    <dimen name="slider_indicator_size">8dp</dimen>
+    <dimen name="slider_indicator_padding">4dp</dimen>
 
 </resources>

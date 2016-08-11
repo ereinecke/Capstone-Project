@@ -3,7 +3,6 @@ package com.ereinecke.eatsafe.ui;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -17,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.ereinecke.eatsafe.R;
 import com.ereinecke.eatsafe.data.OpenFoodContract;
 import com.ereinecke.eatsafe.util.Constants;
@@ -64,6 +65,58 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_product, container, false);
 
+        // Bottom toolbar
+        AHBottomNavigation bottomToolbar =
+                (AHBottomNavigation) rootView.findViewById(R.id.product_toolbar_bottom);
+        AHBottomNavigationItem shareButton = new AHBottomNavigationItem(R.string.share,
+                R.drawable.ic_share_black_24dp, R.color.letterwhite);
+        AHBottomNavigationItem deleteButton = new AHBottomNavigationItem(R.string.delete,
+                R.drawable.ic_delete_black_24dp, R.color.letterwhite);
+
+        // Add items
+        bottomToolbar.removeAllItems();
+        bottomToolbar.addItem(shareButton);
+        bottomToolbar.addItem(deleteButton);
+
+        // Set background color
+        bottomToolbar.setDefaultBackgroundColor(getResources().getColor(R.color.colorTabs));
+
+        // Change colors
+        bottomToolbar.setAccentColor(getResources().getColor(R.color.colorSelectedButton));
+        bottomToolbar.setInactiveColor(getResources().getColor(R.color.colorInactiveButton));
+
+        // Disable the translation inside the CoordinatorLayout
+        bottomToolbar.setBehaviorTranslationEnabled(true);
+
+        // Force toolbar to be shown
+        bottomToolbar.restoreBottomNavigation(true);;
+
+        // Force the titles to be displayed (against Material Design guidelines!)
+        bottomToolbar.setForceTitlesDisplay(true);
+
+        // Force to tint the drawable (useful for font with icon for example)
+        bottomToolbar.setForceTint(true);
+
+        // Set listeners
+        bottomToolbar.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
+            @Override
+            public boolean onTabSelected(int position, boolean wasSelected) {
+                switch (position) {
+                    case Constants.PRODUCT_SHARE_BUTTON:
+                        Log.d(LOG_TAG, "Pressed share button.");
+                        break;
+                    case Constants.PRODUCT_DELETE_BUTTON:
+                        Log.d(LOG_TAG, "Pressed delete button.");
+                        break;
+                    default:
+                        Log.d(LOG_TAG, "Unexpected button pressed in bottom navigation.");
+                        break;
+                }
+                return true;
+            }
+        });
+
+        /*
         // Button listeners
         // Share product
         rootView.findViewById(R.id.share_button).setOnClickListener(new View.OnClickListener() {
@@ -82,11 +135,13 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
                 getActivity().startService(productIntent);
                 getActivity().getSupportFragmentManager().popBackStack();
                 */
+                /*
                 Snackbar.make(rootView, getString(R.string.no_delete_yet),
                         Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
+        */
 
         return rootView;
     }
