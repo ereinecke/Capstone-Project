@@ -39,16 +39,6 @@
                     android:layout_height="20dp"
                     android:layout_weight="1" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/search_icon"
-                    android:src="@android:drawable/ic_menu_search"
-                    android:layout_gravity="end"
-                    android:paddingTop="8dp"
-                    android:tint="#333333"
-                    android:contentDescription="@string/search"/>
-
                 <EditText
                     android:layout_width="220dp"
                     android:layout_height="wrap_content"
@@ -59,13 +49,16 @@
                     android:hint="@string/search_hint"
                     android:maxLength="13" />
 
-                <ImageView
+                <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/mic_icon"
-                    android:src="@android:drawable/ic_btn_speak_now"
-                    android:paddingTop="6dp"
-                    android:contentDescription="@string/mic_image"/>
+                    android:id="@+id/search_button"
+                    android:src="@android:drawable/ic_menu_search"
+                    android:layout_gravity="end"
+                    android:paddingTop="8dp"
+                    android:tint="#333333"
+                    android:contentDescription="@string/search"
+                    android:background="@color/transparent" />
 
                 <Space
                     android:layout_width="20dp"
@@ -73,6 +66,7 @@
                     android:layout_weight="1" />
 
             </LinearLayout>
+
 
             <Button
                 android:layout_width="wrap_content"

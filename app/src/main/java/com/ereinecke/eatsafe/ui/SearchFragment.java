@@ -16,25 +16,32 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.ereinecke.eatsafe.R;
 import com.ereinecke.eatsafe.services.OpenFoodService;
 import com.ereinecke.eatsafe.util.Constants;
 import com.ereinecke.eatsafe.util.Utility;
+import com.ereinecke.eatsafe.util.Utility.SetLoadToast;
 import com.google.zxing.integration.android.IntentIntegrator;
+
+import net.steamcrafted.loadtoast.LoadToast;
 
 /**
  * SearchFragment allows the user to search the database by UPC code.  The code can be scanned
  * or entered manually.
  */
 
-public class SearchFragment extends Fragment {
+public class SearchFragment extends Fragment implements SetLoadToast {
 
     private static final String LOG_TAG = SearchFragment.class.getSimpleName();
     private static final String BARCODE_CONTENT = "barcodeContent";
+    private SetLoadToast setLoadToast;
     private EditText barcodeView;
+    private ImageButton searchButton;
     private static View rootView;
+    private LoadToast searchLT;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -43,6 +50,7 @@ public class SearchFragment extends Fragment {
     @SuppressWarnings("EmptyMethod")
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        searchLT = new LoadToast(getActivity());
         super.onCreate(savedInstanceState);
     }
 
@@ -64,23 +72,33 @@ public class SearchFragment extends Fragment {
                                 actionId == EditorInfo.IME_ACTION_DONE ||
                                 event.getAction() == KeyEvent.ACTION_DOWN &&
                                         event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-                            String barcodeStr = v.getText().toString();
-
-                            if (!Utility.validateBarcode(barcodeStr)) {
-
-                                // TODO: This Snackbar should probably be LENGTH_INDEFINITE
-                                Snackbar.make(rootView, getString(R.string.barcode_validation_failed, barcodeStr),
-                                        Snackbar.LENGTH_LONG)
-                                        .setAction("Action", null).setDuration(5000).show();
-                            } else if (checkConnectivity()) {
-                                // Have a (potentially) valid barcode, fetch product info
-                                callFetchProduct(barcodeStr);
-                            }
+                            runSearch();
+//                            String barcodeStr = v.getText().toString();
+//
+//                            if (!Utility.validateBarcode(barcodeStr)) {
+//
+//                                // TODO: This Snackbar should probably be LENGTH_INDEFINITE
+//                                Snackbar.make(rootView, getString(R.string.barcode_validation_failed, barcodeStr),
+//                                        Snackbar.LENGTH_LONG)
+//                                        .setAction("Action", null).setDuration(5000).show();
+//                            } else if (checkConnectivity()) {
+//                                // Have a (potentially) valid barcode, fetch product info
+//                                callFetchProduct(barcodeStr);
+//                            }
                             return true; // consume.
                         }
                         return false; // pass on to other listeners.
                     }
                 });
+
+        /* Search button */
+        searchButton = (ImageButton) rootView.findViewById(R.id.search_button);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                runSearch();
+            }
+        });
 
         /* Scan barcode button  */
         rootView.findViewById(R.id.scan_button).setOnClickListener(new View.OnClickListener() {
@@ -107,11 +125,18 @@ public class SearchFragment extends Fragment {
         return rootView;
     }
 
+
+    @Override
+    public void onAttach(Context c) {
+        super.onAttach(c);
+        setLoadToast = (SetLoadToast) c;
+    }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (barcodeView != null) {
-            outState.putString(BARCODE_CONTENT, barcodeView.getText().toString());
+            outState.putString(BARCODE_CONTENT, barcodeView.toString());
         }
     }
 
@@ -124,6 +149,21 @@ public class SearchFragment extends Fragment {
         imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
     }
 
+    private void runSearch() {
+
+        String barcodeStr = barcodeView.getText().toString();
+        searchLT.setText(getString(R.string.searching_for_barcode, barcodeStr))
+                        .show();
+        if (!Utility.validateBarcode(barcodeStr)) {
+            searchLT.error();
+            searchLT.setText(getString(R.string.barcode_validation_failed, barcodeStr)).show();
+
+        } else if (checkConnectivity()) {
+            // Have a (potentially) valid barcode, fetch product info
+            callFetchProduct(barcodeStr);
+        }
+    }
+
     public static void handleScanResult(String result) {
 
         ((TextView) rootView.findViewById(R.id.barcode)).setText(result);
@@ -132,6 +172,7 @@ public class SearchFragment extends Fragment {
     /* Sends an intent to OpenFoodService to fetch product info */
     public void callFetchProduct(String barcodeStr) {
         Log.d(LOG_TAG, "in callFetchProduct: " + barcodeStr);
+
         // Have a (potentially) valid barcode, fetch product info
         Intent productIntent = new Intent(getActivity(), OpenFoodService.class);
         productIntent.putExtra(Constants.BARCODE_KEY, barcodeStr);
@@ -160,5 +201,12 @@ public class SearchFragment extends Fragment {
         }
 
         return isConnected;
+    }
+
+    @Override
+    public void setLoadToast(LoadToast lt) {
+        if (lt != null) {
+            setLoadToast.setLoadToast(lt);
+        }
     }
 }

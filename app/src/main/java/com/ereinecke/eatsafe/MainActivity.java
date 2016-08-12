@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.commonsware.cwac.provider.StreamProvider;
 import com.ereinecke.eatsafe.services.OpenFoodService;
@@ -30,8 +31,12 @@ import com.ereinecke.eatsafe.ui.UploadFragment.PhotoRequest;
 import com.ereinecke.eatsafe.util.App;
 import com.ereinecke.eatsafe.util.Constants;
 import com.ereinecke.eatsafe.util.Utility.Callback;
+import com.ereinecke.eatsafe.util.Utility.SetLoadToast;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+
+import net.steamcrafted.loadtoast.LoadToast;
+import net.steamcrafted.loadtoast.MaterialProgressDrawable;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -42,12 +47,14 @@ import java.util.Date;
 
 /* TODO: Need to tell users to provide Camera and Storage permissions on API > 23  */
 
-public class MainActivity extends AppCompatActivity implements Callback, PhotoRequest {
+public class MainActivity extends AppCompatActivity
+        implements Callback, PhotoRequest, SetLoadToast {
 
     private final static String LOG_TAG = MainActivity.class.getSimpleName();
     public static boolean isTablet = false;
     private String photoReceived;
     private View rootView;
+    public LoadToast lt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +64,9 @@ public class MainActivity extends AppCompatActivity implements Callback, PhotoRe
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Startup loadtoast
+        lt = new LoadToast(this).setText("").setTranslationY(100).show();
 
         BroadcastReceiver messageReceiver = new MessageReceiver();
         IntentFilter filter = new IntentFilter(Constants.MESSAGE_EVENT);
@@ -78,7 +88,16 @@ public class MainActivity extends AppCompatActivity implements Callback, PhotoRe
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.right_pane_container, splashFragment).commit();
             }
+
+            ImageView progressView = ((ImageView) findViewById(R.id.progress_drawable));
+            MaterialProgressDrawable drawable = new MaterialProgressDrawable(this, progressView);
         }
+    }
+
+    @Override
+    public void onResume() {
+        lt.success();
+        super.onResume();
     }
 
     // TODO: Need to make back arrow disappear when TabPagerFragment is showing.  This hides only
@@ -86,10 +105,8 @@ public class MainActivity extends AppCompatActivity implements Callback, PhotoRe
     @Override
     public void onStart() {
         super.onStart();
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        }
     }
+
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -106,7 +123,6 @@ public class MainActivity extends AppCompatActivity implements Callback, PhotoRe
 
         savedInstanceState.getString(Constants.CURRENT_PHOTO);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -192,8 +208,9 @@ public class MainActivity extends AppCompatActivity implements Callback, PhotoRe
                     if (result != null) {
                         String barcode = result.getContents();
                         if (result.getContents() == null) {
-                            Snackbar.make(rootView, getString(R.string.result_failed),
-                                    Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                            LoadToast lt = new LoadToast(App.getContext());
+                            lt.setText(getString(R.string.result_failed));
+                            lt.show();
                         } else {
                             Log.d(LOG_TAG, "Scan result: " + result.toString());
                             // Have a (potentially) valid barcode, update text view and fetch product info
@@ -384,6 +401,11 @@ public class MainActivity extends AppCompatActivity implements Callback, PhotoRe
         Intent scanFileIntent = new Intent(
                 Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri);
         sendBroadcast(scanFileIntent);
+    }
+
+    @Override
+    public void setLoadToast(LoadToast loadToast) {
+        lt = loadToast;
     }
 }
 

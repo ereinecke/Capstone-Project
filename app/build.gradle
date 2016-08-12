@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
+    compileSdkVersion  24
     buildToolsVersion "24.0.1"
 
     defaultConfig {
@@ -77,9 +77,6 @@ dependencies {
 
     /* Fancy toast */
     compile 'net.steamcrafted:load-toast:1.0.10'
-
-    /* material design search view, includes voice input */
-    compile 'com.miguelcatalan:materialsearchview:1.4.0'
 
     /* About page library, adds credits for all libraries used */
     compile('com.mikepenz:aboutlibraries:5.7.1@aar') {

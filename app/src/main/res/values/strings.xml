@@ -24,6 +24,7 @@
     <string name="result_failed_why">Don\'t know why</string>
     <string name="not_found">Product not found</string>
     <string name="barcode_validation_failed">Barcode code \"%1$s\" is invalid.</string>
+    <string name="searching_for_barcode">Searching for product \"%1$s\"</string>
     <string name="barcode_found">Product \"%1$d\" found.</string>
     <string name="barcode_not_found">Product not found.  Upload product?</string>
     <string name="product_results_prompt">Search by product name or brand</string>

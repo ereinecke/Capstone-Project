@@ -5,6 +5,8 @@ import android.content.pm.PackageManager;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 
+import net.steamcrafted.loadtoast.LoadToast;
+
 /**
  * Utility functions for EatSafe
  */
@@ -59,4 +61,20 @@ public class Utility {
     public interface Callback {
         void onItemSelected(String barcode);
     }
+
+    /*
+     * Interface to access LoadToast running in MainActivity.
+     */
+    public interface GetLoadToast {
+        LoadToast getLoadToast();
+    }
+
+    /*
+     * Interface to access LoadToast running in MainActivity.
+     */
+    public interface SetLoadToast {
+        void setLoadToast(LoadToast lt);
+    }
 }
+
+
