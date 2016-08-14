@@ -22,6 +22,8 @@ import com.ereinecke.eatsafe.R;
 import com.ereinecke.eatsafe.services.OpenFoodService;
 import com.ereinecke.eatsafe.util.Constants;
 import com.ereinecke.eatsafe.util.Utility;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.zxing.integration.android.IntentIntegrator;
 
 /**
@@ -92,6 +94,15 @@ public class SearchFragment extends Fragment {
             }
         });
 
+        /* Ad displayed in bottom toolbar, respecting Constants.TEST_ADS flag   */
+        AdView mAdView = (AdView) rootView.findViewById(R.id.adView);
+        AdRequest adRequest = Utility.getAdRequest();
+        if (mAdView != null) {
+            mAdView.loadAd(adRequest);
+        } else {
+            Log.d(LOG_TAG, "adView not found");
+        }
+
         if (savedInstanceState != null) {
             barcodeView.setText(savedInstanceState.getString(BARCODE_CONTENT));
         }
@@ -109,6 +120,7 @@ public class SearchFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         if (startScan) runScan();
     }
 

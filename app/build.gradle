@@ -43,6 +43,7 @@ dependencies {
     compile "com.android.support:appcompat-v7:${supportLibVersion}"
     compile "com.android.support:design:${supportLibVersion}"
     compile "com.android.support:support-v4:${supportLibVersion}"
+    compile "com.google.firebase:firebase-ads:9.4.0"
 
 
     /* Jackson for JSON */
@@ -75,11 +76,10 @@ dependencies {
     /* Image slider */
     compile 'com.hkm.loyalslider:library:1.9.4'
 
-    /* Fancy toast */
-    compile 'net.steamcrafted:load-toast:1.0.10'
-
     /* About page library, adds credits for all libraries used */
     compile('com.mikepenz:aboutlibraries:5.7.1@aar') {
         transitive = true
     }
 }
+
+apply plugin: 'com.google.gms.google-services'

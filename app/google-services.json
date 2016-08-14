@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "579808239585",
+    "firebase_url": "https://eatsafe-7bc7a.firebaseio.com",
+    "project_id": "eatsafe-7bc7a",
+    "storage_bucket": "eatsafe-7bc7a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:579808239585:android:22a46d456dec058a",
+        "android_client_info": {
+          "package_name": "com.ereinecke.eatsafe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "579808239585-mpg0uthgsne71mqui55dki15ugbebqbd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlqcCLndJ6T5uakor3BzZm3IYqTJ3Fg_Y"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

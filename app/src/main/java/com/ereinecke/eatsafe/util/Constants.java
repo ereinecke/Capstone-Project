@@ -7,6 +7,9 @@ import com.ereinecke.eatsafe.R;
  */
 public class Constants {
 
+    // Setting for test ads
+    public static final boolean TEST_ADS = true;
+
     // TODO: Change write URLs to openfoodfacts.org when out of test
     public static final String PRODUCTS_BASE_URL = "http://world.openfoodfacts.org/api/v0/product/";
 

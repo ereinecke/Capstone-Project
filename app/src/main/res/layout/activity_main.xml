@@ -29,17 +29,17 @@
             app:expandedTitleMarginBottom="20dp"
             app:expandedTitleMarginEnd="64dp">
 
-            <!-- TODO: ImageView for header needs work.  Want center_top scaling and a scrim for
-                 the overlay text
             <ImageView
                 android:id="@+id/logo_backdrop"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/openfoodfacts_logo_356"
-                android:scaleType="centerCrop"
+                android:src="@drawable/eatsafe_cutout_white_op30"
+                android:scaleType="fitEnd"
                 android:fitsSystemWindows="true"
-                app:layout_collapseMode="parallax" />
-            -->
+                app:layout_collapseMode="parallax"
+                android:paddingRight="@dimen/appbar_logo_horizontal_padding"
+                android:paddingTop="@dimen/appbar_logo_top_padding"
+                android:paddingBottom="@dimen/appbar_logo_bottom_padding" />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"

@@ -31,10 +31,9 @@ import com.ereinecke.eatsafe.ui.UploadFragment.PhotoRequest;
 import com.ereinecke.eatsafe.util.App;
 import com.ereinecke.eatsafe.util.Constants;
 import com.ereinecke.eatsafe.util.Utility.Callback;
+import com.google.android.gms.ads.MobileAds;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-
-import net.steamcrafted.loadtoast.LoadToast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -67,6 +66,8 @@ public class MainActivity extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        MobileAds.initialize(getApplicationContext(), getString(R.string.app_id));
 
         // See if activity was started by widget
         Intent intent = getIntent();
@@ -194,6 +195,7 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.d(LOG_TAG, "in onReceive(), intent: " + intent.toString());
 
             // Barcode returned from OpenFoodService
             if (intent.getAction().equals(Constants.MESSAGE_EVENT)) {
@@ -214,7 +216,7 @@ public class MainActivity extends AppCompatActivity
             }
 
             // Widget requesting a barcode scan
-            if (intent.getAction().equals(Constants.ACTION_SCAN_BARCODE)) {
+            if (intent.getStringExtra(Constants.MESSAGE_KEY).equals(Constants.ACTION_SCAN_BARCODE)) {
                 Log.d(LOG_TAG, "In MessageReceiver, launchScannerIntent() requested.");
 
                 // Refresh button listener.  Necessary?
@@ -246,9 +248,8 @@ public class MainActivity extends AppCompatActivity
                     if (result != null) {
                         String barcode = result.getContents();
                         if (result.getContents() == null) {
-                            LoadToast lt = new LoadToast(App.getContext());
-                            lt.setText(getString(R.string.result_failed));
-                            lt.show();
+                            Snackbar.make(rootView, getString(R.string.result_failed), Snackbar.LENGTH_SHORT)
+                            .setAction("Action", null).show();
                         } else {
                             Log.d(LOG_TAG, "Scan result: " + result.toString());
                             // Have a (potentially) valid barcode, update text view and fetch product info

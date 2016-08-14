@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widgetFrame"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@color/letterwhite" >
+    android:elevation="4dp"
+    android:clickable="true"
+    android:background="@color/transparent">
 
     <ImageButton
-        android:layout_width="@dimen/widget_size"
-        android:layout_height="@dimen/widget_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/widgetButton"
         android:longClickable="true"
-        android:src="@drawable/openfoodfacts_logo_356"
-        android:scaleType="centerInside" />
+        android:src="@drawable/scan_widget"
+        android:scaleType="centerInside"
+        android:clickable="true"
+        android:background="@color/transparent" />
 
 </FrameLayout>

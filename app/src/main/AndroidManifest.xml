@@ -11,7 +11,6 @@
                   android:required="false" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
-    <!-- TODO: need a real product icon -->
     <application
         android:name=".util.App"
         android:allowBackup="true"
@@ -55,7 +54,7 @@
             android:icon="@drawable/openfoodfacts_logo_356"
             android:label="@string/widget_name"  >
             <intent-filter>
-                <action android:name="@string/widget_action" />
+                <action android:name= "android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
             <meta-data android:name="android.appwidget.provider"
                        android:resource="@xml/eatsafe_widget_info"  />

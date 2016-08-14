@@ -182,7 +182,7 @@
     <com.aurelhubert.ahbottomnavigation.AHBottomNavigation
         android:id="@+id/product_toolbar_bottom"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:layout_alignParentStart="false"
         android:layout_alignParentBottom="true" />
 </RelativeLayout>

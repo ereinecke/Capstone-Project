@@ -2,10 +2,13 @@ package com.ereinecke.eatsafe.util;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 
-import net.steamcrafted.loadtoast.LoadToast;
+import com.google.ads.mediation.admob.AdMobAdapter;
+import com.google.android.gms.ads.AdRequest;
+
 
 /**
  * Utility functions for EatSafe
@@ -17,17 +20,30 @@ public class Utility {
     public static final int MIN_UPC_LENGTH = 8;
 
 
-    /* LoadToasts are launched from MainActivity via this broadcast intent.
-     * @param String text: Text to be displayed
-     * @param int status:
-     *   LT_SHOW shows for duration time (ms)
-     *   LT_SUCCESS ends current LoadToast with a success animation
-     *   LT_ERROR ends current LoadToast with an error animation
-     * @param int duration
-     *   Will start a timer to cancel after duration ms.  Default: 10000. 0: no timer.
+    /* If the flag Constants.TEST_ADS is set true, generates a test AdRequest for emulators and
+     * specified devices, otherwise returns a live AdRequest.  The AdRequest is set to
+     * "is_designed_for_families".
      */
-    public void startLoadToast(String text, int status, int duration ) {
+    public static AdRequest getAdRequest() {
 
+        AdRequest request;
+
+        if (Constants.TEST_ADS) {
+            /* Generates a test AdRequest */
+            request = new AdRequest.Builder()
+                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)  // all emulators
+                    .addTestDevice("6115000884")                  // ereinecke Nexus 5
+                    .addTestDevice("03aac1722518fe55")            // ereinecke Pixel C
+                    .build();
+        } else {
+            Bundle extras = new Bundle();
+            extras.putBoolean("is_designed_for_families", true);
+            request = new AdRequest.Builder()
+                    .addNetworkExtrasBundle(AdMobAdapter.class, extras)
+                    .build();
+        }
+
+        return request;
     }
 
     /* UPC validation checks for 8 to 13 numeric digits 0-9.  Even though android:inputType =
@@ -68,25 +84,13 @@ public class Utility {
      }
 
     /*
-     * Callback interface for list item selection.
+     * Callback interface for product list item selection.
      */
     public interface Callback {
         void onItemSelected(String barcode);
     }
 
-    /*
-     * Interface to access LoadToast running in MainActivity.
-     */
-    public interface GetLoadToast {
-        LoadToast getLoadToast();
-    }
 
-    /*
-     * Interface to access LoadToast running in MainActivity.
-     */
-    public interface SetLoadToast {
-        void setLoadToast(LoadToast lt);
-    }
 }
 
 

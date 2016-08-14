@@ -19,6 +19,8 @@ import com.ereinecke.eatsafe.R;
 import com.ereinecke.eatsafe.data.OpenFoodContract;
 import com.ereinecke.eatsafe.util.ProductListAdapter;
 import com.ereinecke.eatsafe.util.Utility;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 /**
  * ResultsFragment shows all products stored in ContentReceiver.  In future, there will be a
@@ -83,6 +85,15 @@ public class ResultsFragment extends Fragment implements LoaderManager.LoaderCal
 
         ListView productList = (ListView) rootView.findViewById(R.id.product_list);
         productList.setAdapter(productListAdapter);
+
+        /* Ad displayed in bottom toolbar, respecting Constants.TEST_ADS flag   */
+        AdView mAdView = (AdView) rootView.findViewById(R.id.adView);
+        AdRequest adRequest = Utility.getAdRequest();
+        if (mAdView != null) {
+            mAdView.loadAd(adRequest);
+        } else {
+            Log.d(LOG_TAG, "adView not found");
+        }
 
         productList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 

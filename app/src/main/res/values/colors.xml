@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3f51b5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="colorTabs">#607D8B</color>
-    <color name="colorTabIndicators">#66FFFFFF</color>
+    <color name="colorPrimary">#4cb748</color>
+    <color name="colorPrimaryDark">#2d8941</color>
+    <color name="colorAccent">#cd6a82</color>
+    <color name="colorTabs">#949D93</color>
+    <color name="colorTabIndicators">#99DDDDDD</color>
     <color name="colorSelectedButton">#99FFFFFF</color>
     <color name="colorInactiveButton">@color/colorSelectedButton</color>
     <color name="colorLoadToastBackground">#77000000</color>

@@ -3,4 +3,8 @@
     <dimen name="app_bar_height">240dp</dimen>
     <dimen name="results_slider_height">300dp</dimen>
     <dimen name="upload_image_height">180dp</dimen>
+
+    <dimen name="appbar_logo_horizontal_padding">120dp</dimen>
+    <dimen name="appbar_logo_top_padding">60dp</dimen>
+    <dimen name="appbar_logo_bottom_padding">30dp</dimen>
 </resources>
