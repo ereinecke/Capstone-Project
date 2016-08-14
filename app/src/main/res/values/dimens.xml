@@ -19,5 +19,6 @@
     <dimen name="results_slider_height">240dp</dimen>
     <dimen name="slider_indicator_size">8dp</dimen>
     <dimen name="slider_indicator_padding">4dp</dimen>
+    <dimen name="widget_size">72dp</dimen>
 
 </resources>

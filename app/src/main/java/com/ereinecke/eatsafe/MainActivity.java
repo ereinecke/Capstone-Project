@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
@@ -18,7 +19,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.commonsware.cwac.provider.StreamProvider;
 import com.ereinecke.eatsafe.services.OpenFoodService;
@@ -31,12 +31,10 @@ import com.ereinecke.eatsafe.ui.UploadFragment.PhotoRequest;
 import com.ereinecke.eatsafe.util.App;
 import com.ereinecke.eatsafe.util.Constants;
 import com.ereinecke.eatsafe.util.Utility.Callback;
-import com.ereinecke.eatsafe.util.Utility.SetLoadToast;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import net.steamcrafted.loadtoast.LoadToast;
-import net.steamcrafted.loadtoast.MaterialProgressDrawable;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -48,16 +46,21 @@ import java.util.Date;
 /* TODO: Need to tell users to provide Camera and Storage permissions on API > 23  */
 
 public class MainActivity extends AppCompatActivity
-        implements Callback, PhotoRequest, SetLoadToast {
+        implements Callback, PhotoRequest {
 
     private final static String LOG_TAG = MainActivity.class.getSimpleName();
     public static boolean isTablet = false;
     private String photoReceived;
     private View rootView;
-    public LoadToast lt;
+    private BroadcastReceiver messageReceiver;
+    private final IntentFilter messageFilter = new IntentFilter(Constants.MESSAGE_EVENT);
+    private Handler ltHandler = new Handler();
+    private int ltDuration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        boolean scanner = false;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         rootView = findViewById(android.R.id.content);
@@ -65,17 +68,21 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // Startup loadtoast
-        lt = new LoadToast(this).setText("").setTranslationY(100).show();
+        // See if activity was started by widget
+        Intent intent = getIntent();
+        String message = intent.getStringExtra(Constants.MESSAGE_KEY);
+        if (message != null && message.equals(Constants.ACTION_SCAN_BARCODE)) {
+            scanner = true;
+        }
 
-        BroadcastReceiver messageReceiver = new MessageReceiver();
-        IntentFilter filter = new IntentFilter(Constants.MESSAGE_EVENT);
-        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, filter);
+        // messageReceiver
+        messageReceiver = new MessageReceiver();
 
         isTablet = (findViewById(R.id.dual_pane) != null);
 
         if (findViewById(R.id.tab_container) != null) {
             if (savedInstanceState != null) {
+                if (scanner) { launchScannerIntent(); }
                 return;
             }
 
@@ -88,22 +95,31 @@ public class MainActivity extends AppCompatActivity
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.right_pane_container, splashFragment).commit();
             }
-
-            ImageView progressView = ((ImageView) findViewById(R.id.progress_drawable));
-            MaterialProgressDrawable drawable = new MaterialProgressDrawable(this, progressView);
         }
+
+        if (scanner) { launchScannerIntent(); }
     }
 
     @Override
     public void onResume() {
-        lt.success();
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, messageFilter);
         super.onResume();
+    }
+
+    @Override
+    public void onDestroy() {
+
+        // Unregister since the activity is about to be closed.
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
+        super.onDestroy();
     }
 
     // TODO: Need to make back arrow disappear when TabPagerFragment is showing.  This hides only
     // after a rotation.
     @Override
     public void onStart() {
+
         super.onStart();
     }
 
@@ -118,6 +134,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
+
         // Always call the superclass so it can restore the view hierarchy
         super.onRestoreInstanceState(savedInstanceState);
 
@@ -126,6 +143,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
@@ -133,6 +151,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -158,6 +177,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onItemSelected(String barcode) {
+
         try {
             long productId = Long.parseLong(barcode);
             launchProductFragment(productId);
@@ -171,22 +191,40 @@ public class MainActivity extends AppCompatActivity
      *   barcode
      */
     private class MessageReceiver extends BroadcastReceiver {
+
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getStringExtra(Constants.MESSAGE_KEY) != null) {
-                long barcode = intent.getLongExtra(Constants.RESULT_KEY, -1L);
-                if (barcode != -1L) {
-                   Snackbar.make(rootView, getString(R.string.barcode_found, barcode),
-                            Snackbar.LENGTH_SHORT)
-                        .setAction("Action", null).show();
-                    launchProductFragment(barcode);
-                } else {
-                    // TODO: Give Snackbar an action to launch UploadFragment or not
-                    Log.d(LOG_TAG, "In MessageReceiver, no valid barcode received.");
-                    Snackbar.make(rootView,
-                            getString(R.string.barcode_not_found),
-                            Snackbar.LENGTH_LONG).setAction("Action", null).show();
+
+            // Barcode returned from OpenFoodService
+            if (intent.getAction().equals(Constants.MESSAGE_EVENT)) {
+                if (intent.getStringExtra(Constants.MESSAGE_KEY) != null) {
+                    long barcode = intent.getLongExtra(Constants.RESULT_KEY, -1L);
+                    String result = intent.getStringExtra(Constants.MESSAGE_KEY);
+                    Log.d(LOG_TAG, "MessageReceiver result: " + result);
+                    Snackbar.make(rootView, result, Snackbar.LENGTH_SHORT)
+                            .setAction("Action", null).show();
+
+                    if (barcode != -1L) {
+                        launchProductFragment(barcode);
+                    } else {
+                        // TODO: Give user a dialog to launch UploadFragment
+                        Log.d(LOG_TAG, "In MessageReceiver, no valid barcode received.");
+                    }
                 }
+            }
+
+            // Widget requesting a barcode scan
+            if (intent.getAction().equals(Constants.ACTION_SCAN_BARCODE)) {
+                Log.d(LOG_TAG, "In MessageReceiver, launchScannerIntent() requested.");
+
+                // Refresh button listener.  Necessary?
+//                RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
+//                        R.layout.widget_layout);
+//                remoteViews.setOnClickPendingIntent(R.id.widgetButton,
+//                        EatSafeWidgetProvider.buildButtonPendingIntent(context));
+//                EatSafeWidgetProvider.pushWidgetUpdate(context.getApplicationContext(), remoteViews);
+
+                launchScannerIntent();
             }
         }
     }
@@ -241,7 +279,7 @@ public class MainActivity extends AppCompatActivity
             case Constants.GALLERY_IMAGE_REQUEST: {
             /* Catching result from gallery */
 
-                final InputStream imageStream;
+                InputStream imageStream;
                 if (resultCode == RESULT_OK) {
                     final Uri imageUri = intent.getData();
                     try {
@@ -266,6 +304,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public String PhotoRequest(int source, int photo) {
+
         // TODO: check to make sure we have camera permissions here.
         Log.d(LOG_TAG, "PhotoRequest(" + photo + ") received.");
         photoReceived = "";
@@ -310,6 +349,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void launchPhotoIntent(int whichPhoto) {
+
         Log.d(LOG_TAG, "Launching intent for photo #" + whichPhoto);
         // create Intent to take a picture and return control to the calling application
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -339,6 +379,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void launchGalleryIntent(int whichPhoto) {
+
         Log.d(LOG_TAG, "Launching intent for photo #" + whichPhoto);
         // create Intent to take a picture and return control to the calling application
         Intent pickPictureIntent = new Intent(Intent.ACTION_PICK);
@@ -347,6 +388,21 @@ public class MainActivity extends AppCompatActivity
         startActivityForResult(pickPictureIntent, Constants.GALLERY_IMAGE_REQUEST);
     }
 
+
+    /* Launches the barcode scanner by replacing the SearchFragment with a new SearchFragment
+     * with an action as an extra.
+     */
+    private void launchScannerIntent() {
+
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.MESSAGE_KEY, Constants.ACTION_SCAN_BARCODE);
+        SearchFragment searchFragment = new SearchFragment();
+        searchFragment.setArguments(bundle);
+
+        getSupportFragmentManager().beginTransaction()
+            .replace(R.id.search_fragment, searchFragment).commit();
+
+    }
 
     /** Returns a unique, opened file for image; sets photoReceived with filespec */
     public  File openOutputMediaFile(){
@@ -396,16 +452,12 @@ public class MainActivity extends AppCompatActivity
      *            the file to scan
      */
     private void scanMedia(String path) {
+
         File file = new File(path);
         Uri uri = Uri.fromFile(file);
         Intent scanFileIntent = new Intent(
                 Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri);
         sendBroadcast(scanFileIntent);
-    }
-
-    @Override
-    public void setLoadToast(LoadToast loadToast) {
-        lt = loadToast;
     }
 }
 

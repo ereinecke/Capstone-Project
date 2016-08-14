@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -23,25 +22,21 @@ import com.ereinecke.eatsafe.R;
 import com.ereinecke.eatsafe.services.OpenFoodService;
 import com.ereinecke.eatsafe.util.Constants;
 import com.ereinecke.eatsafe.util.Utility;
-import com.ereinecke.eatsafe.util.Utility.SetLoadToast;
 import com.google.zxing.integration.android.IntentIntegrator;
-
-import net.steamcrafted.loadtoast.LoadToast;
 
 /**
  * SearchFragment allows the user to search the database by UPC code.  The code can be scanned
  * or entered manually.
  */
 
-public class SearchFragment extends Fragment implements SetLoadToast {
+public class SearchFragment extends Fragment {
 
     private static final String LOG_TAG = SearchFragment.class.getSimpleName();
     private static final String BARCODE_CONTENT = "barcodeContent";
-    private SetLoadToast setLoadToast;
     private EditText barcodeView;
     private ImageButton searchButton;
+    private boolean startScan = false;
     private static View rootView;
-    private LoadToast searchLT;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -50,7 +45,9 @@ public class SearchFragment extends Fragment implements SetLoadToast {
     @SuppressWarnings("EmptyMethod")
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        searchLT = new LoadToast(getActivity());
+        if (getArguments() != null &&
+                getArguments().getString(Constants.MESSAGE_KEY).equals(Constants.ACTION_SCAN_BARCODE))
+            startScan = true;
         super.onCreate(savedInstanceState);
     }
 
@@ -63,7 +60,6 @@ public class SearchFragment extends Fragment implements SetLoadToast {
 
         barcodeView = (EditText) rootView.findViewById(R.id.barcode);
 
-        // TODO: requires a press on keyboard search button.  Add a button handler to search icon.
         barcodeView.setOnEditorActionListener(
                 new EditText.OnEditorActionListener() {
                     @Override
@@ -73,18 +69,6 @@ public class SearchFragment extends Fragment implements SetLoadToast {
                                 event.getAction() == KeyEvent.ACTION_DOWN &&
                                         event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
                             runSearch();
-//                            String barcodeStr = v.getText().toString();
-//
-//                            if (!Utility.validateBarcode(barcodeStr)) {
-//
-//                                // TODO: This Snackbar should probably be LENGTH_INDEFINITE
-//                                Snackbar.make(rootView, getString(R.string.barcode_validation_failed, barcodeStr),
-//                                        Snackbar.LENGTH_LONG)
-//                                        .setAction("Action", null).setDuration(5000).show();
-//                            } else if (checkConnectivity()) {
-//                                // Have a (potentially) valid barcode, fetch product info
-//                                callFetchProduct(barcodeStr);
-//                            }
                             return true; // consume.
                         }
                         return false; // pass on to other listeners.
@@ -104,18 +88,7 @@ public class SearchFragment extends Fragment implements SetLoadToast {
         rootView.findViewById(R.id.scan_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                // ZXing is called here
-                if (checkConnectivity()) {
-                    try {
-                        IntentIntegrator integrator = new IntentIntegrator(getActivity());
-                        integrator.initiateScan();
-                    } catch (Exception e) {
-                        Snackbar.make(view, getActivity().getString(R.string.result_failed),
-                                Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-                    }
-                }
+               runScan();
             }
         });
 
@@ -123,13 +96,6 @@ public class SearchFragment extends Fragment implements SetLoadToast {
             barcodeView.setText(savedInstanceState.getString(BARCODE_CONTENT));
         }
         return rootView;
-    }
-
-
-    @Override
-    public void onAttach(Context c) {
-        super.onAttach(c);
-        setLoadToast = (SetLoadToast) c;
     }
 
     @Override
@@ -143,21 +109,32 @@ public class SearchFragment extends Fragment implements SetLoadToast {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        if (startScan) runScan();
+    }
 
-        /* Hide virtual keyboard until user presses search field */
-        final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+    private void runScan() {
+
+        // ZXing is called here
+        if (checkConnectivity()) {
+            try {
+                IntentIntegrator integrator = new IntentIntegrator(getActivity());
+                integrator.initiateScan();
+            } catch (Exception e) {
+                Snackbar.make(rootView, getActivity().getString(R.string.result_failed),
+                        Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        }
     }
 
     private void runSearch() {
 
         String barcodeStr = barcodeView.getText().toString();
-        searchLT.setText(getString(R.string.searching_for_barcode, barcodeStr))
-                        .show();
-        if (!Utility.validateBarcode(barcodeStr)) {
-            searchLT.error();
-            searchLT.setText(getString(R.string.barcode_validation_failed, barcodeStr)).show();
 
+        if (!Utility.validateBarcode(barcodeStr)) {
+            Snackbar.make(rootView, getString(R.string.barcode_validation_failed, barcodeStr),
+                    Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
         } else if (checkConnectivity()) {
             // Have a (potentially) valid barcode, fetch product info
             callFetchProduct(barcodeStr);
@@ -201,12 +178,5 @@ public class SearchFragment extends Fragment implements SetLoadToast {
         }
 
         return isConnected;
-    }
-
-    @Override
-    public void setLoadToast(LoadToast lt) {
-        if (lt != null) {
-            setLoadToast.setLoadToast(lt);
-        }
     }
 }

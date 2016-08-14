@@ -1,5 +1,7 @@
 package com.ereinecke.eatsafe.util;
 
+import com.ereinecke.eatsafe.R;
+
 /**
  * Defines constants used by EatSafe.
  */
@@ -8,8 +10,9 @@ public class Constants {
     // TODO: Change write URLs to openfoodfacts.org when out of test
     public static final String PRODUCTS_BASE_URL = "http://world.openfoodfacts.org/api/v0/product/";
 
-    public static final String ACTION_SCAN_BARCODE = "com.ereinecke.eatsafe.services.extra.barcode";
-    public static final String ACTION_FETCH_PRODUCT = "com.ereinecke.eatsafe.services.action.FETCH_PRODUCT";
+    // ACTIONs.
+    public static final String ACTION_SCAN_BARCODE   = App.getContext().getString(R.string.widget_action);
+    public static final String ACTION_FETCH_PRODUCT  = "com.ereinecke.eatsafe.services.action.FETCH_PRODUCT";
     public static final String ACTION_DELETE_PRODUCT = "com.ereinecke.eatsafe.services.action.DELETE_PRODUCT";
 
     // Camera & gallery constants
@@ -56,5 +59,4 @@ public class Constants {
     public static final int UPLOAD_UPLOAD_BUTTON  = 2;
     public static final int PRODUCT_SHARE_BUTTON  = 0;
     public static final int PRODUCT_DELETE_BUTTON = 1;
-
 }

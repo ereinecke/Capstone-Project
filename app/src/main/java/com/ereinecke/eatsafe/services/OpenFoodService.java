@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.ereinecke.eatsafe.R;
 import com.ereinecke.eatsafe.data.OpenFoodContract;
 import com.ereinecke.eatsafe.util.Constants;
 import com.ereinecke.eatsafe.util.Utility;
@@ -31,7 +32,7 @@ public class OpenFoodService extends IntentService {
     private final String LOG_TAG = OpenFoodService.class.getSimpleName();
 
     public OpenFoodService() {
-        super("EatSafe");   // TODO: ???
+        super("EatSafe");
     }
 
     @Override
@@ -75,8 +76,10 @@ public class OpenFoodService extends IntentService {
 
         assert productEntry != null;
         if(productEntry.getCount() > 0) {
-            Log.d(LOG_TAG, "Product " + barcode + " already downloaded");
-            returnResult("Product already downloaded.", Long.parseLong(barcode));
+            String response = getResources().getString(R.string.barcode_already_downloaded, barcode);
+            Log.d(LOG_TAG, response);
+            Log.d(LOG_TAG, "productEntry.getCount(): " + productEntry.getCount());
+            returnResult(response, Long.parseLong(barcode));
             productEntry.close();
             return true;
         }
@@ -148,8 +151,11 @@ public class OpenFoodService extends IntentService {
                     Log.d(LOG_TAG, "Product status: found");
                     productObject = productJson.getJSONObject(Constants.PRODUCT);
                 } else {
-                    // Returns result
-                    returnResult("Product not found", -1L);
+                    // No product founjd
+                    String result = getResources()
+                            .getString(R.string.barcode_not_found);
+                    Log.d(LOG_TAG, result);
+                    returnResult(result, -1L);
                     return false;
                 }
             }
@@ -173,7 +179,9 @@ public class OpenFoodService extends IntentService {
                         allergens, ingredients, origins);
 
                 // Broadcast result
-                returnResult("Product found", productId);
+                String result = getResources().getString(R.string.barcode_found,
+                        Long.parseLong(barcode));
+                returnResult(result, productId);
             }
 
             } catch (JSONException e) {

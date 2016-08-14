@@ -62,6 +62,8 @@ public class ResultsFragment extends Fragment implements LoaderManager.LoaderCal
 
         if (cursor == null) {
             Log.d(LOG_TAG, "Cursor returned 0 results.");
+        } else {
+            Log.d(LOG_TAG, "Cursor returned " + cursor.getCount() + " results.");
         }
 
         productList = (ListView) rootView.findViewById(R.id.product_list);

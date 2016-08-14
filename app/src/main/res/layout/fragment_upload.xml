@@ -13,10 +13,11 @@
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/upload_scrollView"
         android:layout_alignParentEnd="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:fillViewport="true" >
 
         <LinearLayout
             android:orientation="vertical"
@@ -40,10 +41,13 @@
 
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="fill_parent"
                 android:id="@+id/upload_imageView"
                 android:minHeight="@dimen/upload_image_height"
-                android:layout_gravity="top" />
+                android:layout_weight="1"
+                android:scaleType="centerInside"
+                android:nestedScrollingEnabled="true"
+                android:adjustViewBounds="true"/>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
@@ -53,55 +57,4 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="false"
         android:layout_alignParentBottom="true" />
-    <!--
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/upload_toolbar_bottom"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_width="match_parent"
-        android:background="@color/colorTabs"
-        android:layout_alignParentBottom="true" >
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/camera_button"
-                android:id="@+id/camera_button"
-                android:layout_gravity="center_horizontal"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:layout_weight="1"
-                android:background="@color/transparent"
-                android:src="@android:drawable/ic_menu_camera" />
-
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_menu_gallery"
-                android:contentDescription="@string/gallery_button"
-                android:id="@+id/gallery_button"
-                android:layout_gravity="center_horizontal"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:layout_weight="1"
-                android:background="@color/transparent" />
-
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/upload_button"
-                android:id="@+id/upload_button"
-                android:layout_gravity="center_horizontal"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:layout_weight="1"
-                android:background="@color/transparent"
-                android:src="@android:drawable/ic_menu_upload" />
-        </LinearLayout>
-    </android.support.v7.widget.Toolbar>
-    -->
 </RelativeLayout>

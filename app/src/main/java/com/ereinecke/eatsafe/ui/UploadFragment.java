@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,7 +64,7 @@ public class UploadFragment extends Fragment {
                 new AHBottomNavigationItem(getString(R.string.gallery_button),
                 R.drawable.ic_delete_black_24dp);
         AHBottomNavigationItem uploadButton =
-                new AHBottomNavigationItem(getString(R.string.delete),
+                new AHBottomNavigationItem(getString(R.string.upload_button),
                 R.drawable.ic_cloud_upload_black_24dp);
 
         // Add items
@@ -105,43 +104,15 @@ public class UploadFragment extends Fragment {
                         pickProductPhotos(Constants.PHOTO_TEST);;
                         break;
                     case Constants.UPLOAD_UPLOAD_BUTTON:
-                        Log.d(LOG_TAG, "Pressed upload button.");
+                        uploadProductInfo();
                         break;
                     default:
-                        uploadProductInfo();
+
                         break;
                 }
                 return true;
             }
         });
-
-
-        /*
-        // Button listeners
-        // Take a product photo
-        rootView.findViewById(R.id.camera_button).setOnClickListener(new View.OnClickListener() {
-            public void onClick(final View view) {
-                takeProductPhotos(0);
-                // TODO: progress indicator?
-            }
-        });
-
-        // Get photos from Gallery
-        rootView.findViewById(R.id.gallery_button).setOnClickListener(new View.OnClickListener() {
-            public void onClick(final View view) {
-                pickProductPhotos(Constants.PHOTO_TEST);
-
-            }
-        });
-
-        // Upload info to
-        rootView.findViewById(R.id.upload_button).setOnClickListener(new View.OnClickListener() {
-            public void onClick(final View view) {
-                uploadProductInfo();
-
-            }
-        });
-        */
         return rootView;
     }
 

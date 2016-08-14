@@ -17,6 +17,18 @@ public class Utility {
     public static final int MIN_UPC_LENGTH = 8;
 
 
+    /* LoadToasts are launched from MainActivity via this broadcast intent.
+     * @param String text: Text to be displayed
+     * @param int status:
+     *   LT_SHOW shows for duration time (ms)
+     *   LT_SUCCESS ends current LoadToast with a success animation
+     *   LT_ERROR ends current LoadToast with an error animation
+     * @param int duration
+     *   Will start a timer to cancel after duration ms.  Default: 10000. 0: no timer.
+     */
+    public void startLoadToast(String text, int status, int duration ) {
+
+    }
 
     /* UPC validation checks for 8 to 13 numeric digits 0-9.  Even though android:inputType =
      * "number" enforces numeric entry, that could include '-' and '.'.
@@ -35,7 +47,7 @@ public class Utility {
     }
 
     /** Check if this device has a camera */
-    private boolean checkCameraHardware(Context context) {
+    public boolean checkCameraHardware(Context context) {
         if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)){
             // this device has a camera
             return true;
