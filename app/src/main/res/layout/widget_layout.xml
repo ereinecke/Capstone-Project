@@ -8,14 +8,33 @@
     android:clickable="true"
     android:background="@color/transparent">
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/widgetButton"
-        android:longClickable="true"
-        android:src="@drawable/scan_widget"
-        android:scaleType="centerInside"
-        android:clickable="true"
-        android:background="@color/transparent" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/widgetButton"
+            android:longClickable="true"
+            android:src="@drawable/scan_widget"
+            android:scaleType="centerInside"
+            android:clickable="true"
+            android:background="?android:attr/selectableItemBackground" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Widget.ActionBar.Subtitle"
+            android:text="@string/widget_name"
+            android:id="@+id/widgetTitle"
+            android:textAlignment="center" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="right|bottom"></FrameLayout>
 
 </FrameLayout>

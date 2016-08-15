@@ -73,7 +73,8 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:background="@color/colorTabs"
-        android:layout_alignParentBottom="true" >
+        android:layout_alignParentBottom="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" >
 
         <com.google.android.gms.ads.AdView
             android:id="@+id/adView"

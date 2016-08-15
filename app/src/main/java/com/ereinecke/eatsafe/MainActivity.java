@@ -8,7 +8,6 @@ import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
@@ -53,8 +52,6 @@ public class MainActivity extends AppCompatActivity
     private View rootView;
     private BroadcastReceiver messageReceiver;
     private final IntentFilter messageFilter = new IntentFilter(Constants.MESSAGE_EVENT);
-    private Handler ltHandler = new Handler();
-    private int ltDuration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,35 +68,36 @@ public class MainActivity extends AppCompatActivity
 
         // See if activity was started by widget
         Intent intent = getIntent();
-        String message = intent.getStringExtra(Constants.MESSAGE_KEY);
-        if (message != null && message.equals(Constants.ACTION_SCAN_BARCODE)) {
-            scanner = true;
-        }
+        if (intent != null) {
+            Log.d(LOG_TAG, "in onCreate(), intent: " + intent.toString());
+            String message = intent.getStringExtra(Constants.MESSAGE_KEY);
+            if (message != null && message.equals(Constants.ACTION_SCAN_BARCODE)) {
+                scanner = true;
+        }}
 
-        // messageReceiver
+        // messageReceiver catches barcode from service and a scan action from the widget
         messageReceiver = new MessageReceiver();
 
         isTablet = (findViewById(R.id.dual_pane) != null);
 
         if (findViewById(R.id.tab_container) != null) {
-            if (savedInstanceState != null) {
-                if (scanner) { launchScannerIntent(); }
-                return;
-            }
 
             TabPagerFragment tabPagerFragment = new TabPagerFragment();
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.tab_container, tabPagerFragment).commit();
+                    .replace(R.id.tab_container, tabPagerFragment).commit();
 
             if (isTablet) {
                 SplashFragment splashFragment = new SplashFragment();
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.right_pane_container, splashFragment).commit();
-            }
-        }
+                        .replace(R.id.right_pane_container, splashFragment).commit();
 
-        if (scanner) { launchScannerIntent(); }
+
+            }
+
+            if (scanner) { launchScannerIntent(); }
+        }
     }
+
 
     @Override
     public void onResume() {
@@ -116,13 +114,12 @@ public class MainActivity extends AppCompatActivity
         super.onDestroy();
     }
 
-    // TODO: Need to make back arrow disappear when TabPagerFragment is showing.  This hides only
-    // after a rotation.
-    @Override
-    public void onStart() {
-
-        super.onStart();
-    }
+    // TODO: Need to make back arrow disappear when TabPagerFragment is showing.
+//    @Override
+//    public void onStart() {
+//
+//        super.onStart();
+//    }
 
 
     @Override

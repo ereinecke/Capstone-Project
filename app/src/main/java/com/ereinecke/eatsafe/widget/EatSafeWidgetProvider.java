@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+import com.ereinecke.eatsafe.MainActivity;
 import com.ereinecke.eatsafe.R;
 import com.ereinecke.eatsafe.util.Constants;
 
@@ -31,7 +32,7 @@ public class EatSafeWidgetProvider extends AppWidgetProvider {
             Log.d(LOG_TAG, "in onUpdate()");
 
             // Create an Intent to launch MainActivity
-            Intent intent = new Intent(context, EatSafeWidgetProvider.class);
+            Intent intent = new Intent(context, MainActivity.class);
             intent.putExtra(Constants.MESSAGE_KEY, Constants.ACTION_SCAN_BARCODE);
 
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);

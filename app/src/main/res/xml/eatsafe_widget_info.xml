@@ -6,9 +6,11 @@
     android:minResizeWidth="@dimen/widget_size"
     android:minResizeHeight="@dimen/widget_size"
     android:initialLayout="@layout/widget_layout"
+    android:previewImage="@drawable/scan_widget"
     android:label="@string/widget_name"
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen"
-    android:updatePeriodMillis="86400000"  >
+    android:updatePeriodMillis="1000"  >
+    <!-- TODO: turn updatePeriod back to 1800000 after debugging -->
 
 </appwidget-provider>

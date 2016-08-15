@@ -51,6 +51,7 @@ public class ResultsFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_results, container, false);
 
@@ -103,7 +104,8 @@ public class ResultsFragment extends Fragment implements LoaderManager.LoaderCal
                 Log.d(LOG_TAG, "Item # " + l + " selected.");
                 if (cursor != null && cursor.moveToPosition(position)) {
                     ((Utility.Callback) getActivity())
-                            .onItemSelected(cursor.getString(cursor.getColumnIndex(OpenFoodContract.ProductEntry._ID)));
+                            .onItemSelected(cursor.getString(cursor
+                                    .getColumnIndex(OpenFoodContract.ProductEntry._ID)));
                 }
             }
         });

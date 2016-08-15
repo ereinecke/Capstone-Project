@@ -94,7 +94,7 @@ public class SearchFragment extends Fragment {
             }
         });
 
-        /* Ad displayed in bottom toolbar, respecting Constants.TEST_ADS flag   */
+        /* Ad displayed in bottom toolbar, respecting Constants.TEST_ADS flag  */
         AdView mAdView = (AdView) rootView.findViewById(R.id.adView);
         AdRequest adRequest = Utility.getAdRequest();
         if (mAdView != null) {

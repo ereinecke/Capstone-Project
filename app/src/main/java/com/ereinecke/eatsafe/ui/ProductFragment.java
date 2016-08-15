@@ -3,6 +3,7 @@ package com.ereinecke.eatsafe.ui;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -32,7 +33,6 @@ import java.util.ArrayList;
 /**
  * ProductFragment displays detailed information for a product, whose barcode is passed to
  * ProductFragment as an argument.
- * TODO: add Share button
  */
 public class ProductFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -89,7 +89,8 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         bottomToolbar.setBehaviorTranslationEnabled(true);
 
         // Force toolbar to be shown
-        bottomToolbar.restoreBottomNavigation(true);;
+        bottomToolbar.restoreBottomNavigation(true);
+        ;
 
         // Force the titles to be displayed (against Material Design guidelines!)
         bottomToolbar.setForceTitlesDisplay(true);
@@ -104,9 +105,13 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
                 switch (position) {
                     case Constants.PRODUCT_SHARE_BUTTON:
                         Log.d(LOG_TAG, "Pressed share button.");
+                        setShareActionProvider(barcode);
                         break;
                     case Constants.PRODUCT_DELETE_BUTTON:
                         Log.d(LOG_TAG, "Pressed delete button.");
+                        Snackbar.make(rootView, "Product delete not yet implemented",
+                                Snackbar.LENGTH_SHORT)
+                                .setAction("Action", null).show();
                         break;
                     default:
                         Log.d(LOG_TAG, "Unexpected button pressed in bottom navigation.");
@@ -116,32 +121,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
             }
         });
 
-        /*
-        // Button listeners
-        // Share product
-        rootView.findViewById(R.id.share_button).setOnClickListener(new View.OnClickListener() {
-            public void onClick(final View view) {
-                setShareActionProvider(barcode);
-            }
-        });
-
-        // Delete product from local database
-        rootView.findViewById(R.id.delete_button).setOnClickListener(new View.OnClickListener() {
-            public void onClick(final View view) {
-                /* TODO: following code is not functional
-                Intent productIntent = new Intent(getActivity(), OpenFoodService.class);
-                productIntent.putExtra(Constants.BARCODE_KEY, barcode);
-                productIntent.setAction(Constants.ACTION_DELETE_PRODUCT);
-                getActivity().startService(productIntent);
-                getActivity().getSupportFragmentManager().popBackStack();
-                */
-                /*
-                Snackbar.make(rootView, getString(R.string.no_delete_yet),
-                        Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        */
+        shareActionProvider = new ShareActionProvider(getActivity());
 
         return rootView;
     }
@@ -158,8 +138,6 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
 
-
-
     // private void restartLoader() {
     //    getLoaderManager().restartLoader(LOADER_ID, null, this);
     // }
@@ -170,12 +148,12 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         long barcode = args.getLong(Constants.BARCODE_KEY);
         String barcodeStr = Long.toString(barcode);
 
-        return new CursorLoader (
+        return new CursorLoader(
                 getActivity(),
                 OpenFoodContract.ProductEntry.buildProductUri(barcode),
                 null,
                 OpenFoodContract.ProductEntry._ID + "=?",
-                new String[] {barcodeStr},
+                new String[]{barcodeStr},
                 null
         );
     }
@@ -265,16 +243,17 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
         Spanned result;
 
-        /* Needed for API 24 x
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.) {
+        /* Needed for API 24 */
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
             result = Html.fromHtml("<b>" + getResources().getString(fieldName) + ": </b>" +
                     fieldContents, Html.FROM_HTML_MODE_LEGACY);
         } else {
-        */
+
             //noinspection deprecation
             result = Html.fromHtml("<b>" + getResources().getString(fieldName) + ": </b>" +
                     fieldContents);
-        // }
+        }
+
         return result;
     }
 }

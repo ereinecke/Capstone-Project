@@ -2,31 +2,41 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/fragment_splash">
 
-    <ImageView
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/logoView"
-        android:src="@drawable/openfoodfacts_logo_356"
-        android:paddingLeft="@dimen/horizontal_padding"
-        android:paddingRight="@dimen/horizontal_padding"
-        android:paddingTop="@dimen/vertical_padding"
-        android:paddingEnd="@dimen/horizontal_padding"
-        android:paddingStart="@dimen/horizontal_padding"
-        android:scaleType="fitCenter"
-        android:layout_weight="3"
-        android:layout_marginLeft="120dp"
-        android:layout_marginRight="120dp"
-        android:clickable="false"
-        android:onClick="launchOpenFoodFactsWebview" />
+        android:id="@+id/scrollView"
+        android:textAlignment="textStart"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/logoView"
+            android:src="@drawable/openfoodfacts_logo_356"
+            android:paddingLeft="@dimen/horizontal_padding"
+            android:paddingRight="@dimen/horizontal_padding"
+            android:paddingTop="@dimen/vertical_padding"
+            android:paddingEnd="@dimen/horizontal_padding"
+            android:paddingStart="@dimen/horizontal_padding"
+            android:scaleType="fitCenter"
+            android:layout_weight="3"
+            android:layout_marginLeft="120dp"
+            android:layout_marginRight="120dp"
+            android:clickable="false"
+            android:onClick="launchOpenFoodFactsWebview" />
+    </android.support.v4.widget.NestedScrollView>
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar_bottom"
         android:layout_height="?attr/actionBarSize"
         android:layout_width="match_parent"
         android:background="@color/colorTabs"
-        android:layout_alignParentBottom="true" >
+        android:layout_alignParentBottom="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
     </android.support.v7.widget.Toolbar>
 
 </RelativeLayout>

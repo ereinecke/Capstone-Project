@@ -97,7 +97,7 @@
         android:layout_width="match_parent"
         android:background="@color/colorTabs"
         android:layout_alignParentBottom="true"
-        android:foregroundGravity="center_horizontal">
+        android:foregroundGravity="center_horizontal" >
 
         <com.google.android.gms.ads.AdView
             android:id="@+id/adView"
@@ -108,7 +108,7 @@
             ads:adSize="BANNER"
             ads:adUnitId="@string/banner_ad_unit_id"
             android:alpha="0.5"
-            android:contentDescription="Ads by Google"
+            android:contentDescription="@string/ads_content_description"
             android:foregroundGravity="center_vertical|center_horizontal">
         </com.google.android.gms.ads.AdView>
 
