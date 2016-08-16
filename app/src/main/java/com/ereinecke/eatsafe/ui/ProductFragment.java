@@ -52,79 +52,90 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         super.onCreate(savedInstanceState);
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        Bundle args = getArguments();
-
-        if (args != null) {
-            getLoaderManager().restartLoader(LOADER_ID, args, this);
-        }
+        boolean showBlankFragment = false;
 
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_product, container, false);
 
-        // Bottom toolbar
-        AHBottomNavigation bottomToolbar =
-                (AHBottomNavigation) rootView.findViewById(R.id.product_toolbar_bottom);
-        AHBottomNavigationItem shareButton = new AHBottomNavigationItem(R.string.share,
-                R.drawable.ic_share_black_24dp, R.color.letterwhite);
-        AHBottomNavigationItem deleteButton = new AHBottomNavigationItem(R.string.delete,
-                R.drawable.ic_delete_black_24dp, R.color.letterwhite);
+        Bundle args = getArguments();
 
-        // Add items
-        bottomToolbar.removeAllItems();
-        bottomToolbar.addItem(shareButton);
-        bottomToolbar.addItem(deleteButton);
+        if (args != null) {
+            showBlankFragment = (args.getLong(Constants.BARCODE_KEY) == Constants.BARCODE_NONE);
+            Log.d(LOG_TAG, "showBlankFragment: " + showBlankFragment);
+            getLoaderManager().restartLoader(LOADER_ID, args, this);
+        }
 
-        // Set background color
-        bottomToolbar.setDefaultBackgroundColor(getResources().getColor(R.color.colorTabs));
+        if (showBlankFragment) {
+            clearProductFragment(true);
+            shareActionProvider = null;
+        } else {
 
-        // Change colors
-        bottomToolbar.setAccentColor(getResources().getColor(R.color.colorSelectedButton));
-        bottomToolbar.setInactiveColor(getResources().getColor(R.color.colorInactiveButton));
+            // Bottom toolbar
+            AHBottomNavigation bottomToolbar =
+                    (AHBottomNavigation) rootView.findViewById(R.id.product_toolbar_bottom);
+            AHBottomNavigationItem shareButton = new AHBottomNavigationItem(R.string.share,
+                    R.drawable.ic_share_black_24dp, R.color.letterwhite);
+            AHBottomNavigationItem deleteButton = new AHBottomNavigationItem(R.string.delete,
+                    R.drawable.ic_delete_black_24dp, R.color.letterwhite);
 
-        // Disable the translation inside the CoordinatorLayout
-        bottomToolbar.setBehaviorTranslationEnabled(true);
+            // Add items
+            bottomToolbar.removeAllItems();
+            bottomToolbar.addItem(shareButton);
+            bottomToolbar.addItem(deleteButton);
 
-        // Force toolbar to be shown
-        bottomToolbar.restoreBottomNavigation(true);
-        ;
+            // Set background color
+            bottomToolbar.setDefaultBackgroundColor(getResources().getColor(R.color.colorTabs));
 
-        // Force the titles to be displayed (against Material Design guidelines!)
-        bottomToolbar.setForceTitlesDisplay(true);
+            // Change colors
+            bottomToolbar.setAccentColor(getResources().getColor(R.color.colorSelectedButton));
+            bottomToolbar.setInactiveColor(getResources().getColor(R.color.colorInactiveButton));
 
-        // Force to tint the drawable (useful for font with icon for example)
-        bottomToolbar.setForceTint(true);
+            // Disable the translation inside the CoordinatorLayout
+            bottomToolbar.setBehaviorTranslationEnabled(false);
 
-        // Set listeners
-        bottomToolbar.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
-            @Override
-            public boolean onTabSelected(int position, boolean wasSelected) {
-                switch (position) {
-                    case Constants.PRODUCT_SHARE_BUTTON:
-                        Log.d(LOG_TAG, "Pressed share button.");
-                        setShareActionProvider(barcode);
-                        break;
-                    case Constants.PRODUCT_DELETE_BUTTON:
-                        Log.d(LOG_TAG, "Pressed delete button.");
-                        Snackbar.make(rootView, "Product delete not yet implemented",
-                                Snackbar.LENGTH_SHORT)
-                                .setAction("Action", null).show();
-                        break;
-                    default:
-                        Log.d(LOG_TAG, "Unexpected button pressed in bottom navigation.");
-                        break;
+            // Force toolbar to be shown
+            bottomToolbar.restoreBottomNavigation(true);
+
+            // Force the titles to be displayed (against Material Design guidelines!)
+            bottomToolbar.setForceTitlesDisplay(true);
+
+            // Force to tint the drawable (useful for font with icon for example)
+            bottomToolbar.setForceTint(true);
+
+            // Set listeners
+            bottomToolbar.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
+                @Override
+                public boolean onTabSelected(int position, boolean wasSelected) {
+                    switch (position) {
+                        case Constants.PRODUCT_SHARE_BUTTON:
+                            Log.d(LOG_TAG, "Pressed share button.");
+                            setShareActionProvider(barcode);
+                            break;
+                        case Constants.PRODUCT_DELETE_BUTTON:
+                            Log.d(LOG_TAG, "Pressed delete button.");
+                            Snackbar.make(rootView, "Product delete not yet implemented",
+                                    Snackbar.LENGTH_SHORT)
+                                    .setAction("Action", null).show();
+                            break;
+                        default:
+                            Log.d(LOG_TAG, "Unexpected button pressed in bottom navigation.");
+                            break;
+                    }
+                    return true;
                 }
-                return true;
-            }
-        });
+            });
 
-        shareActionProvider = new ShareActionProvider(getActivity());
+            shareActionProvider = new ShareActionProvider(getActivity());
+        }
 
         return rootView;
     }
+
 
     /* TODO: expand the text to include more product information */
     private void setShareActionProvider(String barcode) {
@@ -164,40 +175,12 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
             return;
         }
 
+        barcode = data.getString(data.getColumnIndex(OpenFoodContract.ProductEntry._ID));
+        ((TextView) rootView.findViewById(R.id.code))
+                .setText(prefixLabel(R.string.code, barcode));
+        Log.d(LOG_TAG, "onLoadFinished, barcode: " + barcode);
+
         PagerIndicator pagerIndicator = (PagerIndicator) rootView.findViewById(R.id.custom_indicator);
-
-        // Load images into slider
-        ArrayList<String> urlImages = new ArrayList<>();
-        urlImages.add(data.getString(data.getColumnIndex(OpenFoodContract.ProductEntry.IMAGE_URL)));
-        urlImages.add(data.getString(data.getColumnIndex(OpenFoodContract.ProductEntry.INGREDIENTS_IMG_URL)));
-        urlImages.add(data.getString(data.getColumnIndex(OpenFoodContract.ProductEntry.NUTRITION_IMG_URL)));
-
-        ArrayList<AdjustableSlide> list = new ArrayList<>();
-
-        // TODO: If there are no product images, substitute OpenFoodFacts logo
-        if (urlImages.size() == 0) {
-            Log.d(LOG_TAG, "No images found.");
-        } else {
-            for (int i = 0; i < urlImages.size(); i++) {
-                String imgUrl = urlImages.get(i);
-                // Some images may not be present
-                if (imgUrl.length() != 0) {
-                    AdjustableSlide sliderView = new AdjustableSlide(getContext());
-                    sliderView
-                            .image(urlImages.get(i))
-                            .setScaleType(BaseSliderView.ScaleType.FitCenterCrop);
-                    list.add(sliderView);
-                }
-            }
-        }
-
-        SliderLayout sliderLayout = (SliderLayout) rootView.findViewById(R.id.results_slider);
-        sliderLayout.loadSliderList(list);
-        sliderLayout.setCustomAnimation(new DescriptionAnimation());
-        sliderLayout.setSliderTransformDuration(1000, new LinearOutSlowInInterpolator());
-        sliderLayout.setCustomIndicator(pagerIndicator);
-        sliderLayout.setDuration(5500);
-        sliderLayout.startAutoCycle();
 
         String productName = data.getString(data.getColumnIndex(OpenFoodContract.ProductEntry.PRODUCT_NAME));
         ((TextView) rootView.findViewById(R.id.product_name)).setText(productName);
@@ -225,15 +208,106 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         ((TextView) rootView.findViewById(R.id.origins))
                 .setText(prefixLabel(R.string.origins, origins));
 
-        barcode = data.getString(data.getColumnIndex(OpenFoodContract.ProductEntry._ID));
-        ((TextView) rootView.findViewById(R.id.code))
-                .setText(prefixLabel(R.string.code, barcode));
+        // Load images into slider
+        ArrayList<String> urlImages = new ArrayList<>();
+        urlImages.add(data.getString(data.getColumnIndex(OpenFoodContract.ProductEntry.IMAGE_URL)));
+        urlImages.add(data.getString(data.getColumnIndex(OpenFoodContract.ProductEntry.INGREDIENTS_IMG_URL)));
+        urlImages.add(data.getString(data.getColumnIndex(OpenFoodContract.ProductEntry.NUTRITION_IMG_URL)));
+
+        ArrayList<AdjustableSlide> list = new ArrayList<>();
+
+        // TODO: If there are no product images, substitute OpenFoodFacts logo
+        if (urlImages.size() == 0) {
+            Log.d(LOG_TAG, "No images found.");
+            showOFFLogo();
+        } else {
+            for (int i = 0; i < urlImages.size(); i++) {
+                String imgUrl = urlImages.get(i);
+                // Some images may not be present
+                if (imgUrl.length() != 0) {
+                    AdjustableSlide sliderView = new AdjustableSlide(getContext());
+                    sliderView
+                            .image(urlImages.get(i))
+                            .setScaleType(BaseSliderView.ScaleType.FitCenterCrop);
+                    list.add(sliderView);
+                }
+            }
+        }
+
+        SliderLayout sliderLayout = (SliderLayout) rootView.findViewById(R.id.results_slider);
+        sliderLayout.loadSliderList(list);
+        sliderLayout.setCustomAnimation(new DescriptionAnimation());
+        sliderLayout.setSliderTransformDuration(1000, new LinearOutSlowInInterpolator());
+        sliderLayout.setCustomIndicator(pagerIndicator);
+        sliderLayout.setDuration(R.integer.slider_delay);
+        sliderLayout.startAutoCycle();
 
     }
 
     @Override
     public void onLoaderReset(android.support.v4.content.Loader<Cursor> loader) {
 
+    }
+
+    /* Clears text fields in ProductFragment.  if offLogo == true, the OpenFoodFacts logo will be
+     * placed into the slider
+     */
+    private void clearProductFragment(boolean offLogo) {
+
+        ((TextView) rootView.findViewById(R.id.code)).setText(" ");
+        ((TextView) rootView.findViewById(R.id.product_name)).setText(" ");
+        ((TextView) rootView.findViewById(R.id.brands)).setText(" ");
+        ((TextView) rootView.findViewById(R.id.serving_size)).setText(" ");
+        ((TextView) rootView.findViewById(R.id.labels)).setText(" ");
+        ((TextView) rootView.findViewById(R.id.allergens)).setText(" ");
+        ((TextView) rootView.findViewById(R.id.ingredients)).setText(" ");
+        ((TextView) rootView.findViewById(R.id.origins)).setText(" ");
+        if (offLogo) {
+            showOFFLogo();
+        }
+    }
+
+    /* Sets slider to show OpenFoodFacts logo */
+    private void showOFFLogo() {
+
+        // TODO: this causes the slider to crash - temporarily disabling
+        if (false) {
+            // Load drawables into slider by their R.drawable. references
+            ArrayList<Integer> logoImages = new ArrayList<>();
+            logoImages.add(R.drawable.openfoodfacts_logo_356);
+
+            ArrayList<AdjustableSlide> list = new ArrayList<>();
+
+            if (logoImages.size() == 0) {
+                Log.d(LOG_TAG, "No images found in showOFFLogo().");
+
+            } else {
+                for (int i = 0; i < logoImages.size(); i++) {
+                    Integer logo = logoImages.get(i);
+
+                    // Some images may not be present
+                    if (logo != null) {
+                        Log.d(LOG_TAG, "Calling image #" + logo);
+                        AdjustableSlide sliderView = new AdjustableSlide(getContext());
+                        sliderView
+                                .image(logoImages.get(i))
+                                .setScaleType(BaseSliderView.ScaleType.FitCenterCrop);
+                        list.add(sliderView);
+                        Log.d(LOG_TAG, sliderView.toString());
+                    }
+                }
+            }
+
+            PagerIndicator pagerIndicator = (PagerIndicator) rootView.findViewById(R.id.custom_indicator);
+
+            SliderLayout sliderLayout = (SliderLayout) rootView.findViewById(R.id.results_slider);
+            sliderLayout.loadSliderList(list);
+            sliderLayout.setCustomAnimation(new DescriptionAnimation());
+            sliderLayout.setSliderTransformDuration(1000, new LinearOutSlowInInterpolator());
+            sliderLayout.setCustomIndicator(pagerIndicator);
+            sliderLayout.setDuration(5500);
+            sliderLayout.startAutoCycle();
+        }
     }
 
     /* prefixLabel formats a string, prepending fieldName in bold and concatenating fieldContents

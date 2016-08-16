@@ -29,6 +29,8 @@ public class Constants {
 
     // Scanner constants
     public static final String BARCODE_KEY = "barcode_key";
+    public static final long BARCODE_NOT_FOUND = -1L;
+    public static final long BARCODE_NONE = 0L;
 
     // keys for savedInstanceStates
     public static final String CURRENT_PHOTO = "current_photo";

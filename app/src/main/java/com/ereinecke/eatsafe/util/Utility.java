@@ -32,8 +32,9 @@ public class Utility {
             /* Generates a test AdRequest */
             request = new AdRequest.Builder()
                     .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)  // all emulators
-                    .addTestDevice("6115000884")                  // ereinecke Nexus 5
-                    .addTestDevice("03aac1722518fe55")            // ereinecke Pixel C
+                    .addTestDevice("6115000884")                  // ereinecke Nexus 5 (API 23)
+                    .addTestDevice("03aac1722518fe55")            // ereinecke Pixel C (API N)
+                    .addTestDevice("c08083719a0fa21")             // ereinecke Galaxy Tab 2 (API 17)
                     .build();
         } else {
             Bundle extras = new Bundle();

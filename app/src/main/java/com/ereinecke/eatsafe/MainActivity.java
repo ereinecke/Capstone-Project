@@ -23,7 +23,6 @@ import com.commonsware.cwac.provider.StreamProvider;
 import com.ereinecke.eatsafe.services.OpenFoodService;
 import com.ereinecke.eatsafe.ui.ProductFragment;
 import com.ereinecke.eatsafe.ui.SearchFragment;
-import com.ereinecke.eatsafe.ui.SplashFragment;
 import com.ereinecke.eatsafe.ui.TabPagerFragment;
 import com.ereinecke.eatsafe.ui.UploadFragment;
 import com.ereinecke.eatsafe.ui.UploadFragment.PhotoRequest;
@@ -67,13 +66,13 @@ public class MainActivity extends AppCompatActivity
         MobileAds.initialize(getApplicationContext(), getString(R.string.app_id));
 
         // See if activity was started by widget
-        Intent intent = getIntent();
-        if (intent != null) {
-            Log.d(LOG_TAG, "in onCreate(), intent: " + intent.toString());
-            String message = intent.getStringExtra(Constants.MESSAGE_KEY);
-            if (message != null && message.equals(Constants.ACTION_SCAN_BARCODE)) {
-                scanner = true;
-        }}
+//        Intent intent = getIntent();
+//        if (intent != null) {
+//            Log.d(LOG_TAG, "in onCreate(), intent: " + intent.toString());
+//            String message = intent.getStringExtra(Constants.MESSAGE_KEY);
+//            if (message != null && message.equals(Constants.ACTION_SCAN_BARCODE)) {
+//                scanner = true;
+//        }}
 
         // messageReceiver catches barcode from service and a scan action from the widget
         messageReceiver = new MessageReceiver();
@@ -87,10 +86,13 @@ public class MainActivity extends AppCompatActivity
                     .replace(R.id.tab_container, tabPagerFragment).commit();
 
             if (isTablet) {
-                SplashFragment splashFragment = new SplashFragment();
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.right_pane_container, splashFragment).commit();
+                // The following hack, displaying a blank ProductFragment before a SplashFragment,
+                // makes the tablet version lay out more or less properly.
+                launchProductFragment(Constants.BARCODE_NONE);
 
+//                SplashFragment splashFragment = new SplashFragment();
+//                getSupportFragmentManager().beginTransaction()
+//                        .replace(R.id.right_pane_container, splashFragment).commit();
 
             }
 
@@ -197,13 +199,13 @@ public class MainActivity extends AppCompatActivity
             // Barcode returned from OpenFoodService
             if (intent.getAction().equals(Constants.MESSAGE_EVENT)) {
                 if (intent.getStringExtra(Constants.MESSAGE_KEY) != null) {
-                    long barcode = intent.getLongExtra(Constants.RESULT_KEY, -1L);
+                    long barcode = intent.getLongExtra(Constants.RESULT_KEY, Constants.BARCODE_NOT_FOUND);
                     String result = intent.getStringExtra(Constants.MESSAGE_KEY);
                     Log.d(LOG_TAG, "MessageReceiver result: " + result);
                     Snackbar.make(rootView, result, Snackbar.LENGTH_SHORT)
                             .setAction("Action", null).show();
 
-                    if (barcode != -1L) {
+                    if (barcode != Constants.BARCODE_NOT_FOUND) {
                         launchProductFragment(barcode);
                     } else {
                         // TODO: Give user a dialog to launch UploadFragment
@@ -324,7 +326,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         // Pass barcode to ProductFragment
-        if (barcode != -1L) {
+        if (barcode != Constants.BARCODE_NOT_FOUND) {
             Bundle args = new Bundle();
             args.putLong(Constants.BARCODE_KEY, barcode);
 

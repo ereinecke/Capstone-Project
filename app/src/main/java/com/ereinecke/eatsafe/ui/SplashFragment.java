@@ -12,7 +12,7 @@ import com.ereinecke.eatsafe.R;
 
 /**
  * This fragment displays the OpenFoodFacts logo, as a splash screen of sorts.  This only displays
- * on tablets in the right-hand pane until a ProductFragment displayst there.
+ * on tablets in the right-hand pane until a ProductFragment displays there.
  */
 public class SplashFragment extends Fragment {
 
@@ -33,14 +33,14 @@ public class SplashFragment extends Fragment {
         // TODO: WebView not yet implemented
         rootView.findViewById(R.id.logoView).setOnClickListener(new View.OnClickListener() {
             public void onClick(final View view) {
-                launchOpenFoodFactsWebView();
+                launchOpenFoodFactsWebView(view);
             }
         });
 
         return rootView;
     }
 
-    private void launchOpenFoodFactsWebView() {
+    public void launchOpenFoodFactsWebView(View view) {
 
         Snackbar.make(rootView, "Open Food Facts WebView not yet implemented",
                 Snackbar.LENGTH_LONG).setAction("Action", null).show();

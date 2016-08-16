@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -8,11 +9,11 @@
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/scrollView"
+        android:id="@+id/splashScrollView"
         android:textAlignment="textStart"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <ImageView
+        <ImageButton
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/logoView"
@@ -24,10 +25,11 @@
             android:paddingStart="@dimen/horizontal_padding"
             android:scaleType="fitCenter"
             android:layout_weight="3"
-            android:layout_marginLeft="120dp"
-            android:layout_marginRight="120dp"
-            android:clickable="false"
-            android:onClick="launchOpenFoodFactsWebview" />
+            android:layout_marginLeft="@dimen/splash_margin"
+            android:layout_marginRight="@dimen/splash_margin"
+            android:onClick="launchOpenFoodFactsWebview"
+            android:background="@color/transparent" />
+
     </android.support.v4.widget.NestedScrollView>
 
     <android.support.v7.widget.Toolbar
@@ -35,8 +37,9 @@
         android:layout_height="?attr/actionBarSize"
         android:layout_width="match_parent"
         android:background="@color/colorTabs"
-        android:layout_alignParentBottom="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_alignParentBottom="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_gravity="bottom" >
     </android.support.v7.widget.Toolbar>
 
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>
