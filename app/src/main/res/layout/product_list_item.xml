@@ -49,7 +49,8 @@
         android:layout_alignParentBottom="true"
         android:layout_toRightOf="@id/product_image"
         android:layout_toEndOf="@id/product_image"
-        android:text="@string/brands" />
+        android:text="@string/brands"
+        tools:ignore="RtlHardcoded" />
 
     <TextView
         android:id="@+id/code"
@@ -64,6 +65,7 @@
         android:layout_alignParentBottom="true"
         android:layout_toRightOf="@id/product_brand"
         android:layout_toEndOf="@id/product_brand"
-        android:text="@string/barcode" />
+        android:text="@string/barcode"
+        tools:ignore="RtlHardcoded" />
 
 </RelativeLayout>

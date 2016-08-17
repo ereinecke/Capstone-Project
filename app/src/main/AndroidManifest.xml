@@ -52,7 +52,7 @@
 
         <receiver
             android:name=".widget.EatSafeWidgetProvider"
-            android:icon="@drawable/openfoodfacts_logo_356"
+            android:icon="@mipmap/ic_launcher"
             android:label="@string/widget_name"  >
             <intent-filter>
                 <action android:name= "android.appwidget.action.APPWIDGET_UPDATE"/>

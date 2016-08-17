@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/widgetFrame"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:elevation="4dp"
     android:clickable="true"
-    android:background="@color/transparent">
+    android:background="@color/transparent"
+    tools:targetApi="lollipop">
 
     <LinearLayout
         android:orientation="vertical"
@@ -31,10 +33,5 @@
             android:id="@+id/widgetTitle"
             android:textAlignment="center" />
     </LinearLayout>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="right|bottom"></FrameLayout>
 
 </FrameLayout>

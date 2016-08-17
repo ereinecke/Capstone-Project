@@ -28,8 +28,6 @@ public class UploadFragment extends Fragment {
     private PhotoRequest photoRequest;
     private String mCurrentPhoto;
     private static View rootView;
-    private static String currentImageFile;
-    private static Uri currentImageUri;
     private static ImageView uploadImageView;
 
 
@@ -84,7 +82,7 @@ public class UploadFragment extends Fragment {
         bottomToolbar.setBehaviorTranslationEnabled(true);
 
         // Force toolbar to be shown
-        bottomToolbar.restoreBottomNavigation(true);;
+        bottomToolbar.restoreBottomNavigation(true);
 
         // Force the titles to be displayed (against Material Design guidelines!)
         bottomToolbar.setForceTitlesDisplay(false);
@@ -101,7 +99,7 @@ public class UploadFragment extends Fragment {
                         takeProductPhotos(Constants.PHOTO_TEST);
                         break;
                     case Constants.UPLOAD_GALLERY_BUTTON:
-                        pickProductPhotos(Constants.PHOTO_TEST);;
+                        pickProductPhotos(Constants.PHOTO_TEST);
                         break;
                     case Constants.UPLOAD_UPLOAD_BUTTON:
                         uploadProductInfo();
@@ -118,18 +116,18 @@ public class UploadFragment extends Fragment {
 
 
     public static void updateImage(String imageFile) {
-        currentImageFile = imageFile;
+        String currentImageFile = imageFile;
 
         if (imageFile != null) {
 
-            Bitmap imageBitmap = BitmapFactory.decodeFile(imageFile); ;
+            Bitmap imageBitmap = BitmapFactory.decodeFile(imageFile);
             uploadImageView.setImageBitmap(imageBitmap);
         }
 
     }
 
     public static void updateImageFromGallery(Uri imageUri) {
-        currentImageUri = imageUri;
+        Uri currentImageUri = imageUri;
 
         if (imageUri != null) {
 
@@ -165,7 +163,7 @@ public class UploadFragment extends Fragment {
     }
 
     public interface PhotoRequest {
-        public String PhotoRequest(int source, int photo);
+        String PhotoRequest(int source, int photo);
     }
 
 

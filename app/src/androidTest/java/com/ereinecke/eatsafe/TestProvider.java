@@ -24,7 +24,7 @@ public class TestProvider extends AndroidTestCase {
         deleteAllRecords();
     }
 
-    public void deleteAllRecords() {
+    private void deleteAllRecords() {
         mContext.getContentResolver().delete(
                 OpenFoodContract.ProductEntry.CONTENT_URI,
                 null,
@@ -105,7 +105,7 @@ public class TestProvider extends AndroidTestCase {
         readProduct();
     }
 
-    public void insertProduct() {
+    private void insertProduct() {
         ContentValues productValues = TestDb.getProductValues();
 
         Uri productUri = mContext.getContentResolver().insert(OpenFoodContract.ProductEntry.CONTENT_URI, productValues);
@@ -134,7 +134,7 @@ public class TestProvider extends AndroidTestCase {
 
     }
 
-    public void readProduct() {
+    private void readProduct() {
 
         Cursor cursor = mContext.getContentResolver().query(
                 OpenFoodContract.ProductEntry.buildProductUri(TestDb.BARCODE),

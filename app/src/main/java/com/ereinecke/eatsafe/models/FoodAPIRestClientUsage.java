@@ -2,7 +2,7 @@ package com.ereinecke.eatsafe.models;
 
 public class FoodAPIRestClientUsage {
 
-    // TODO: Ported from OpenFoodFacts-androidApp.
+    // Ported from OpenFoodFacts-androidApp.
     /*
 
     public void getProduct(final String barcode, final Activity activity, final ZXingScannerView scannerView, final ZXingScannerView.ResultHandler rs){

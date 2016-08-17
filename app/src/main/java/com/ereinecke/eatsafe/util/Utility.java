@@ -15,9 +15,9 @@ import com.google.android.gms.ads.AdRequest;
  */
 
 public class Utility {
-    public static final String LOG_TAG = Utility.class.getSimpleName();
-    public static final int MAX_UPC_LENGTH = 13;
-    public static final int MIN_UPC_LENGTH = 8;
+    private static final String LOG_TAG = Utility.class.getSimpleName();
+    private static final int MAX_UPC_LENGTH = 13;
+    private static final int MIN_UPC_LENGTH = 8;
 
 
     /* If the flag Constants.TEST_ADS is set true, generates a test AdRequest for emulators and
@@ -65,12 +65,7 @@ public class Utility {
 
     /** Check if this device has a camera */
     public boolean checkCameraHardware(Context context) {
-        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)){
-            // this device has a camera
-            return true;
-        } else {
-            return false;
-        }
+        return (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA));
     }
 
     /**

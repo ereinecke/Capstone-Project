@@ -18,6 +18,7 @@
             android:layout_height="match_parent"
             android:id="@+id/logoView"
             android:src="@drawable/openfoodfacts_logo_356"
+            android:contentDescription="@string/openfoodfacts"
             android:paddingLeft="@dimen/horizontal_padding"
             android:paddingRight="@dimen/horizontal_padding"
             android:paddingTop="@dimen/vertical_padding"
@@ -27,7 +28,6 @@
             android:layout_weight="3"
             android:layout_marginLeft="@dimen/splash_margin"
             android:layout_marginRight="@dimen/splash_margin"
-            android:onClick="launchOpenFoodFactsWebview"
             android:background="@color/transparent" />
 
     </android.support.v4.widget.NestedScrollView>

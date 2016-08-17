@@ -3,6 +3,7 @@ package com.ereinecke.eatsafe.ui;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -53,7 +54,7 @@ public class ResultsFragment extends Fragment implements LoaderManager.LoaderCal
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_results, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_results, container, false);
 
         cursor = getActivity().getContentResolver().query(
                 OpenFoodContract.ProductEntry.CONTENT_URI,
@@ -72,17 +73,20 @@ public class ResultsFragment extends Fragment implements LoaderManager.LoaderCal
         productList = (ListView) rootView.findViewById(R.id.product_list);
         productListAdapter = new ProductListAdapter(getActivity(), cursor, 0);
 
-        /* TODO: Needs work
+        /* TODO: Add search (product_name || brand) */
         searchText = (EditText) rootView.findViewById(R.id.searchText);
         rootView.findViewById(R.id.searchButton).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        ResultsFragment.this.restartLoader();
-                    }
+            new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Snackbar.make(rootView, "@string/history search_not_enabled",
+                        Snackbar.LENGTH_SHORT)
+                            .setAction("Action", null).show();
                 }
+            }
         );
-        */
+
+        /* TODO: add an EditText handler to trigger local history search */
 
         ListView productList = (ListView) rootView.findViewById(R.id.product_list);
         productList.setAdapter(productListAdapter);

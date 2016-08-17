@@ -66,13 +66,14 @@ public class MainActivity extends AppCompatActivity
         MobileAds.initialize(getApplicationContext(), getString(R.string.app_id));
 
         // See if activity was started by widget
-//        Intent intent = getIntent();
-//        if (intent != null) {
-//            Log.d(LOG_TAG, "in onCreate(), intent: " + intent.toString());
-//            String message = intent.getStringExtra(Constants.MESSAGE_KEY);
-//            if (message != null && message.equals(Constants.ACTION_SCAN_BARCODE)) {
-//                scanner = true;
-//        }}
+        Intent intent = getIntent();  // may not be needed here
+        if (intent != null) {
+            Log.d(LOG_TAG, "in onCreate(), intent: " + intent.toString());
+            String message = intent.getStringExtra(Constants.MESSAGE_KEY);
+            if (message != null && message.equals(Constants.ACTION_SCAN_BARCODE)) {
+                scanner = true;
+            }
+        }
 
         // messageReceiver catches barcode from service and a scan action from the widget
         messageReceiver = new MessageReceiver();
@@ -85,15 +86,9 @@ public class MainActivity extends AppCompatActivity
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.tab_container, tabPagerFragment).commit();
 
+            // Handle right-hand pane on dual-pane layouts
             if (isTablet) {
-                // The following hack, displaying a blank ProductFragment before a SplashFragment,
-                // makes the tablet version lay out more or less properly.
                 launchProductFragment(Constants.BARCODE_NONE);
-
-//                SplashFragment splashFragment = new SplashFragment();
-//                getSupportFragmentManager().beginTransaction()
-//                        .replace(R.id.right_pane_container, splashFragment).commit();
-
             }
 
             if (scanner) { launchScannerIntent(); }
@@ -166,9 +161,13 @@ public class MainActivity extends AppCompatActivity
 
             //noinspection SimplifiableIfStatement
             case R.id.action_login:
+                Snackbar.make(rootView, getString(R.string.no_login_yet), Snackbar.LENGTH_SHORT)
+                         .setAction("Action", null).show();
                 return true;
 
             case R.id.action_sensitivities:
+                Snackbar.make(rootView, getString(R.string.no_sensitivities_yet), Snackbar.LENGTH_SHORT)
+                        .setAction("Action", null).show();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -215,15 +214,16 @@ public class MainActivity extends AppCompatActivity
             }
 
             // Widget requesting a barcode scan
+            // TODO: widget's pendingIntent not being picked up here.
             if (intent.getStringExtra(Constants.MESSAGE_KEY).equals(Constants.ACTION_SCAN_BARCODE)) {
                 Log.d(LOG_TAG, "In MessageReceiver, launchScannerIntent() requested.");
 
                 // Refresh button listener.  Necessary?
-//                RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
-//                        R.layout.widget_layout);
-//                remoteViews.setOnClickPendingIntent(R.id.widgetButton,
-//                        EatSafeWidgetProvider.buildButtonPendingIntent(context));
-//                EatSafeWidgetProvider.pushWidgetUpdate(context.getApplicationContext(), remoteViews);
+                // RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
+                //             R.layout.widget_layout);
+                // remoteViews.setOnClickPendingIntent(R.id.widgetButton,
+                // EatSafeWidgetProvider.buildButtonPendingIntent(context));
+                // EatSafeWidgetProvider.pushWidgetUpdate(context.getApplicationContext(), remoteViews);
 
                 launchScannerIntent();
             }
@@ -233,6 +233,14 @@ public class MainActivity extends AppCompatActivity
     /* Receives intent results.  */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+
+        if (intent == null) {
+            Log.d(LOG_TAG, "in onActivityResult, null intent received");
+            Log.d(LOG_TAG, "   requestCode: " + requestCode);
+            Log.d(LOG_TAG, "   resultCode: " + resultCode);
+            return;
+        }
+
         Log.d(LOG_TAG, "requestCode: " + requestCode + "; resultCode: " + resultCode +
                 "; intent: " + intent.toString());
 
@@ -297,7 +305,8 @@ public class MainActivity extends AppCompatActivity
             }
 
             default: {
-                super.onActivityResult(requestCode, resultCode, intent);
+                Log.d(LOG_TAG, "Unexpected requestCode received: " + requestCode);
+                // super.onActivityResult(requestCode, resultCode, intent);
             }
         }
     }

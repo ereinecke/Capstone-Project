@@ -36,7 +36,6 @@ public class SearchFragment extends Fragment {
     private static final String LOG_TAG = SearchFragment.class.getSimpleName();
     private static final String BARCODE_CONTENT = "barcodeContent";
     private EditText barcodeView;
-    private ImageButton searchButton;
     private boolean startScan = false;
     private static View rootView;
 
@@ -78,7 +77,7 @@ public class SearchFragment extends Fragment {
                 });
 
         /* Search button */
-        searchButton = (ImageButton) rootView.findViewById(R.id.search_button);
+        ImageButton searchButton = (ImageButton) rootView.findViewById(R.id.search_button);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -41,11 +41,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:id="@+id/upload_imageView"
+                android:contentDescription="@string/product_images"
                 android:minHeight="@dimen/upload_image_height"
                 android:layout_weight="1"
                 android:scaleType="centerInside"
                 android:nestedScrollingEnabled="true"
-                android:adjustViewBounds="true"/>
+                android:adjustViewBounds="true"
+                tools:targetApi="lollipop" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 

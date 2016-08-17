@@ -41,7 +41,6 @@ public class EatSafeWidgetProvider extends AppWidgetProvider {
             // to the button
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
 
-            // TODO: widget not firing intent. Listener problem?
             views.setOnClickPendingIntent(R.id.widgetButton, pendingIntent);
 
             // Tell the AppWidgetManager to perform an update on the current app widget

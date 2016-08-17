@@ -14,7 +14,9 @@ android {
     }
 
     compileOptions {
+        //noinspection GroovyAssignabilityCheck
         sourceCompatibility JavaVersion.VERSION_1_7
+        //noinspection GroovyAssignabilityCheck
         targetCompatibility JavaVersion.VERSION_1_7
     }
     buildTypes {
