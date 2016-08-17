@@ -1,8 +1,12 @@
 *.iml
 .gradle
+gradle.properties
 /local.properties
 /.idea/workspace.xml
 /.idea/libraries
 .DS_Store
 /build
 /captures
+/keystore.properties
+app/libs/
+app/src/main/res/values-hdpi/
