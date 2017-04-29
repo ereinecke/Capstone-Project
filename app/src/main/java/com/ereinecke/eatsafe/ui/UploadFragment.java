@@ -123,7 +123,6 @@ public class UploadFragment extends Fragment {
             Bitmap imageBitmap = BitmapFactory.decodeFile(imageFile);
             uploadImageView.setImageBitmap(imageBitmap);
         }
-
     }
 
     public static void updateImageFromGallery(Uri imageUri) {
@@ -133,7 +132,6 @@ public class UploadFragment extends Fragment {
 
             uploadImageView.setImageURI(imageUri);
         }
-
     }
 
     @Override
@@ -148,7 +146,7 @@ public class UploadFragment extends Fragment {
             .setAction("Action", null).show();
     }
 
-    /* TODO: Guide user through taking three photos with appropriate prompts (front, ingredients, nutrition panel.)
+    /* TODO: Guide user through selecting three existing photos with appropriate prompts (front, ingredients, nutrition panel.)
      * temporarily using just one with key PHTOTO_TEST.
      */
     private void pickProductPhotos(int photo) {

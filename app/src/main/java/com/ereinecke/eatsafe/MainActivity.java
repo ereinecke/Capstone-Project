@@ -40,8 +40,6 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/* TODO: Need to tell users to provide Camera and Storage permissions on API > 23  */
-
 public class MainActivity extends AppCompatActivity
         implements Callback, PhotoRequest {
 
@@ -94,7 +92,6 @@ public class MainActivity extends AppCompatActivity
             if (scanner) { launchScannerIntent(); }
         }
     }
-
 
     @Override
     public void onResume() {

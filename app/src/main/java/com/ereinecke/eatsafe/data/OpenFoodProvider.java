@@ -38,7 +38,6 @@ public class OpenFoodProvider extends ContentProvider {
     // TODO: Add ingredients and allergens
     static {
         productFull = new SQLiteQueryBuilder();
-
     }
 
     private static UriMatcher buildUriMatcher() {

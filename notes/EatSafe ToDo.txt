@@ -1,0 +1,18 @@
+#EatSafe ToDos
+
+### Features
+- Set up a way to take or select and label three photos (front, ingredients, nutrition panel )
+- Get login working
+- Get upload working
+- Get 
+- Add flag to indicate uploaded product and username (new db version)
+- Card layout for ResultsFragment
+- Sensitivities - list of dietary issues
+- Add search to Results fragment (local data)
+
+###Documentation
+Update Readme.md
+
+###Environment
+- X jdk 1.8
+- X gradle

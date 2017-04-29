@@ -139,7 +139,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
 
     /* TODO: expand the text to include more product information
-    *  TODO: need to figure out how to se up a ShareActionProvider not as part of a menuItem */
+     * TODO: need to figure out how to se up a ShareActionProvider not as part of a menuItem */
     private void setShareActionProvider(String barcode) {
         if (shareActionProvider != null) {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
@@ -245,7 +245,6 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         sliderLayout.setCustomIndicator(pagerIndicator);
         sliderLayout.setDuration(R.integer.slider_delay);
         sliderLayout.startAutoCycle();
-
     }
 
     @Override
