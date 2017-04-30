@@ -40,16 +40,9 @@ android {
         targetCompatibility JavaVersion.VERSION_1_7
     }
 
-<<<<<<< HEAD
     packagingOptions {
         pickFirst  'META-INF/LICENSE'
-=======
-    /* To avoid duplicate license error from Jackson - not ideal */
-    packagingOptions {
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/NOTICE'
->>>>>>> bc590fed321abf3d4b2807b67df320340dcd4db5
-    }
+            }
 }
 
 ext {
