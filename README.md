@@ -3,8 +3,7 @@ EatSafe is an Android app, currently in alpha, aimed at travelers with dietary r
 
 The user will also also be able to upload new products to the Open Food Facts database, along with ingredient data and any warnings they may have about it. A key feature to be implemented in a future release will be the ability to translate ingredient lists from labels.
 
-
-
+![OpenFoodFacts logo](https://upload.wikimedia.org/wikipedia/commons/7/75/Open_Food_Facts_logo.svg)
 
 EatSafe is built with thanks to the following libraries:
 
@@ -15,3 +14,11 @@ EatSafe is built with thanks to the following libraries:
   - ZXing barcode https://github.com/zxing/zxing
   - Loyal Slider  https://github.com/jjhesk/LoyalNativeSlider
   - About Library  https://github.com/mikepenz/AboutLibraries
+  
+  Android components used in this app:
+  
+    - Material Design, including tab pager and bottom navigation
+    - Barcode scanning
+    - Widget to launch scan
+    - IntentService which pulls searched-for item from content resolver or REST call to openfoodfacts.org.
+    - ContentProvider, ContentResolver, Cursor, CursorAdapter to display previously recalled data.
