@@ -15,6 +15,7 @@ public class Constants {
     public static final String ACTION_SCAN_BARCODE   = "com.ereinecke.eatsafe.FETCH_SCAN";
     public static final String ACTION_FETCH_PRODUCT  = "com.ereinecke.eatsafe.services.action.FETCH_PRODUCT";
     public static final String ACTION_DELETE_PRODUCT = "com.ereinecke.eatsafe.services.action.DELETE_PRODUCT";
+    public static final String ACTION_UPLOAD = "com.ereinecke.eatsafe.ACTION_UPLOAD";
 
     // Camera & gallery constants
     public static final int CAMERA_IMAGE_REQUEST = 100;

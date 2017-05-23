@@ -3,6 +3,7 @@ package com.ereinecke.eatsafe.ui;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -22,6 +23,9 @@ import java.util.List;
  */
 public class TabPagerFragment extends Fragment {
 
+    private ViewGroup container;
+    private ViewPager viewPager;
+
 
     public TabPagerFragment() {
         // Required empty public constructor
@@ -33,7 +37,9 @@ public class TabPagerFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_tab_pager, container, false);
 
-        ViewPager viewPager = (ViewPager) view.findViewById(R.id.tab_pager_fragment);
+        this.container = container;
+
+        viewPager = (ViewPager) view.findViewById(R.id.tab_pager_fragment);
         setupViewPager(viewPager);
 
         TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tabs);
@@ -48,6 +54,18 @@ public class TabPagerFragment extends Fragment {
         adapter.addFragment(new UploadFragment(), getResources().getString(R.string.upload));
         adapter.addFragment(new ResultsFragment(), getResources().getString(R.string.results));
         viewPager.setAdapter(adapter);
+    }
+
+    public void setUploadFragment() {
+        // TODO: need to setCurrentItem on the viewPager but need to initialize outside of onCreateView()
+        // ?? Should i be doing this in onViewCreated()??
+        /*
+        if (viewPager == null) {
+            viewPager = (ViewPager) rootView.findViewById(R.id.tab_pager_fragment);
+            setupViewPager(viewPager);
+        }
+        viewPager.setCurrentItem(1);
+        */
     }
 
     class ViewPagerAdapter extends FragmentStatePagerAdapter {
@@ -78,5 +96,6 @@ public class TabPagerFragment extends Fragment {
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
         }
+
     }
 }

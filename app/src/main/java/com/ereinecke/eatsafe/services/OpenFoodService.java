@@ -151,11 +151,11 @@ public class OpenFoodService extends IntentService {
                     Log.d(LOG_TAG, "Product status: found");
                     productObject = productJson.getJSONObject(Constants.PRODUCT);
                 } else {
-                    // No product founjd
+                    // No product found
                     String result = getResources()
                             .getString(R.string.barcode_not_found);
                     Log.d(LOG_TAG, result);
-                    returnResult(result, -1L);
+                    returnResult(result, Constants.BARCODE_NOT_FOUND);
                     return false;
                 }
             }
@@ -203,10 +203,10 @@ public class OpenFoodService extends IntentService {
     }
 
     /*
- * getIngredients tries to handle the multilingual versions of product ingredients
- * Currently will try to get english, but will fall back to native language
- * TODO: decode and use "languages_tags"
- */
+     * getIngredients tries to handle the multilingual versions of product ingredients
+     * Currently will try to get english, but will fall back to native language
+     * TODO: decode and use "languages_tags"
+     */
     private String getIngredients(JSONObject product) {
         String languageCode = "en";
         String ingredients = "";

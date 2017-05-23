@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -24,6 +26,7 @@ import com.ereinecke.eatsafe.services.OpenFoodService;
 import com.ereinecke.eatsafe.ui.ProductFragment;
 import com.ereinecke.eatsafe.ui.SearchFragment;
 import com.ereinecke.eatsafe.ui.TabPagerFragment;
+import com.ereinecke.eatsafe.ui.UploadDialog;
 import com.ereinecke.eatsafe.ui.UploadFragment;
 import com.ereinecke.eatsafe.ui.UploadFragment.PhotoRequest;
 import com.ereinecke.eatsafe.util.App;
@@ -41,12 +44,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity
-        implements Callback, PhotoRequest {
+        implements Callback, PhotoRequest, UploadDialog.NoticeDialogListener  {
 
     private final static String LOG_TAG = MainActivity.class.getSimpleName();
     public static boolean isTablet = false;
+    private long barcode; // most recent scanned or entered barcode
     private String photoReceived;
     private View rootView;
+    private TabPagerFragment tabPagerFragment;
     private BroadcastReceiver messageReceiver;
     private final IntentFilter messageFilter = new IntentFilter(Constants.MESSAGE_EVENT);
 
@@ -109,12 +114,28 @@ public class MainActivity extends AppCompatActivity
     }
 
     // TODO: Need to make back arrow disappear when TabPagerFragment is showing.
-//    @Override
-//    public void onStart() {
-//
-//        super.onStart();
-//    }
+    //    @Override
+    //    public void onStart() {
+    //
+    //        super.onStart();
+    //    }
 
+
+    // The dialog fragment receives a reference to this Activity through the
+    // Fragment.onAttach() callback, which it uses to call the following methods
+    // defined by the NoticeDialogFragment.NoticeDialogListener interface
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+        // User touched the dialog's positive button
+        Log.d(LOG_TAG, "upload dialog positive click relayed to MainActivity");
+        launchUploadFragment();
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        // User touched the dialog's negative button
+        Log.d(LOG_TAG, "upload dialog negative click relayed to MainActivity");
+    }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -190,44 +211,48 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(LOG_TAG, "in onReceive(), intent: " + intent.toString());
+            Log.d(LOG_TAG, "in onReceive(), intent: " + intent.getAction().toString());
 
+            // Assume any other message key will be the barcode
             // Barcode returned from OpenFoodService
             if (intent.getAction().equals(Constants.MESSAGE_EVENT)) {
+
                 if (intent.getStringExtra(Constants.MESSAGE_KEY) != null) {
-                    long barcode = intent.getLongExtra(Constants.RESULT_KEY, Constants.BARCODE_NOT_FOUND);
+                    barcode = intent.getLongExtra(Constants.RESULT_KEY, Constants.BARCODE_NOT_FOUND);
                     String result = intent.getStringExtra(Constants.MESSAGE_KEY);
                     Log.d(LOG_TAG, "MessageReceiver result: " + result);
                     Snackbar.make(rootView, result, Snackbar.LENGTH_SHORT)
                             .setAction("Action", null).show();
 
-                    if (barcode != Constants.BARCODE_NOT_FOUND) {
-                        launchProductFragment(barcode);
+                    if (barcode == Constants.BARCODE_NOT_FOUND) {
+
+                        UploadDialog uploadDialog = new UploadDialog();
+                        uploadDialog.show(getSupportFragmentManager(), getString(R.string.upload));
+
                     } else {
-                        // TODO: Give user a dialog to launch UploadFragment
                         Log.d(LOG_TAG, "In MessageReceiver, no valid barcode received.");
                     }
                 }
-            }
 
-            // Widget requesting a barcode scan
-            // TODO: widget's pendingIntent not being picked up here.
-            if (intent.getStringExtra(Constants.MESSAGE_KEY).equals(Constants.ACTION_SCAN_BARCODE)) {
-                Log.d(LOG_TAG, "In MessageReceiver, launchScannerIntent() requested.");
+                // Widget requesting a barcode scan
+                // TODO: widget's pendingIntent not being picked up here.
+                if (intent.getStringExtra(Constants.MESSAGE_KEY).equals(Constants.ACTION_SCAN_BARCODE)) {
+                    Log.d(LOG_TAG, "In MessageReceiver, launchScannerIntent() requested.");
 
-                // Refresh button listener.  Necessary?
-                // RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
-                //             R.layout.widget_layout);
-                // remoteViews.setOnClickPendingIntent(R.id.widgetButton,
-                // EatSafeWidgetProvider.buildButtonPendingIntent(context));
-                // EatSafeWidgetProvider.pushWidgetUpdate(context.getApplicationContext(), remoteViews);
+                    // Refresh button listener.  Necessary?
+                    // RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
+                    //             R.layout.widget_layout);
+                    // remoteViews.setOnClickPendingIntent(R.id.widgetButton,
+                    // EatSafeWidgetProvider.buildButtonPendingIntent(context));
+                    // EatSafeWidgetProvider.pushWidgetUpdate(context.getApplicationContext(), remoteViews);
 
-                launchScannerIntent();
+                    launchScannerIntent();
+                }
             }
         }
     }
 
-    /* Receives intent results.  */
+    /* Receives intent results, either from OpenFoodService or EatSafeWidgetProvider  */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
 
@@ -322,6 +347,19 @@ public class MainActivity extends AppCompatActivity
         return photoReceived;
     }
 
+    /* Moves upload fragment to front
+     */
+    public void launchUploadFragment() {
+        Log.d(LOG_TAG, "in launchUploadFragment()");
+        if (findViewById(R.id.tab_container) != null) {
+
+            TabPagerFragment tabPagerFragment = new TabPagerFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.tab_container, tabPagerFragment).commit();
+            tabPagerFragment.setUploadFragment();
+        }
+    }
+
     public void launchProductFragment(long barcode) {
 
         if (!isTablet) {
@@ -409,6 +447,7 @@ public class MainActivity extends AppCompatActivity
             .replace(R.id.search_fragment, searchFragment).commit();
 
     }
+
 
     /** Returns a unique, opened file for image; sets photoReceived with filespec */
     public  File openOutputMediaFile(){

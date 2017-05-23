@@ -22,9 +22,11 @@
     <string name="gallery_button">Gallery</string>
     <string name="upload_button">Upload</string>
     <string name="scan_barcode">Scan Barcode</string>
+    <string name="cancel_button">Not Now</string>
 
     <!-- Prompts -->
     <string name="upload_prompt">Upload barcode and three product photos: front of package, ingredients list, and nutrition information.</string>
+    <string name="upload_dialog">Upload new product to OpenFoodFacts.org?</string>
     <string name="no_internet">Internet connection is required to look up product.</string>
     <string name="result_succeeded">Scan successful</string>
     <string name="result_failed">Scan failed</string>

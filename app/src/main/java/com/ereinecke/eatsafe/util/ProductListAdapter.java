@@ -3,6 +3,7 @@ package com.ereinecke.eatsafe.util;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,11 +48,15 @@ public class ProductListAdapter extends CursorAdapter {
 
         // TODO: Figure out how big to make the thumbnail, depends on listPreferredItemHeight
         String imgUrl = cursor.getString(cursor.getColumnIndex(OpenFoodContract.ProductEntry.IMAGE_URL));
-        Picasso.with(context).load(imgUrl)
-                // Want a square thumbnail: not sure how to get the right size
-                .resize(200, 200)
-                .centerCrop()
-                .into(viewHolder.productImage);
+        try {
+            Picasso.with(context).load(imgUrl)
+                    // Want a square thumbnail: not sure how to get the right size
+                    .resize(200, 200)
+                    .centerCrop()
+                    .into(viewHolder.productImage);
+        } catch (Exception e) {
+            Log.d(LOG_TAG,"Exception loading " + imgUrl + "; Stacktrace:\n" + e.getMessage());
+        }
 
         String productName = cursor.getString(cursor.getColumnIndex(OpenFoodContract.ProductEntry.PRODUCT_NAME));
         viewHolder.productName.setText(productName);

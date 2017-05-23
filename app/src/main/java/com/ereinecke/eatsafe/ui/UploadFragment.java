@@ -85,7 +85,8 @@ public class UploadFragment extends Fragment {
         bottomToolbar.restoreBottomNavigation(true);
 
         // Force the titles to be displayed (against Material Design guidelines!)
-        bottomToolbar.setForceTitlesDisplay(false);
+        // No longer a valid call with ahbottomnavigation 2.0.6
+        // bottomToolbar.setForceTitlesDisplay(false);
 
         // Force to tint the drawable (useful for font with icon for example)
         bottomToolbar.setForceTint(true);

@@ -103,7 +103,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
             bottomToolbar.restoreBottomNavigation(true);
 
             // Force the titles to be displayed (against Material Design guidelines!)
-            bottomToolbar.setForceTitlesDisplay(true);
+            // bottomToolbar.setForceTitlesDisplay(true);
 
             // Force to tint the drawable (useful for font with icon for example)
             bottomToolbar.setForceTint(true);

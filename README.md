@@ -15,10 +15,11 @@ EatSafe is built with thanks to the following libraries:
   - Loyal Slider  https://github.com/jjhesk/LoyalNativeSlider
   - About Library  https://github.com/mikepenz/AboutLibraries
   
-  Android components used in this app:
+Android components used in this app:
   
-    - Material Design, including tab pager and bottom navigation
-    - Barcode scanning
-    - Widget to launch scan
-    - IntentService which pulls searched-for item from content resolver or REST call to openfoodfacts.org.
-    - ContentProvider, ContentResolver, Cursor, CursorAdapter to display previously recalled data.
+  - Material Design, including tab pager and bottom navigation
+  - Barcode scanning
+  - Widget to launch scan
+  - AdMob ads via firebase-ads
+  - IntentService which pulls searched-for item from content resolver or REST call to openfoodfacts.org.
+  - ContentProvider, ContentResolver, Cursor, CursorAdapter to display previously recalled data.
