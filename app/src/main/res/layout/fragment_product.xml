@@ -1,192 +1,190 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:custom="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/product_fragment"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/product_fragment" >
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <com.aurelhubert.ahbottomnavigation.AHBottomNavigation
-        android:id="@+id/product_toolbar_bottom"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_alignParentStart="false"
-        android:layout_alignParentBottom="false"
-        android:layout_gravity="bottom"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-    <android.support.v4.widget.NestedScrollView
+    <ScrollView
+        android:id="@+id/productScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/productScrollView"
-        android:textAlignment="textStart"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:textAlignment="textStart">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <com.hkm.slider.SliderLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/results_slider_height"
                 android:id="@+id/results_slider"
-                custom:pager_animation_span="0"
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:background="@color/material_grey_100"
                 android:contentDescription="@string/product_images"
                 android:elevation="4dp"
+                custom:pager_animation_span="0"
                 tools:ignore="PrivateResource"
-                tools:targetApi="lollipop"
-                android:background="@color/material_grey_100" />
+                tools:targetApi="lollipop" />
 
             <com.hkm.slider.Indicators.PagerIndicator
                 android:id="@+id/custom_indicator"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:layout_gravity="center"
+                android:gravity="center"
                 custom:selected_color="@color/color_slider_selected"
-                custom:unselected_color="@color/color_slider_unselected"
-                custom:shape="rect"
+                custom:selected_height="@dimen/slider_indicator_size"
                 custom:selected_padding_left="@dimen/slider_indicator_padding"
                 custom:selected_padding_right="@dimen/slider_indicator_padding"
+                custom:selected_width="@dimen/slider_indicator_size"
+                custom:shape="rect"
+                custom:unselected_color="@color/color_slider_unselected"
+                custom:unselected_height="@dimen/slider_indicator_size"
                 custom:unselected_padding_left="@dimen/slider_indicator_padding"
                 custom:unselected_padding_right="@dimen/slider_indicator_padding"
-                custom:selected_width="@dimen/slider_indicator_size"
-                custom:selected_height="@dimen/slider_indicator_size"
-                custom:unselected_width="@dimen/slider_indicator_size"
-                custom:unselected_height="@dimen/slider_indicator_size" />
+                custom:unselected_width="@dimen/slider_indicator_size" />
 
             <!-- TODO: Go to a cards layout  -->
             <TextView
+                android:id="@+id/product_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/product_name"
-                android:id="@+id/product_name"
+                android:paddingBottom="4dp"
+                android:paddingEnd="@dimen/horizontal_padding"
+                android:paddingLeft="@dimen/horizontal_padding"
+                android:paddingRight="@dimen/horizontal_padding"
+                android:paddingStart="@dimen/horizontal_padding"
+                android:paddingTop="4dp"
                 android:textAlignment="textStart"
                 android:textSize="@dimen/abc_text_size_headline_material"
                 android:textStyle="bold"
-                tools:ignore="PrivateResource"
-                android:paddingLeft="@dimen/horizontal_padding"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
-                android:paddingRight="@dimen/horizontal_padding"
-                android:paddingEnd="@dimen/horizontal_padding"
-                android:paddingStart="@dimen/horizontal_padding" />
+                tools:ignore="PrivateResource" />
 
             <TextView
+                android:id="@+id/brands"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/brands"
-                android:id="@+id/brands"
+                android:paddingBottom="4dp"
+                android:paddingEnd="12dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingStart="12dp"
+                android:paddingTop="4dp"
                 android:textAlignment="textStart"
                 android:textSize="@dimen/abc_text_size_medium_material"
-                tools:ignore="PrivateResource"
-                android:paddingLeft="12dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
-                android:paddingRight="12dp"
-                android:paddingEnd="12dp"
-                android:paddingStart="12dp" />
+                tools:ignore="PrivateResource" />
 
             <TextView
-                tools:ignore="PrivateResource"
+                android:id="@+id/labels"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/labels"
-                android:id="@+id/labels"
+                android:paddingBottom="4dp"
+                android:paddingEnd="12dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingStart="12dp"
+                android:paddingTop="4dp"
                 android:textAlignment="textStart"
                 android:textSize="@dimen/abc_text_size_medium_material"
-                android:paddingLeft="12dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
-                android:paddingRight="12dp"
-                android:paddingEnd="12dp"
-                android:paddingStart="12dp" />
+                tools:ignore="PrivateResource" />
 
             <TextView
-                tools:ignore="PrivateResource"
+                android:id="@+id/serving_size"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/serving_size"
-                android:id="@+id/serving_size"
+                android:paddingBottom="4dp"
+                android:paddingEnd="12dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingStart="12dp"
+                android:paddingTop="4dp"
                 android:textAlignment="textStart"
                 android:textSize="@dimen/abc_text_size_medium_material"
-                android:paddingLeft="12dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
-                android:paddingRight="12dp"
-                android:paddingEnd="12dp"
-                android:paddingStart="12dp" />
+                tools:ignore="PrivateResource" />
 
             <TextView
+                android:id="@+id/allergens"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/allergens"
-                android:id="@+id/allergens"
+                android:paddingBottom="4dp"
+                android:paddingEnd="12dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingStart="12dp"
+                android:paddingTop="4dp"
                 android:textAlignment="textStart"
                 android:textSize="@dimen/abc_text_size_medium_material"
-                tools:ignore="PrivateResource"
-                android:paddingLeft="12dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
-                android:paddingRight="12dp"
-                android:paddingEnd="12dp"
-                android:paddingStart="12dp" />
+                tools:ignore="PrivateResource" />
 
             <TextView
+                android:id="@+id/ingredients"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/ingredients"
-                android:id="@+id/ingredients"
+                android:paddingBottom="4dp"
+                android:paddingEnd="12dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingStart="12dp"
+                android:paddingTop="4dp"
                 android:textAlignment="textStart"
                 android:textSize="@dimen/abc_text_size_medium_material"
-                tools:ignore="PrivateResource"
-                android:paddingLeft="12dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
-                android:paddingRight="12dp"
-                android:paddingEnd="12dp"
-                android:paddingStart="12dp" />
+                tools:ignore="PrivateResource" />
 
             <TextView
+                android:id="@+id/origins"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/origins"
-                android:id="@+id/origins"
+                android:paddingBottom="4dp"
+                android:paddingEnd="12dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingStart="12dp"
+                android:paddingTop="4dp"
                 android:textAlignment="textStart"
                 android:textSize="@dimen/abc_text_size_medium_material"
-                tools:ignore="PrivateResource"
-                android:paddingLeft="12dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
-                android:paddingRight="12dp"
-                android:paddingEnd="12dp"
-                android:paddingStart="12dp" />
+                tools:ignore="PrivateResource" />
 
             <TextView
-                tools:ignore="PrivateResource"
+                android:id="@+id/code"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/barcode"
-                android:id="@+id/code"
+                android:paddingBottom="4dp"
+                android:paddingEnd="12dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingStart="12dp"
+                android:paddingTop="4dp"
+                android:text="@string/barcode"
                 android:textAlignment="textStart"
                 android:textSize="@dimen/abc_text_size_medium_material"
-                android:text="@string/barcode"
-                android:paddingLeft="12dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
-                android:paddingRight="12dp"
-                android:paddingEnd="12dp"
-                android:paddingStart="12dp" />
+                tools:ignore="PrivateResource" />
 
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="60dp" />
 
         </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
-</android.support.design.widget.CoordinatorLayout>
+    </ScrollView>
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/product_toolbar_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        app:menu="@menu/product_actions_menu" />
+
+</RelativeLayout>

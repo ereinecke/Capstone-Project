@@ -9,6 +9,7 @@
     <string name="app_id">ca-app-pub-1510034946187205/3201777371</string>
 
     <!-- Menu actions -->
+    <string name="action_scan">Scan</string>
     <string name="action_login">Log In</string>
     <string name="action_sensitivities">Sensitivities</string>
 

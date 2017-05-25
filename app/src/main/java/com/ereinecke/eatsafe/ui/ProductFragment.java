@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -18,8 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.ereinecke.eatsafe.R;
 import com.ereinecke.eatsafe.data.OpenFoodContract;
 import com.ereinecke.eatsafe.util.Constants;
@@ -76,6 +73,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
             shareActionProvider = null;
         } else {
 
+            /*
             // Bottom toolbar
             AHBottomNavigation bottomToolbar =
                     (AHBottomNavigation) rootView.findViewById(R.id.product_toolbar_bottom);
@@ -130,9 +128,10 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
                     return true;
                 }
             });
-
+            */
             shareActionProvider = new ShareActionProvider(getActivity());
         }
+
 
         return rootView;
     }

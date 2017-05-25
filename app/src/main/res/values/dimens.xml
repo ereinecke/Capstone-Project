@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- in single-pane mode, the appbar should be collapsed -->
-    <dimen name="app_bar_height">120dp</dimen>
+    <dimen name="app_bar_height">60dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="horizontal_padding">24dp</dimen>
@@ -23,9 +23,9 @@
     <dimen name="slider_indicator_padding">4dp</dimen>
     <dimen name="widget_size">40dip</dimen>
 
-    <dimen name="appbar_logo_horizontal_padding">80dp</dimen>
-    <dimen name="appbar_logo_top_padding">40dp</dimen>
-    <dimen name="appbar_logo_bottom_padding">20dp</dimen>
+    <dimen name="appbar_logo_horizontal_padding">16dp</dimen>
+    <dimen name="appbar_logo_top_padding">0dp</dimen>
+    <dimen name="appbar_logo_bottom_padding">0dp</dimen>
     <dimen name="splash_margin">120dp</dimen>
 
 </resources>

@@ -14,7 +14,7 @@ android {
         minSdkVersion 17
         targetSdkVersion 25
         versionCode 1
-        versionName "0.5-beta"
+        versionName "0.6-alpha"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -42,11 +42,13 @@ android {
 
     packagingOptions {
         pickFirst  'META-INF/LICENSE'
-            }
+    }
 }
 
 ext {
     supportLibVersion = "25.3.1"
+    archLifecycleVersion = "1.0.0-alpha1"
+    archRoomVersion = "1.0.0-alpha1"
     jacksonLibVersion = "2.7.3"
     testLibVersion = "0.5"
 }
@@ -65,7 +67,14 @@ dependencies {
     compile "com.android.support:support-v13:${supportLibVersion}"
     compile "com.android.support:design:${supportLibVersion}"
     compile "com.android.support:support-v4:${supportLibVersion}"
-    compile 'com.google.firebase:firebase-ads:9.4.0'
+    compile 'com.google.firebase:firebase-ads:10.2.6'
+
+    /* Android architecture components introduced with O */
+    compile "android.arch.lifecycle:extensions:${archLifecycleVersion}";
+    compile "android.arch.persistence.room:runtime:${archRoomVersion}";
+    annotationProcessor "android.arch.lifecycle:compiler:${archLifecycleVersion}";
+    annotationProcessor "android.arch.persistence.room:compiler:${archRoomVersion}";
+
     /* Jackson for JSON */
     compile "com.fasterxml.jackson.core:jackson-core:${jacksonLibVersion}"
     compile "com.fasterxml.jackson.core:jackson-databind:${jacksonLibVersion}"
@@ -81,8 +90,8 @@ dependencies {
     }
     /* StreamProvider, workaround for FileProvider issues */
     compile 'com.commonsware.cwac:provider:0.4.0'
-    /* Material bottom toolbar */
-    compile 'com.aurelhubert:ahbottomnavigation:2.0.6'
+    /* Material bottom toolbar
+    compile 'com.aurelhubert:ahbottomnavigation:2.0.6' */
     /* Sugar ORM */
     compile 'com.github.satyan:sugar:1.5'
     /* ZXing barcode scanner */

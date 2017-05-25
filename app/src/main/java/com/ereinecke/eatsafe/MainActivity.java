@@ -12,7 +12,6 @@ import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -63,8 +62,9 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         rootView = findViewById(android.R.id.content);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         MobileAds.initialize(getApplicationContext(), getString(R.string.app_id));
 
@@ -177,6 +177,11 @@ public class MainActivity extends AppCompatActivity
                 fm.popBackStackImmediate();
                 return true;
 
+            case R.id.action_scan:
+                Snackbar.make(rootView,"Scan menu item not yet implemented.", Snackbar.LENGTH_SHORT)
+                        .setAction("Action", null).show();
+                return true;
+
             //noinspection SimplifiableIfStatement
             case R.id.action_login:
                 Snackbar.make(rootView, getString(R.string.no_login_yet), Snackbar.LENGTH_SHORT)
@@ -205,13 +210,14 @@ public class MainActivity extends AppCompatActivity
     }
     
     /* MessageReceiver is listening for an intent from OpenFoodService, containing a product
-     *   barcode
+     *   barcode.
      */
+
     private class MessageReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(LOG_TAG, "in onReceive(), intent: " + intent.getAction().toString());
+            Log.d(LOG_TAG, "in onReceive(), intent: " + intent.getAction());
 
             // Assume any other message key will be the barcode
             // Barcode returned from OpenFoodService
@@ -233,26 +239,12 @@ public class MainActivity extends AppCompatActivity
                         Log.d(LOG_TAG, "In MessageReceiver, no valid barcode received.");
                     }
                 }
-
-                // Widget requesting a barcode scan
-                // TODO: widget's pendingIntent not being picked up here.
-                if (intent.getStringExtra(Constants.MESSAGE_KEY).equals(Constants.ACTION_SCAN_BARCODE)) {
-                    Log.d(LOG_TAG, "In MessageReceiver, launchScannerIntent() requested.");
-
-                    // Refresh button listener.  Necessary?
-                    // RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
-                    //             R.layout.widget_layout);
-                    // remoteViews.setOnClickPendingIntent(R.id.widgetButton,
-                    // EatSafeWidgetProvider.buildButtonPendingIntent(context));
-                    // EatSafeWidgetProvider.pushWidgetUpdate(context.getApplicationContext(), remoteViews);
-
-                    launchScannerIntent();
-                }
             }
         }
     }
 
     /* Receives intent results, either from OpenFoodService or EatSafeWidgetProvider  */
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
 
@@ -262,7 +254,6 @@ public class MainActivity extends AppCompatActivity
             Log.d(LOG_TAG, "   resultCode: " + resultCode);
             return;
         }
-
         Log.d(LOG_TAG, "requestCode: " + requestCode + "; resultCode: " + resultCode +
                 "; intent: " + intent.toString());
 
@@ -347,8 +338,8 @@ public class MainActivity extends AppCompatActivity
         return photoReceived;
     }
 
-    /* Moves upload fragment to front
-     */
+    /* Moves upload fragment to front   */
+    // TODO: not functioning
     public void launchUploadFragment() {
         Log.d(LOG_TAG, "in launchUploadFragment()");
         if (findViewById(R.id.tab_container) != null) {
@@ -450,7 +441,8 @@ public class MainActivity extends AppCompatActivity
 
 
     /** Returns a unique, opened file for image; sets photoReceived with filespec */
-    public  File openOutputMediaFile(){
+
+    public File openOutputMediaFile(){
 
         String appName = App.getContext().getString(R.string.app_name);
         if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
