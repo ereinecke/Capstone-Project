@@ -24,6 +24,7 @@ import com.commonsware.cwac.provider.StreamProvider;
 import com.ereinecke.eatsafe.services.OpenFoodService;
 import com.ereinecke.eatsafe.ui.ProductFragment;
 import com.ereinecke.eatsafe.ui.SearchFragment;
+import com.ereinecke.eatsafe.ui.SplashFragment;
 import com.ereinecke.eatsafe.ui.TabPagerFragment;
 import com.ereinecke.eatsafe.ui.UploadDialog;
 import com.ereinecke.eatsafe.ui.UploadFragment;
@@ -78,20 +79,21 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
-        // messageReceiver catches barcode from service and a scan action from the widget
+        // messageReceiver catches barcode from service
         messageReceiver = new MessageReceiver();
 
         isTablet = (findViewById(R.id.dual_pane) != null);
 
         if (findViewById(R.id.tab_container) != null) {
 
-            TabPagerFragment tabPagerFragment = new TabPagerFragment();
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.tab_container, tabPagerFragment).commit();
+                    .replace(R.id.tab_container, new TabPagerFragment()).commit();
 
             // Handle right-hand pane on dual-pane layouts
             if (isTablet) {
-                launchProductFragment(Constants.BARCODE_NONE);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.right_pane_container, new SplashFragment())
+                        .commit();
             }
 
             if (scanner) { launchScannerIntent(); }
@@ -178,8 +180,7 @@ public class MainActivity extends AppCompatActivity
                 return true;
 
             case R.id.action_scan:
-                Snackbar.make(rootView,"Scan menu item not yet implemented.", Snackbar.LENGTH_SHORT)
-                        .setAction("Action", null).show();
+                launchScannerIntent();
                 return true;
 
             //noinspection SimplifiableIfStatement
@@ -355,9 +356,9 @@ public class MainActivity extends AppCompatActivity
 
         if (!isTablet) {
             // Turn on back button in ActionBar
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-            setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            // setSupportActionBar(toolbar);
+
         }
 
         // Pass barcode to ProductFragment

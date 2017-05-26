@@ -2,6 +2,7 @@
 <resources>
     <color name="colorPrimary">#4cb748</color>
     <color name="colorPrimaryDark">#2d8941</color>
+    <color name="textColorPrimary">#dddddd</color>
     <color name="colorAccent">#cd6a82</color>
     <color name="colorTabs">#949D93</color>
     <color name="colorTabIndicators">#99DDDDDD</color>
@@ -11,7 +12,7 @@
     <color name="colorLoadToastText">#DDDDDD</color>
     <color name="colorLoadToastProgress">@color/colorAccent</color>
     <color name="image_background">#DDDDDD</color>
-    <color name="white">#FFFFFF</color>
+    <color name="white">#ffffff</color>
     <color name="color_slider_selected">@color/colorAccent</color>
     <color name="color_slider_unselected">#55333333</color>
     <color name="transparent">#00000000</color>

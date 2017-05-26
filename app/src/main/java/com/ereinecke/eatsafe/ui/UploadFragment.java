@@ -6,9 +6,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -25,6 +28,7 @@ public class UploadFragment extends Fragment {
     private static final String LOG_TAG = UploadFragment.class.getSimpleName();
     private PhotoRequest photoRequest;
     private String mCurrentPhoto;
+    private BottomNavigationView bottomNavigation;
     private static View rootView;
     private static ImageView uploadImageView;
 
@@ -48,10 +52,29 @@ public class UploadFragment extends Fragment {
             // Inflate the layout for this fragment
             rootView = inflater.inflate(R.layout.fragment_upload, container, false);
             uploadImageView = (ImageView) rootView.findViewById(R.id.upload_imageView);
-        }
+            bottomNavigation = (BottomNavigationView) rootView.findViewById(R.id.upload_toolbar_bottom);
+            // May not be necessary, specified in layout file:
+            // bottomNavigation.inflateMenu(R.menu.upload_actions_menu);
+            bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                    switch (menuItem.getItemId()) {
+                        case R.id.action_camera:
+                            takeProductPhotos(Constants.PHOTO_TEST);
+                            break;
+                        case R.id.action_gallery:
+                            pickProductPhotos(Constants.PHOTO_TEST);
+                            break;
+                        case R.id.action_upload:
+                            uploadProductInfo();
+                            break;
+                    }
+                    return true;
+                }
+                });
+            };
 
         return rootView;
-
     }
 
 
@@ -87,7 +110,7 @@ public class UploadFragment extends Fragment {
     }
 
     /* TODO: Guide user through selecting three existing photos with appropriate prompts (front, ingredients, nutrition panel.)
-     * temporarily using just one with key PHTOTO_TEST.
+     * temporarily using just one with key PHOTO_TEST.
      */
     private void pickProductPhotos(int photo) {
         mCurrentPhoto = photoRequest.PhotoRequest(Constants.GALLERY_IMAGE_REQUEST, photo);

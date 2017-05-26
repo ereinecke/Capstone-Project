@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -13,6 +16,7 @@ import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -37,6 +41,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     private final static String LOG_TAG = ProductFragment.class.getSimpleName();
     private static final int LOADER_ID = 1;
     private String barcode;
+    private BottomNavigationView bottomNavigation;
     private View rootView;
     private ShareActionProvider shareActionProvider;
 
@@ -72,73 +77,36 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
             clearProductFragment(true);
             shareActionProvider = null;
         } else {
-
-            /*
-            // Bottom toolbar
-            AHBottomNavigation bottomToolbar =
-                    (AHBottomNavigation) rootView.findViewById(R.id.product_toolbar_bottom);
-            AHBottomNavigationItem shareButton = new AHBottomNavigationItem(R.string.share,
-                    R.drawable.ic_share_black_24dp, R.color.letterwhite);
-            AHBottomNavigationItem deleteButton = new AHBottomNavigationItem(R.string.delete,
-                    R.drawable.ic_delete_black_24dp, R.color.letterwhite);
-
-            // Add items
-            bottomToolbar.removeAllItems();
-            bottomToolbar.addItem(shareButton);
-            bottomToolbar.addItem(deleteButton);
-
-            // Set background color
-            bottomToolbar.setDefaultBackgroundColor(getResources().getColor(R.color.colorTabs));
-
-            // Change colors
-            bottomToolbar.setAccentColor(getResources().getColor(R.color.colorSelectedButton));
-            bottomToolbar.setInactiveColor(getResources().getColor(R.color.colorInactiveButton));
-
-            // Disable the translation inside the CoordinatorLayout
-            bottomToolbar.setBehaviorTranslationEnabled(false);
-
-            // Force toolbar to be shown
-            bottomToolbar.restoreBottomNavigation(true);
-
-            // Force the titles to be displayed (against Material Design guidelines!)
-            // bottomToolbar.setForceTitlesDisplay(true);
-
-            // Force to tint the drawable (useful for font with icon for example)
-            bottomToolbar.setForceTint(true);
-
-            // Set listeners
-            bottomToolbar.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
+            bottomNavigation = (BottomNavigationView) rootView.findViewById(R.id.product_toolbar_bottom);
+            // May not be necessary, specified in layout file:
+            // bottomNavigation.inflateMenu(R.menu.upload_actions_menu);
+            bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
-                public boolean onTabSelected(int position, boolean wasSelected) {
-                    switch (position) {
-                        case Constants.PRODUCT_SHARE_BUTTON:
-                            Log.d(LOG_TAG, "Pressed share button.");
+                public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                    switch (menuItem.getItemId()) {
+                        case R.id.action_share:
+                            Log.d(LOG_TAG, "Pressed share button");
                             setShareActionProvider(barcode);
                             break;
-                        case Constants.PRODUCT_DELETE_BUTTON:
-                            Log.d(LOG_TAG, "Pressed delete button.");
-                            Snackbar.make(rootView, "Product delete not yet implemented",
+                        case R.id.action_delete:
+                            Log.d(LOG_TAG, "Pressed delete button");
+                            Snackbar.make(rootView, getString(R.string.no_delete_yet),
                                     Snackbar.LENGTH_SHORT)
-                                    .setAction("Action", null).show();
-                            break;
-                        default:
-                            Log.d(LOG_TAG, "Unexpected button pressed in bottom navigation.");
+                                    .setAction("Action",null)
+                                    .show();
                             break;
                     }
                     return true;
                 }
             });
-            */
+        };
             shareActionProvider = new ShareActionProvider(getActivity());
-        }
-
-
         return rootView;
     }
 
 
     /* TODO: expand the text to include more product information
-     * TODO: need to figure out how to se up a ShareActionProvider not as part of a menuItem */
+     * TODO: need to figure out how to set up a ShareActionProvider not as part of a menuItem */
     private void setShareActionProvider(String barcode) {
         if (shareActionProvider != null) {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);

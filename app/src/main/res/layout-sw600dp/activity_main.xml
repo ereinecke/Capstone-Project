@@ -24,26 +24,26 @@
         android:paddingTop="@dimen/appbar_logo_top_padding"
         tools:ignore="RtlSymmetry" />
 
+
+    <!--
+    This layout is a two-pane layout for the Items master/detail flow.
+    -->
     <android.support.v7.widget.Toolbar
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/app_bar_height"
         android:background="@color/colorPrimary"
         android:elevation="6dp"
-        app:popupTheme="@style/AppTheme.AppBarOverlay" />
+        app:popupTheme="@style/AppTheme.AppBarOverlay"
+        tools:targetApi="LOLLIPOP" />
 
-
-    <!--
-    This layout is a two-pane layout for the Items master/detail flow.
-    -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/app_bar"
         android:baselineAligned="false"
         android:divider="?android:attr/dividerVertical"
-        android:orientation="horizontal"
-        tools:context="com.ereinecke.eatsafe.MainActivity">
+        android:orientation="horizontal" >
 
         <FrameLayout
             android:id="@+id/tab_container"
