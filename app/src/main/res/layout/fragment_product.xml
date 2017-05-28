@@ -27,7 +27,9 @@
                 android:background="@color/material_grey_100"
                 android:contentDescription="@string/product_images"
                 android:elevation="4dp"
-                custom:pager_animation_span="0"
+                custom:pager_animation_span="500"
+                custom:auto_cycle="true"
+                custom:slider_side_buttons="true"
                 tools:ignore="PrivateResource"
                 tools:targetApi="lollipop" />
 
@@ -186,6 +188,7 @@
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
         android:background="@color/colorTabs"
+        app:elevation="8dp"
         app:itemIconTint="@color/textColorPrimary"
         app:itemTextColor="@color/textColorPrimary"
         app:menu="@menu/product_actions_menu" />

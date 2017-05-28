@@ -226,7 +226,7 @@ public class OpenFoodService extends IntentService {
     /* Broadcast Intent to MainActivity.MessageReceiver with barcode */
     private void returnResult(String message, long productId) {
         Intent messageIntent = new Intent(Constants.MESSAGE_EVENT);
-        messageIntent.putExtra(Constants.MESSAGE_KEY, message);
+        messageIntent.putExtra(Constants.MESSAGE_KEY, Constants.BARCODE_KEY);
         messageIntent.putExtra(Constants.RESULT_KEY, productId);
         LocalBroadcastManager.getInstance(getApplicationContext())
                 .sendBroadcast(messageIntent);

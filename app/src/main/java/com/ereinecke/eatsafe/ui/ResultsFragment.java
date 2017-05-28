@@ -117,7 +117,7 @@ public class ResultsFragment extends Fragment implements LoaderManager.LoaderCal
         return rootView;
     }
 
-    private void restartLoader() {
+    public void restartLoader() {
         getLoaderManager().restartLoader(LOADER_ID, null, this);
     }
 

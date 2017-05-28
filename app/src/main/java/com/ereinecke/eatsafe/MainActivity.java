@@ -44,11 +44,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity
-        implements Callback, PhotoRequest, UploadDialog.NoticeDialogListener  {
+        implements Callback, PhotoRequest,
+        UploadDialog.NoticeDialogListener {
+    // DeleteDialog.NoticeDialogListenter, {
 
     private final static String LOG_TAG = MainActivity.class.getSimpleName();
     public static boolean isTablet = false;
-    private long barcode; // most recent scanned or entered barcode
+    private long barcode = Constants.BARCODE_NONE; // most recent scanned or entered barcode
+    private int currentFragment = 0;
     private String photoReceived;
     private View rootView;
     private TabPagerFragment tabPagerFragment;
@@ -58,8 +61,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        boolean scanner = false;
         super.onCreate(savedInstanceState);
+
+        boolean scanner = false;
+
         setContentView(R.layout.activity_main);
         rootView = findViewById(android.R.id.content);
 
@@ -79,24 +84,30 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
-        // messageReceiver catches barcode from service
+        // messageReceiver catches barcode from service or fragment display requests.
         messageReceiver = new MessageReceiver();
 
         isTablet = (findViewById(R.id.dual_pane) != null);
 
         if (findViewById(R.id.tab_container) != null) {
 
+            Bundle bundle = new Bundle();
+            bundle.putInt(Constants.CURRENT_FRAGMENT, currentFragment);
+            tabPagerFragment = new TabPagerFragment();
+            tabPagerFragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.tab_container, new TabPagerFragment()).commit();
 
             // Handle right-hand pane on dual-pane layouts
-            if (isTablet) {
+            if (isTablet && (savedInstanceState == null)) {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.right_pane_container, new SplashFragment())
                         .commit();
             }
 
-            if (scanner) { launchScannerIntent(); }
+            if (scanner) {
+                launchScannerIntent();
+            }
         }
     }
 
@@ -122,6 +133,21 @@ public class MainActivity extends AppCompatActivity
     //        super.onStart();
     //    }
 
+    /* Not sure this is needed */
+    @Override
+    public void onBackPressed() {
+
+        int count = getFragmentManager().getBackStackEntryCount();
+        Log.d(LOG_TAG, "BackStackEntryCount: "+ count);
+
+        if (count == 0) {
+            super.onBackPressed();
+            //additional code
+        } else {
+            getFragmentManager().popBackStack();
+        }
+
+    }
 
     // The dialog fragment receives a reference to this Activity through the
     // Fragment.onAttach() callback, which it uses to call the following methods
@@ -143,6 +169,7 @@ public class MainActivity extends AppCompatActivity
     public void onSaveInstanceState(Bundle savedInstanceState) {
 
         savedInstanceState.putString(Constants.CURRENT_PHOTO, photoReceived);
+        savedInstanceState.putInt(Constants.CURRENT_FRAGMENT, currentFragment);
 
         super.onSaveInstanceState(savedInstanceState);
     }
@@ -154,6 +181,7 @@ public class MainActivity extends AppCompatActivity
         super.onRestoreInstanceState(savedInstanceState);
 
         savedInstanceState.getString(Constants.CURRENT_PHOTO);
+        savedInstanceState.getIntegerArrayList(Constants.CURRENT_FRAGMENT);
     }
 
     @Override
@@ -186,7 +214,7 @@ public class MainActivity extends AppCompatActivity
             //noinspection SimplifiableIfStatement
             case R.id.action_login:
                 Snackbar.make(rootView, getString(R.string.no_login_yet), Snackbar.LENGTH_SHORT)
-                         .setAction("Action", null).show();
+                        .setAction("Action", null).show();
                 return true;
 
             case R.id.action_sensitivities:
@@ -204,14 +232,15 @@ public class MainActivity extends AppCompatActivity
         try {
             long productId = Long.parseLong(barcode);
             launchProductFragment(productId);
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             Log.e(LOG_TAG, "Selected item contains unparseable barcode: " + barcode);
             Log.e(LOG_TAG, e.toString());
         }
     }
     
-    /* MessageReceiver is listening for an intent from OpenFoodService, containing a product
-     *   barcode.
+    /* MessageReceiver is listening for any of the following:
+     *   - an intent from OpenFoodService, containing a product barcode and a result string.
+     *   - intents from various fragments, requesting that other fragments be displayed.
      */
 
     private class MessageReceiver extends BroadcastReceiver {
@@ -224,27 +253,56 @@ public class MainActivity extends AppCompatActivity
             // Barcode returned from OpenFoodService
             if (intent.getAction().equals(Constants.MESSAGE_EVENT)) {
 
-                if (intent.getStringExtra(Constants.MESSAGE_KEY) != null) {
-                    barcode = intent.getLongExtra(Constants.RESULT_KEY, Constants.BARCODE_NOT_FOUND);
-                    String result = intent.getStringExtra(Constants.MESSAGE_KEY);
-                    Log.d(LOG_TAG, "MessageReceiver result: " + result);
-                    Snackbar.make(rootView, result, Snackbar.LENGTH_SHORT)
-                            .setAction("Action", null).show();
+                String messageKey = intent.getStringExtra(Constants.MESSAGE_KEY);
+                Log.d(LOG_TAG, "messageKey: " + messageKey);
 
-                    if (barcode == Constants.BARCODE_NOT_FOUND) {
+                switch (messageKey) {
 
-                        UploadDialog uploadDialog = new UploadDialog();
-                        uploadDialog.show(getSupportFragmentManager(), getString(R.string.upload));
+                    case Constants.BARCODE_KEY:
+                        barcode = intent.getLongExtra(Constants.RESULT_KEY, Constants.BARCODE_NOT_FOUND);
 
-                    } else {
-                        Log.d(LOG_TAG, "In MessageReceiver, no valid barcode received.");
-                    }
+                        Log.d(LOG_TAG, "MessageReceiver result: " + messageKey);
+                        Snackbar.make(rootView, messageKey, Snackbar.LENGTH_SHORT)
+                                .setAction("Action", null).show();
+
+                        if (barcode == Constants.BARCODE_NOT_FOUND) {
+                            launchSplashFragment();
+                            UploadDialog uploadDialog = new UploadDialog();
+                            uploadDialog.show(getSupportFragmentManager(), getString(R.string.upload));
+
+                        } else {
+                            launchProductFragment(barcode);
+                        }
+                        break;
+                    case Constants.ACTION_BACK_PRESS:
+                        onBackPressed();
+                        break;
+
+                    case Constants.ACTION_UPLOAD_FRAGMENT:
+                        launchUploadFragment();
+                        break;
+
+                    case Constants.ACTION_RESULTS_FRAGMENT:
+                        launchResultsFragment();
+                        break;
+
+                    case Constants.ACTION_PRODUCT_FRAGMENT:
+                        launchProductFragment(barcode);
+                        break;
+
+                    case Constants.ACTION_SEARCH_FRAGMENT:
+                        // launchSearchFragment();
+                        break;
+
+                    case Constants.ACTION_SPLASH_FRAGMENT:
+                        launchSplashFragment();
+                        break;
                 }
             }
         }
     }
 
-    /* Receives intent results, either from OpenFoodService or EatSafeWidgetProvider  */
+    /* Receives intent results from activities such as Camera, Gallery or Scanner  */
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -270,7 +328,7 @@ public class MainActivity extends AppCompatActivity
                         String barcode = result.getContents();
                         if (result.getContents() == null) {
                             Snackbar.make(rootView, getString(R.string.result_failed), Snackbar.LENGTH_SHORT)
-                            .setAction("Action", null).show();
+                                    .setAction("Action", null).show();
                         } else {
                             Log.d(LOG_TAG, "Scan result: " + result.toString());
                             // Have a (potentially) valid barcode, update text view and fetch product info
@@ -325,6 +383,10 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public long getBarcode() {
+        return barcode;
+    }
+
     @Override
     public String PhotoRequest(int source, int photo) {
 
@@ -340,26 +402,36 @@ public class MainActivity extends AppCompatActivity
     }
 
     /* Moves upload fragment to front   */
-    // TODO: not functioning
-    public void launchUploadFragment() {
+    private void launchUploadFragment() {
         Log.d(LOG_TAG, "in launchUploadFragment()");
         if (findViewById(R.id.tab_container) != null) {
 
+            Bundle bundle = new Bundle();
+            bundle.putInt(Constants.CURRENT_FRAGMENT, Constants.FRAG_UPLOAD);
             TabPagerFragment tabPagerFragment = new TabPagerFragment();
+            tabPagerFragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.tab_container, tabPagerFragment).commit();
-            tabPagerFragment.setUploadFragment();
         }
+
     }
 
-    public void launchProductFragment(long barcode) {
+    /* Moves results fragment to front   */
+    private void launchResultsFragment() {
+        Log.d(LOG_TAG, "in launchResultsFragment()");
+        if (findViewById(R.id.tab_container) != null) {
 
-        if (!isTablet) {
-            // Turn on back button in ActionBar
-            // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-            // setSupportActionBar(toolbar);
-
+            Bundle bundle = new Bundle();
+            bundle.putInt(Constants.CURRENT_FRAGMENT, Constants.FRAG_RESULTS);
+            TabPagerFragment tabPagerFragment = new TabPagerFragment();
+            tabPagerFragment.setArguments(bundle);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.tab_container, tabPagerFragment).commit();
         }
+
+    }
+
+    private void launchProductFragment(long barcode) {
 
         // Pass barcode to ProductFragment
         if (barcode != Constants.BARCODE_NOT_FOUND) {
@@ -379,9 +451,35 @@ public class MainActivity extends AppCompatActivity
             } else {  // productFragment replaces splashFragment
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.right_pane_container, ProductFragment)
+                        .addToBackStack(null)
                         .commit();
             }
+        } else {
+            Log.d(LOG_TAG, "Barcode not found, not launching product fragment.");
         }
+    }
+
+    /* Puts up launchFragment.  Should only do in dual-pane mode, otherwise only menu items are
+     * available.
+     */
+    private void launchSplashFragment() {
+        // Handle right-hand pane on dual-pane layouts
+        if (isTablet) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.right_pane_container, new SplashFragment())
+                    .commit();
+        } else {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.tab_container, new SplashFragment())
+                    .commit();
+        }
+    }
+
+
+
+    /* updates history list and brings ResultsFragment tab to the front in dual-pane mode */
+    public void updateResultsFragment() {
+
     }
 
     public void launchPhotoIntent(int whichPhoto) {

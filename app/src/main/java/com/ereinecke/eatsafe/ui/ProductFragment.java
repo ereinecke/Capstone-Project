@@ -1,5 +1,6 @@
 package com.ereinecke.eatsafe.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
@@ -10,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.widget.ShareActionProvider;
 import android.text.Html;
@@ -21,8 +23,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ereinecke.eatsafe.MainActivity;
 import com.ereinecke.eatsafe.R;
 import com.ereinecke.eatsafe.data.OpenFoodContract;
+import com.ereinecke.eatsafe.util.App;
 import com.ereinecke.eatsafe.util.Constants;
 import com.hkm.slider.Animations.DescriptionAnimation;
 import com.hkm.slider.Indicators.PagerIndicator;
@@ -42,6 +46,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     private static final int LOADER_ID = 1;
     private String barcode;
     private BottomNavigationView bottomNavigation;
+    private Context mContext;
     private View rootView;
     private ShareActionProvider shareActionProvider;
 
@@ -52,6 +57,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     @SuppressWarnings("EmptyMethod")
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        mContext = App.getContext();
         super.onCreate(savedInstanceState);
     }
 
@@ -65,7 +71,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_product, container, false);
 
-        Bundle args = getArguments();
+        final Bundle args = getArguments();
 
         if (args != null) {
             showBlankFragment = (args.getLong(Constants.BARCODE_KEY) == Constants.BARCODE_NONE);
@@ -74,7 +80,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         }
 
         if (showBlankFragment) {
-            clearProductFragment(true);
+            clearProductFragment();
             shareActionProvider = null;
         } else {
             bottomNavigation = (BottomNavigationView) rootView.findViewById(R.id.product_toolbar_bottom);
@@ -90,7 +96,8 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
                             break;
                         case R.id.action_delete:
                             Log.d(LOG_TAG, "Pressed delete button");
-                            Snackbar.make(rootView, getString(R.string.no_delete_yet),
+                            deleteItem(barcode);
+                            Snackbar.make(rootView, getString(R.string.deleted, barcode),
                                     Snackbar.LENGTH_SHORT)
                                     .setAction("Action",null)
                                     .show();
@@ -105,29 +112,22 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
 
-    /* TODO: expand the text to include more product information
-     * TODO: need to figure out how to set up a ShareActionProvider not as part of a menuItem */
-    private void setShareActionProvider(String barcode) {
-        if (shareActionProvider != null) {
-            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
-            }
-            shareIntent.setType("text/plain");
-            shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text) + barcode);
-            shareActionProvider.setShareIntent(shareIntent);
-        }
-    }
-
-
-    // private void restartLoader() {
-    //    getLoaderManager().restartLoader(LOADER_ID, null, this);
-    // }
+     private void restartLoader() {
+        getLoaderManager().restartLoader(LOADER_ID, null, this);
+     }
 
     @Override
     public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        long barcode = args.getLong(Constants.BARCODE_KEY);
+        long barcode;
+
+        /* In case there are no args, for example, on a refresh */
+        try {
+            barcode = args.getLong(Constants.BARCODE_KEY);
+        } catch (Exception e) {
+            barcode = Constants.BARCODE_NONE;
+            Log.d(LOG_TAG,"No barcode requested, should return nothing.");
+        }
         String barcodeStr = Long.toString(barcode);
 
         return new CursorLoader(
@@ -188,9 +188,10 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         ArrayList<AdjustableSlide> list = new ArrayList<>();
 
         // TODO: If there are no product images, substitute OpenFoodFacts logo
+        // TODO: or collapse slider view
         if (urlImages.size() == 0) {
             Log.d(LOG_TAG, "No images found.");
-            showOFFLogo();
+            // showOFFLogo();
         } else {
             for (int i = 0; i < urlImages.size(); i++) {
                 String imgUrl = urlImages.get(i);
@@ -219,65 +220,30 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
     }
 
-    /* Clears text fields in ProductFragment.  if offLogo == true, the OpenFoodFacts logo will be
-     * placed into the slider
+    /* In double-pane mode, asks MainActivity to replace this fragment with Splash Fragment.
+     * In single-pane mode, pops this ProductFragment off the stack.
      */
-    private void clearProductFragment(boolean offLogo) {
+    private void clearProductFragment() {
 
-        ((TextView) rootView.findViewById(R.id.code)).setText(" ");
-        ((TextView) rootView.findViewById(R.id.product_name)).setText(" ");
-        ((TextView) rootView.findViewById(R.id.brands)).setText(" ");
-        ((TextView) rootView.findViewById(R.id.serving_size)).setText(" ");
-        ((TextView) rootView.findViewById(R.id.labels)).setText(" ");
-        ((TextView) rootView.findViewById(R.id.allergens)).setText(" ");
-        ((TextView) rootView.findViewById(R.id.ingredients)).setText(" ");
-        ((TextView) rootView.findViewById(R.id.origins)).setText(" ");
-        if (offLogo) {
-            showOFFLogo();
+        if (MainActivity.isTablet) {
+            requestSplashFragment();
+        } else {
+            /* We want a back press here to pop the productFragment off the backstack. */
+            requestBackPress();
         }
     }
 
-    /* Sets slider to show OpenFoodFacts logo */
-    private void showOFFLogo() {
+    /* removes the current item from the database */
+    private void deleteItem(String barcode) {
 
-        // TODO: this causes the slider to crash - temporarily disabling
-        if (false) {
-            // Load drawables into slider by their R.drawable. references
-            ArrayList<Integer> logoImages = new ArrayList<>();
-            logoImages.add(R.drawable.openfoodfacts_logo_356);
-
-            ArrayList<AdjustableSlide> list = new ArrayList<>();
-
-            if (logoImages.size() == 0) {
-                Log.d(LOG_TAG, "No images found in showOFFLogo().");
-
-            } else {
-                for (int i = 0; i < logoImages.size(); i++) {
-                    Integer logo = logoImages.get(i);
-
-                    // Some images may not be present
-                    if (logo != null) {
-                        Log.d(LOG_TAG, "Calling image #" + logo);
-                        AdjustableSlide sliderView = new AdjustableSlide(getContext());
-                        sliderView
-                                .image(logoImages.get(i))
-                                .setScaleType(BaseSliderView.ScaleType.FitCenterCrop);
-                        list.add(sliderView);
-                        Log.d(LOG_TAG, sliderView.toString());
-                    }
-                }
-            }
-
-            PagerIndicator pagerIndicator = (PagerIndicator) rootView.findViewById(R.id.custom_indicator);
-
-            SliderLayout sliderLayout = (SliderLayout) rootView.findViewById(R.id.results_slider);
-            sliderLayout.loadSliderList(list);
-            sliderLayout.setCustomAnimation(new DescriptionAnimation());
-            sliderLayout.setSliderTransformDuration(1000, new LinearOutSlowInInterpolator());
-            sliderLayout.setCustomIndicator(pagerIndicator);
-            sliderLayout.setDuration(5500);
-            sliderLayout.startAutoCycle();
-        }
+        mContext.getContentResolver().delete(
+                OpenFoodContract.ProductEntry.CONTENT_URI,
+                OpenFoodContract.ProductEntry._ID + "=" + barcode,
+                null
+        );
+        requestResultsFragment();
+        clearProductFragment();
+        Log.d(LOG_TAG,"Deleting item# " + barcode);
     }
 
     /* prefixLabel formats a string, prepending fieldName in bold and concatenating fieldContents
@@ -300,4 +266,44 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
         return result;
     }
+
+    /* Broadcast Intent to MainActivity.MessageReceiver with fragment display request */
+    private void requestResultsFragment() {
+        Intent messageIntent = new Intent(Constants.MESSAGE_EVENT);
+        messageIntent.putExtra(Constants.MESSAGE_KEY, Constants.ACTION_RESULTS_FRAGMENT);
+        LocalBroadcastManager.getInstance(App.getContext())
+                .sendBroadcast(messageIntent);
+    }
+
+    /* Broadcast Intent to MainActivity.MessageReceiver with fragment display request */
+    private void requestSplashFragment() {
+        Intent messageIntent = new Intent(Constants.MESSAGE_EVENT);
+        messageIntent.putExtra(Constants.MESSAGE_KEY, Constants.ACTION_SPLASH_FRAGMENT);
+        LocalBroadcastManager.getInstance(App.getContext())
+                .sendBroadcast(messageIntent);
+    }
+
+    private void requestBackPress() {
+        Intent messageIntent = new Intent(Constants.MESSAGE_EVENT);
+        messageIntent.putExtra(Constants.MESSAGE_KEY, Constants.ACTION_BACK_PRESS);
+        LocalBroadcastManager.getInstance(App.getContext())
+                .sendBroadcast(messageIntent);
+    }
+
+    /* TODO: expand the text to include more product information
+     * TODO: not working, now a menu item, review sample code */
+    private void setShareActionProvider(String barcode) {
+        if (shareActionProvider != null) {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+            }
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text) + barcode);
+            shareActionProvider.setShareIntent(shareIntent);
+        }
+    }
+
+
+
 }

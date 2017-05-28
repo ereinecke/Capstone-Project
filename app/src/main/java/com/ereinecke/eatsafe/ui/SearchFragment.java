@@ -8,6 +8,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 
 import com.ereinecke.eatsafe.R;
 import com.ereinecke.eatsafe.services.OpenFoodService;
+import com.ereinecke.eatsafe.util.App;
 import com.ereinecke.eatsafe.util.Constants;
 import com.ereinecke.eatsafe.util.Utility;
 import com.google.android.gms.ads.AdRequest;
@@ -167,6 +169,30 @@ public class SearchFragment extends Fragment {
         productIntent.setAction(Constants.ACTION_FETCH_PRODUCT);
         getActivity().startService(productIntent);
      }
+
+    /* Broadcast Intent to MainActivity.MessageReceiver with product display request */
+    private void requestProductFragment() {
+        Intent messageIntent = new Intent(Constants.MESSAGE_EVENT);
+        messageIntent.putExtra(Constants.MESSAGE_KEY, Constants.ACTION_PRODUCT_FRAGMENT);
+        LocalBroadcastManager.getInstance(App.getContext())
+                .sendBroadcast(messageIntent);
+    }
+
+    /* Broadcast Intent to MainActivity.MessageReceiver with resultsFragment display request */
+    private void requestResultsFragment() {
+        Intent messageIntent = new Intent(Constants.MESSAGE_EVENT);
+        messageIntent.putExtra(Constants.MESSAGE_KEY, Constants.ACTION_RESULTS_FRAGMENT);
+        LocalBroadcastManager.getInstance(App.getContext())
+                .sendBroadcast(messageIntent);
+    }
+
+    /* Broadcast Intent to MainActivity.MessageReceiver with fragment display request */
+    private void requestSplashFragment() {
+        Intent messageIntent = new Intent(Constants.MESSAGE_EVENT);
+        messageIntent.putExtra(Constants.MESSAGE_KEY, Constants.ACTION_SPLASH_FRAGMENT);
+        LocalBroadcastManager.getInstance(App.getContext())
+                .sendBroadcast(messageIntent);
+    }
 
     /* Returns a boolean representing internet connectivity */
     private boolean checkConnectivity() {

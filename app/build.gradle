@@ -90,8 +90,6 @@ dependencies {
     }
     /* StreamProvider, workaround for FileProvider issues */
     compile 'com.commonsware.cwac:provider:0.4.0'
-    /* Material bottom toolbar
-    compile 'com.aurelhubert:ahbottomnavigation:2.0.6' */
     /* Sugar ORM */
     compile 'com.github.satyan:sugar:1.5'
     /* ZXing barcode scanner */

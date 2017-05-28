@@ -14,8 +14,15 @@ public class Constants {
     // ACTIONs.
     public static final String ACTION_SCAN_BARCODE   = "com.ereinecke.eatsafe.FETCH_SCAN";
     public static final String ACTION_FETCH_PRODUCT  = "com.ereinecke.eatsafe.services.action.FETCH_PRODUCT";
+    // TODO: Should be using this action
     public static final String ACTION_DELETE_PRODUCT = "com.ereinecke.eatsafe.services.action.DELETE_PRODUCT";
     public static final String ACTION_UPLOAD = "com.ereinecke.eatsafe.ACTION_UPLOAD";
+    public static final String ACTION_SEARCH_FRAGMENT = "com.ereinecke.eatsafe.ACTION_SEARCH_FRAGMENT";
+    public static final String ACTION_UPLOAD_FRAGMENT = "com.ereinecke.eatsafe.ACTION_UPLOAD_FRAGMENT";
+    public static final String ACTION_RESULTS_FRAGMENT = "com.ereinecke.eatsafe.ACTION_RESULTS_FRAGMENT";
+    public static final String ACTION_PRODUCT_FRAGMENT = "com.ereinecke.eatsafe.ACTION_PRODUCT_FRAGMENT";
+    public static final String ACTION_SPLASH_FRAGMENT = "com.ereinecke.eatsafe.ACTION_SPLASH_FRAGMENT";
+    public static final String ACTION_BACK_PRESS = "com.ereinecke.eatsafe.ACTION_BACK_PRESS";
 
     // Camera & gallery constants
     public static final int CAMERA_IMAGE_REQUEST = 100;
@@ -28,6 +35,11 @@ public class Constants {
     public static final int PHOTO_NUTRITION = 3;
     public static final int PHOTO_OTHER = 4;
 
+    // TabPagerFragment contents
+    public static final int FRAG_SEARCH = 0;
+    public static final int FRAG_UPLOAD = 1;
+    public static final int FRAG_RESULTS = 2;
+
     // Scanner constants
     public static final String BARCODE_KEY = "barcode_key";
     public static final long BARCODE_NOT_FOUND = -1L;
@@ -35,6 +47,7 @@ public class Constants {
 
     // keys for savedInstanceStates
     public static final String CURRENT_PHOTO = "current_photo";
+    public static final String CURRENT_FRAGMENT = "current_fragment";
 
     // JSON keys
     public static final String STATUS = "status";

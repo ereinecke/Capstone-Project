@@ -3,26 +3,30 @@ package com.ereinecke.eatsafe.ui;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.ereinecke.eatsafe.R;
+import com.ereinecke.eatsafe.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * TabPagerFragment holds ViewPager with tabbed views for search, upload and results
+ * The desired tab is passed as an int in an argument, and we don't need to maintain the
+ * tab selection in this method.
  *
  */
 public class TabPagerFragment extends Fragment {
 
+    private static final String LOG_TAG = TabPagerFragment.class.getSimpleName();
     private ViewGroup container;
     private ViewPager viewPager;
 
@@ -34,6 +38,15 @@ public class TabPagerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        int whichFragment;
+
+        try {
+            whichFragment = getArguments().getInt(Constants.CURRENT_FRAGMENT);
+        } catch(Exception e) {
+            Log.d(LOG_TAG, "Current fragment parameter not found in onCreateView().");
+            whichFragment = 0;
+        }
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_tab_pager, container, false);
 
@@ -41,6 +54,7 @@ public class TabPagerFragment extends Fragment {
 
         viewPager = (ViewPager) view.findViewById(R.id.tab_pager_fragment);
         setupViewPager(viewPager);
+        viewPager.setCurrentItem(whichFragment);
 
         TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
@@ -56,16 +70,24 @@ public class TabPagerFragment extends Fragment {
         viewPager.setAdapter(adapter);
     }
 
-    public void setUploadFragment() {
-        // TODO: need to setCurrentItem on the viewPager but need to initialize outside of onCreateView()
-        // ?? Should i be doing this in onViewCreated()??
-        /*
+    private void setUploadFragment() {
+         // Ignore if viewPager hasn't been set up yet
         if (viewPager == null) {
-            viewPager = (ViewPager) rootView.findViewById(R.id.tab_pager_fragment);
-            setupViewPager(viewPager);
+            Log.d(LOG_TAG, "Attempted to make uploadFragment primary when viewPager " +
+                    "hasn't been initialized.");
+            return;
         }
-        viewPager.setCurrentItem(1);
-        */
+        viewPager.setCurrentItem(Constants.FRAG_UPLOAD);
+    }
+
+    private void setHistoryFragment() {
+        // Ignore if viewPager hasn't been set up yet
+        if (viewPager == null) {
+            Log.d(LOG_TAG, "Attempted to make historyFragment primary when viewPager " +
+                    "hasn't been initialized.");
+            return;
+        }
+        viewPager.setCurrentItem(Constants.FRAG_RESULTS);
     }
 
     class ViewPagerAdapter extends FragmentStatePagerAdapter {
