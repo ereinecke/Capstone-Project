@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.widget.ShareActionProvider;
 import android.text.Html;
@@ -45,7 +46,6 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     private final static String LOG_TAG = ProductFragment.class.getSimpleName();
     private static final int LOADER_ID = 1;
     private String barcode;
-    private BottomNavigationView bottomNavigation;
     private Context mContext;
     private View rootView;
     private ShareActionProvider shareActionProvider;
@@ -82,16 +82,20 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         if (showBlankFragment) {
             clearProductFragment();
             shareActionProvider = null;
+
         } else {
-            bottomNavigation = (BottomNavigationView) rootView.findViewById(R.id.product_toolbar_bottom);
+            BottomNavigationView bottomNavigation = (BottomNavigationView) rootView.findViewById(R.id.product_toolbar_bottom);
             // May not be necessary, specified in layout file:
             // bottomNavigation.inflateMenu(R.menu.upload_actions_menu);
             bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+
                     switch (menuItem.getItemId()) {
                         case R.id.action_share:
                             Log.d(LOG_TAG, "Pressed share button");
+                            shareActionProvider = (ShareActionProvider)
+                                    MenuItemCompat.getActionProvider(menuItem);
                             setShareActionProvider(barcode);
                             break;
                         case R.id.action_delete:
@@ -106,8 +110,10 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
                     return true;
                 }
             });
-        };
-            shareActionProvider = new ShareActionProvider(getActivity());
+        }
+
+        shareActionProvider = new ShareActionProvider(getActivity());
+
         return rootView;
     }
 
@@ -187,11 +193,15 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
         ArrayList<AdjustableSlide> list = new ArrayList<>();
 
-        // TODO: If there are no product images, substitute OpenFoodFacts logo
-        // TODO: or collapse slider view
+        SliderLayout sliderLayout = (SliderLayout) rootView.findViewById(R.id.results_slider);
+
+        // TODO: If there are no product images, collapse slider view
         if (urlImages.size() == 0) {
             Log.d(LOG_TAG, "No images found.");
-            // showOFFLogo();
+            // Hide slider view if there are no images
+            ViewGroup.LayoutParams params = sliderLayout.getLayoutParams();
+            params.height = 0;
+            sliderLayout.setLayoutParams(params);
         } else {
             for (int i = 0; i < urlImages.size(); i++) {
                 String imgUrl = urlImages.get(i);
@@ -204,15 +214,14 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
                     list.add(sliderView);
                 }
             }
-        }
 
-        SliderLayout sliderLayout = (SliderLayout) rootView.findViewById(R.id.results_slider);
-        sliderLayout.loadSliderList(list);
-        sliderLayout.setCustomAnimation(new DescriptionAnimation());
-        sliderLayout.setSliderTransformDuration(1000, new LinearOutSlowInInterpolator());
-        sliderLayout.setCustomIndicator(pagerIndicator);
-        sliderLayout.setDuration(R.integer.slider_delay);
-        sliderLayout.startAutoCycle();
+            sliderLayout.loadSliderList(list);
+            sliderLayout.setCustomAnimation(new DescriptionAnimation());
+            sliderLayout.setSliderTransformDuration(1000, new LinearOutSlowInInterpolator());
+            sliderLayout.setCustomIndicator(pagerIndicator);
+            sliderLayout.setDuration(R.integer.slider_delay);
+            sliderLayout.startAutoCycle();
+        }
     }
 
     @Override
@@ -291,7 +300,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     /* TODO: expand the text to include more product information
-     * TODO: not working, now a menu item, review sample code */
+     * TODO: not working, see note in product_actions_menu.xml */
     private void setShareActionProvider(String barcode) {
         if (shareActionProvider != null) {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);

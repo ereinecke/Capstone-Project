@@ -1,7 +1,7 @@
 package com.ereinecke.eatsafe;
 
-/**
- * ContentProvider tests
+/*
+  ContentProvider tests
  */
 
 import android.content.ContentUris;
@@ -21,6 +21,7 @@ public class TestProvider extends AndroidTestCase {
     public static final String LOG_TAG = TestProvider.class.getSimpleName();
 
     public void setUp() {
+        super.setUp();
         deleteAllRecords();
     }
 

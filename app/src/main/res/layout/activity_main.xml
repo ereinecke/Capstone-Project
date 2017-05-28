@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/single_pane"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/single_pane"
     android:fitsSystemWindows="true"
+    android:theme="@style/AppTheme"
     tools:context="com.ereinecke.eatsafe.MainActivity">
 
     <ImageView
@@ -27,7 +27,6 @@
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/app_bar_height"
-        android:background="@color/colorPrimary"
         android:elevation="6dp"
         android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.AppBarOverlay"

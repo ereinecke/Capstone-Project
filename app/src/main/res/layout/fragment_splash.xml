@@ -15,7 +15,7 @@
 
         <ImageButton
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/logoView"
             android:src="@drawable/openfoodfacts_logo_356"
             android:contentDescription="@string/openfoodfacts"
@@ -25,7 +25,6 @@
             android:paddingEnd="@dimen/horizontal_padding"
             android:paddingStart="@dimen/horizontal_padding"
             android:scaleType="fitCenter"
-            android:layout_weight="3"
             android:layout_marginLeft="@dimen/splash_margin"
             android:layout_marginRight="@dimen/splash_margin"
             android:background="@color/transparent" />
@@ -35,9 +34,9 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar_bottom"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="@dimen/bottom_nav_height"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
-        android:background="@color/colorTabs"></android.support.v7.widget.Toolbar>
+        android:background="@color/colorTabs" />
 
 </RelativeLayout>

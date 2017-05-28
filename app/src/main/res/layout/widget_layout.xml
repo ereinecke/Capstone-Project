@@ -7,6 +7,7 @@
     android:layout_height="wrap_content"
     android:elevation="4dp"
     android:clickable="true"
+    android:focusable="true"
     android:background="@color/transparent"
     tools:targetApi="lollipop">
 
@@ -23,7 +24,9 @@
             android:src="@drawable/scan_widget"
             android:scaleType="centerInside"
             android:clickable="true"
-            android:background="?android:attr/selectableItemBackground" />
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="@string/scan_barcode" />
 
         <TextView
             android:layout_width="match_parent"

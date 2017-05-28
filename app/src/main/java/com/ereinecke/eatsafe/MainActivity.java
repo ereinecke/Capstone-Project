@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity
     private int currentFragment = 0;
     private String photoReceived;
     private View rootView;
-    private TabPagerFragment tabPagerFragment;
     private BroadcastReceiver messageReceiver;
     private final IntentFilter messageFilter = new IntentFilter(Constants.MESSAGE_EVENT);
 
@@ -93,7 +92,7 @@ public class MainActivity extends AppCompatActivity
 
             Bundle bundle = new Bundle();
             bundle.putInt(Constants.CURRENT_FRAGMENT, currentFragment);
-            tabPagerFragment = new TabPagerFragment();
+            TabPagerFragment tabPagerFragment = new TabPagerFragment();
             tabPagerFragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.tab_container, new TabPagerFragment()).commit();
@@ -126,20 +125,16 @@ public class MainActivity extends AppCompatActivity
         super.onDestroy();
     }
 
-    // TODO: Need to make back arrow disappear when TabPagerFragment is showing.
-    //    @Override
-    //    public void onStart() {
-    //
-    //        super.onStart();
-    //    }
 
-    /* Not sure this is needed */
     @Override
     public void onBackPressed() {
 
         int count = getFragmentManager().getBackStackEntryCount();
         Log.d(LOG_TAG, "BackStackEntryCount: "+ count);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        /*  */
         if (count == 0) {
             super.onBackPressed();
             //additional code
@@ -148,6 +143,7 @@ public class MainActivity extends AppCompatActivity
         }
 
     }
+
 
     // The dialog fragment receives a reference to this Activity through the
     // Fragment.onAttach() callback, which it uses to call the following methods
@@ -200,11 +196,16 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
 
         switch (item.getItemId()) {
-            // respond to the action bar's Up/Home button
+            // respond to the action bar's Up/Home button.  Should only be visible when
+            // the TabPagerFragment isn't showing.
 
             case android.R.id.home:
                 FragmentManager fm = getSupportFragmentManager();
                 fm.popBackStackImmediate();
+                Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+                setSupportActionBar(toolbar);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                getSupportActionBar().setDisplayShowTitleEnabled(false);
                 return true;
 
             case R.id.action_scan:
@@ -428,7 +429,6 @@ public class MainActivity extends AppCompatActivity
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.tab_container, tabPagerFragment).commit();
         }
-
     }
 
     private void launchProductFragment(long barcode) {
@@ -438,17 +438,23 @@ public class MainActivity extends AppCompatActivity
             Bundle args = new Bundle();
             args.putLong(Constants.BARCODE_KEY, barcode);
 
+            /* Set up back arrow */
+            Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+            setSupportActionBar(toolbar);
+
             ProductFragment ProductFragment = new ProductFragment();
             ProductFragment.setArguments(args);
 
-            // TODO: Figure out intermittent crash at this call
-            // IllegalStateException: Can not perform this action after onSaveInstanceState
             if (!isTablet) {  // productFragment replaces TabPagerFragment
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setDisplayShowTitleEnabled(false);
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.tab_container, ProductFragment)
                         .addToBackStack(null)
                         .commit();
+
             } else {  // productFragment replaces splashFragment
+                getSupportActionBar().setDisplayShowTitleEnabled(false);
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.right_pane_container, ProductFragment)
                         .addToBackStack(null)
@@ -459,7 +465,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    /* Puts up launchFragment.  Should only do in dual-pane mode, otherwise only menu items are
+    /* Puts up SplashFragment.  Should only do in dual-pane mode, otherwise only menu items are
      * available.
      */
     private void launchSplashFragment() {
@@ -473,13 +479,6 @@ public class MainActivity extends AppCompatActivity
                     .replace(R.id.tab_container, new SplashFragment())
                     .commit();
         }
-    }
-
-
-
-    /* updates history list and brings ResultsFragment tab to the front in dual-pane mode */
-    public void updateResultsFragment() {
-
     }
 
     public void launchPhotoIntent(int whichPhoto) {

@@ -1,7 +1,7 @@
 package com.ereinecke.eatsafe.data;
 
-/**
- * Contract for local OpenFoodFacts database
+/*
+  Contract for local OpenFoodFacts database
  */
 
 import android.content.ContentUris;

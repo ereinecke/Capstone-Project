@@ -28,7 +28,6 @@ public class UploadFragment extends Fragment {
     private static final String LOG_TAG = UploadFragment.class.getSimpleName();
     private PhotoRequest photoRequest;
     private String mCurrentPhoto;
-    private BottomNavigationView bottomNavigation;
     private static View rootView;
     private static ImageView uploadImageView;
 
@@ -52,7 +51,7 @@ public class UploadFragment extends Fragment {
             // Inflate the layout for this fragment
             rootView = inflater.inflate(R.layout.fragment_upload, container, false);
             uploadImageView = (ImageView) rootView.findViewById(R.id.upload_imageView);
-            bottomNavigation = (BottomNavigationView) rootView.findViewById(R.id.upload_toolbar_bottom);
+            BottomNavigationView bottomNavigation = (BottomNavigationView) rootView.findViewById(R.id.upload_toolbar_bottom);
             // May not be necessary, specified in layout file:
             // bottomNavigation.inflateMenu(R.menu.upload_actions_menu);
             bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -72,7 +71,7 @@ public class UploadFragment extends Fragment {
                     return true;
                 }
                 });
-            };
+            }
 
         return rootView;
     }

@@ -2,24 +2,13 @@ package com.ereinecke.eatsafe.ui;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
-import com.ereinecke.eatsafe.MainActivity;
-import com.ereinecke.eatsafe.util.App;
 import com.ereinecke.eatsafe.R;
-import com.ereinecke.eatsafe.util.Constants;
-
-import net.steamcrafted.loadtoast.LoadToast;
-
-import static com.hkm.slider.SliderTypes.ZoomableView.LOG_TAG;
 
 /**
  * Creates a dialog asking the user if they want to upload new data.
@@ -75,8 +64,8 @@ public class UploadDialog  extends DialogFragment {
     * Each method passes the DialogFragment in case the host needs to query it.
     */
     public interface NoticeDialogListener {
-        public void onDialogPositiveClick(DialogFragment dialog);
-        public void onDialogNegativeClick(DialogFragment dialog);
+        void onDialogPositiveClick(DialogFragment dialog);
+        void onDialogNegativeClick(DialogFragment dialog);
     }
 
 }

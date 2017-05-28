@@ -23,7 +23,7 @@
             <com.hkm.slider.SliderLayout
                 android:id="@+id/results_slider"
                 android:layout_width="match_parent"
-                android:layout_height="240dp"
+                android:layout_height="@dimen/results_slider_height"
                 android:background="@color/material_grey_100"
                 android:contentDescription="@string/product_images"
                 android:elevation="4dp"
@@ -184,7 +184,7 @@
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/product_toolbar_bottom"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/bottom_nav_height"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
         android:background="@color/colorTabs"

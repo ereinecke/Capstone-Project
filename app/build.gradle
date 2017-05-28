@@ -70,10 +70,10 @@ dependencies {
     compile 'com.google.firebase:firebase-ads:10.2.6'
 
     /* Android architecture components introduced with O */
-    compile "android.arch.lifecycle:extensions:${archLifecycleVersion}";
-    compile "android.arch.persistence.room:runtime:${archRoomVersion}";
-    annotationProcessor "android.arch.lifecycle:compiler:${archLifecycleVersion}";
-    annotationProcessor "android.arch.persistence.room:compiler:${archRoomVersion}";
+    compile "android.arch.lifecycle:extensions:${archLifecycleVersion}"
+    compile "android.arch.persistence.room:runtime:${archRoomVersion}"
+    annotationProcessor "android.arch.lifecycle:compiler:${archLifecycleVersion}"
+    annotationProcessor "android.arch.persistence.room:compiler:${archRoomVersion}"
 
     /* Jackson for JSON */
     compile "com.fasterxml.jackson.core:jackson-core:${jacksonLibVersion}"

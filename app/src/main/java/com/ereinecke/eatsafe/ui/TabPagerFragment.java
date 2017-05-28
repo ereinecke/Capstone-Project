@@ -27,8 +27,6 @@ import java.util.List;
 public class TabPagerFragment extends Fragment {
 
     private static final String LOG_TAG = TabPagerFragment.class.getSimpleName();
-    private ViewGroup container;
-    private ViewPager viewPager;
 
 
     public TabPagerFragment() {
@@ -50,9 +48,9 @@ public class TabPagerFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_tab_pager, container, false);
 
-        this.container = container;
+        ViewGroup container1 = container;
 
-        viewPager = (ViewPager) view.findViewById(R.id.tab_pager_fragment);
+        ViewPager viewPager = (ViewPager) view.findViewById(R.id.tab_pager_fragment);
         setupViewPager(viewPager);
         viewPager.setCurrentItem(whichFragment);
 
@@ -68,26 +66,6 @@ public class TabPagerFragment extends Fragment {
         adapter.addFragment(new UploadFragment(), getResources().getString(R.string.upload));
         adapter.addFragment(new ResultsFragment(), getResources().getString(R.string.results));
         viewPager.setAdapter(adapter);
-    }
-
-    private void setUploadFragment() {
-         // Ignore if viewPager hasn't been set up yet
-        if (viewPager == null) {
-            Log.d(LOG_TAG, "Attempted to make uploadFragment primary when viewPager " +
-                    "hasn't been initialized.");
-            return;
-        }
-        viewPager.setCurrentItem(Constants.FRAG_UPLOAD);
-    }
-
-    private void setHistoryFragment() {
-        // Ignore if viewPager hasn't been set up yet
-        if (viewPager == null) {
-            Log.d(LOG_TAG, "Attempted to make historyFragment primary when viewPager " +
-                    "hasn't been initialized.");
-            return;
-        }
-        viewPager.setCurrentItem(Constants.FRAG_RESULTS);
     }
 
     class ViewPagerAdapter extends FragmentStatePagerAdapter {
