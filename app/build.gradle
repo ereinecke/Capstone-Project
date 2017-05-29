@@ -41,7 +41,7 @@ android {
     }
 
     packagingOptions {
-        pickFirst  'META-INF/LICENSE'
+        pickFirst 'META-INF/LICENSE'
     }
 }
 
@@ -75,6 +75,14 @@ dependencies {
     annotationProcessor "android.arch.lifecycle:compiler:${archLifecycleVersion}"
     annotationProcessor "android.arch.persistence.room:compiler:${archRoomVersion}"
 
+    /* Retrofit */
+    compile 'com.squareup.retrofit2:retrofit:2.0.0-beta4'
+    compile 'com.squareup.retrofit2:converter-jackson:2.0.0-beta4'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.3.1'
+
+    /* GreenDAO */
+    compile 'org.greenrobot:greendao:3.2.0'
+
     /* Jackson for JSON */
     compile "com.fasterxml.jackson.core:jackson-core:${jacksonLibVersion}"
     compile "com.fasterxml.jackson.core:jackson-databind:${jacksonLibVersion}"
@@ -103,6 +111,7 @@ dependencies {
     }
     /* Material Design toast library */
     compile 'net.steamcrafted:load-toast:1.0.10'
+    compile 'com.android.support:support-v4:25.3.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

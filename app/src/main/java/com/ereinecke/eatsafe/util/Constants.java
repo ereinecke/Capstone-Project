@@ -10,6 +10,7 @@ public class Constants {
 
     // TODO: Change write URLs to openfoodfacts.org when out of test
     public static final String PRODUCTS_BASE_URL = "http://world.openfoodfacts.org/api/v0/product/";
+    public static final String OFF_URL = "http://world.openfoodfacts.org";
 
     // ACTIONs.
     public static final String ACTION_SCAN_BARCODE   = "com.ereinecke.eatsafe.FETCH_SCAN";
@@ -23,6 +24,7 @@ public class Constants {
     public static final String ACTION_PRODUCT_FRAGMENT = "com.ereinecke.eatsafe.ACTION_PRODUCT_FRAGMENT";
     public static final String ACTION_SPLASH_FRAGMENT = "com.ereinecke.eatsafe.ACTION_SPLASH_FRAGMENT";
     public static final String ACTION_BACK_PRESS = "com.ereinecke.eatsafe.ACTION_BACK_PRESS";
+    public static final String ACTION_VIEW_WEB = "com.ereinecke.eatsafe.ACTION_VIEW_WEB";
 
     // Camera & gallery constants
     public static final int CAMERA_IMAGE_REQUEST = 100;

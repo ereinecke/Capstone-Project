@@ -1,14 +1,17 @@
 package com.ereinecke.eatsafe.ui;
 
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.ereinecke.eatsafe.R;
+import com.ereinecke.eatsafe.util.App;
+import com.ereinecke.eatsafe.util.Constants;
 
 /**
  * This fragment displays the OpenFoodFacts logo, as a splash screen of sorts.  This only displays
@@ -30,19 +33,22 @@ public class SplashFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_splash, container, false);
 
         // Button listener - launch OpenFoodFacts.org in a WebView
-        // TODO: WebView not yet implemented
+
         rootView.findViewById(R.id.logoView).setOnClickListener(new View.OnClickListener() {
             public void onClick(final View view) {
-                launchOpenFoodFactsWebView(view);
+                launchWebView(Constants.OFF_URL);
             }
         });
 
         return rootView;
     }
 
-    public void launchOpenFoodFactsWebView(View view) {
+    public void launchWebView(String url) {
 
-        Snackbar.make(rootView, "Open Food Facts WebView not yet implemented",
-                Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        Intent messageIntent = new Intent(Constants.MESSAGE_EVENT);
+        messageIntent.putExtra(Constants.MESSAGE_KEY, Constants.ACTION_VIEW_WEB);
+        messageIntent.putExtra(Constants.RESULT_KEY, url);
+        LocalBroadcastManager.getInstance(App.getContext())
+                .sendBroadcast(messageIntent);
     }
 }

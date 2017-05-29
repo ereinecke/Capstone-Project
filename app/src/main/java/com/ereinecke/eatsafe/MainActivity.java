@@ -11,6 +11,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -29,6 +30,7 @@ import com.ereinecke.eatsafe.ui.TabPagerFragment;
 import com.ereinecke.eatsafe.ui.UploadDialog;
 import com.ereinecke.eatsafe.ui.UploadFragment;
 import com.ereinecke.eatsafe.ui.UploadFragment.PhotoRequest;
+import com.ereinecke.eatsafe.ui.WebFragment;
 import com.ereinecke.eatsafe.util.App;
 import com.ereinecke.eatsafe.util.Constants;
 import com.ereinecke.eatsafe.util.Utility.Callback;
@@ -298,6 +300,15 @@ public class MainActivity extends AppCompatActivity
                     case Constants.ACTION_SPLASH_FRAGMENT:
                         launchSplashFragment();
                         break;
+
+                    case Constants.ACTION_VIEW_WEB:
+                        /* if no url passed, goes to OFF website */
+                        String url = intent.getStringExtra(Constants.RESULT_KEY);
+                        if (url.length() == 0 ) {
+                            url = Constants.OFF_URL;
+                        }
+                        launchWebView(url);
+                        break;
                 }
             }
         }
@@ -462,6 +473,24 @@ public class MainActivity extends AppCompatActivity
             }
         } else {
             Log.d(LOG_TAG, "Barcode not found, not launching product fragment.");
+        }
+    }
+
+    /* Displays a web view fragment to allow access to openfoodfacts.org, to register, change
+     * password, etc.
+     */
+    private void launchWebView(String url) {
+        WebFragment webFragment = WebFragment.newInstance(url);
+
+        // Handle right-hand pane on dual-pane layouts
+        if (isTablet) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.right_pane_container, (Fragment) webFragment)
+                    .commit();
+        } else {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.tab_container, (Fragment) webFragment)
+                    .commit();
         }
     }
 
