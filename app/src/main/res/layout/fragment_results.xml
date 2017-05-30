@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
     tools:context="com.ereinecke.eatsafe.ui.ResultsFragment"
-    android:id="@+id/results_fragment"
+    android:id="@+id/fragment_results"
     android:layout_width="fill_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center_horizontal|top" >

@@ -23,7 +23,9 @@ import android.view.View;
 
 import com.commonsware.cwac.provider.StreamProvider;
 import com.ereinecke.eatsafe.services.OpenFoodService;
+import com.ereinecke.eatsafe.ui.DeleteDialog;
 import com.ereinecke.eatsafe.ui.ProductFragment;
+import com.ereinecke.eatsafe.ui.ResultsFragment;
 import com.ereinecke.eatsafe.ui.SearchFragment;
 import com.ereinecke.eatsafe.ui.SplashFragment;
 import com.ereinecke.eatsafe.ui.TabPagerFragment;
@@ -47,8 +49,7 @@ import java.util.Date;
 
 public class MainActivity extends AppCompatActivity
         implements Callback, PhotoRequest,
-        UploadDialog.NoticeDialogListener {
-    // DeleteDialog.NoticeDialogListenter, {
+        UploadDialog.NoticeDialogListener, DeleteDialog.NoticeDialogListener {
 
     private final static String LOG_TAG = MainActivity.class.getSimpleName();
     public static boolean isTablet = false;
@@ -56,6 +57,9 @@ public class MainActivity extends AppCompatActivity
     private int currentFragment = 0;
     private String photoReceived;
     private View rootView;
+    private WebFragment webFragment;
+    private ResultsFragment resultsFragment;
+    private Toolbar toolbar;
     private BroadcastReceiver messageReceiver;
     private final IntentFilter messageFilter = new IntentFilter(Constants.MESSAGE_EVENT);
 
@@ -69,7 +73,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         rootView = findViewById(android.R.id.content);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
@@ -131,21 +135,31 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
 
-        int count = getFragmentManager().getBackStackEntryCount();
-        Log.d(LOG_TAG, "BackStackEntryCount: "+ count);
+        /* Capture back events when WebFragment is active and pass them to WebView */
+        if (webFragment != null) {
+            if (webFragment.canGoBack()) {
+                Log.d(LOG_TAG, "webFragment canGoBack, will take backPress");
+                webFragment.goBack();
+                return;
+            }
+        };
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        /*  */
-        if (count == 0) {
-            super.onBackPressed();
-            //additional code
-        } else {
-            getFragmentManager().popBackStack();
+        /* Only go back if we're in single-pane mode */
+        if (!isTablet) {
+            /* Assume we only have one level of navigation, clear back arrow and title */
+            showBackArrow(false);
+
+            /* if we are showing a child view (ProductFragment, WebFragment that can't go back) */
+            FragmentManager fm = getSupportFragmentManager();
+            int count = fm.getBackStackEntryCount();
+            Log.d(LOG_TAG, "BackStackEntryCount: " + count);
+            if (count == 0) {   // no fragments on backstack
+                super.onBackPressed();
+            } else {            // pop that fragment
+                getFragmentManager().popBackStackImmediate();
+            }
         }
-
     }
-
 
     // The dialog fragment receives a reference to this Activity through the
     // Fragment.onAttach() callback, which it uses to call the following methods
@@ -153,14 +167,32 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
         // User touched the dialog's positive button
-        Log.d(LOG_TAG, "upload dialog positive click relayed to MainActivity");
-        launchUploadFragment();
+        Bundle args = dialog.getArguments();
+        if (args == null) {
+            Log.d(LOG_TAG,"No args found in dialog intent");
+            return;
+        }
+        String dialogType = args.getString(Constants.DIALOG_TYPE);
+        Log.d(LOG_TAG, "Positive click on [" + dialogType + "]");
+        switch (dialogType) {
+            case Constants.DIALOG_DELETE:
+                ProductFragment productFragment = (ProductFragment) getSupportFragmentManager()
+                        .findFragmentById(R.id.fragment_product);
+                productFragment.deleteItem();
+                break;
+
+            case Constants.DIALOG_UPLOAD:
+                launchUploadFragment();
+                break;
+
+            default:
+                break;
+        }
     }
 
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
-        // User touched the dialog's negative button
-        Log.d(LOG_TAG, "upload dialog negative click relayed to MainActivity");
+        // User touched the dialog's negative button, do nothing
     }
 
     @Override
@@ -204,10 +236,7 @@ public class MainActivity extends AppCompatActivity
             case android.R.id.home:
                 FragmentManager fm = getSupportFragmentManager();
                 fm.popBackStackImmediate();
-                Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
-                setSupportActionBar(toolbar);
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                getSupportActionBar().setDisplayShowTitleEnabled(false);
+                showBackArrow(false);
                 return true;
 
             case R.id.action_scan:
@@ -223,6 +252,16 @@ public class MainActivity extends AppCompatActivity
             case R.id.action_sensitivities:
                 Snackbar.make(rootView, getString(R.string.no_sensitivities_yet), Snackbar.LENGTH_SHORT)
                         .setAction("Action", null).show();
+                return true;
+
+            case R.id.action_about_off:
+                // Call OFF webview
+                launchWebFragment(getString(R.string.about_off), getString(R.string.off_domain));
+                return true;
+
+            case R.id.action_about:
+                // Need an about fragment for the app
+                launchWebFragment(getString(R.string.about_eatsafe), getString(R.string.eatsafe_domain));
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -262,7 +301,7 @@ public class MainActivity extends AppCompatActivity
                 switch (messageKey) {
 
                     case Constants.BARCODE_KEY:
-                        barcode = intent.getLongExtra(Constants.RESULT_KEY, Constants.BARCODE_NOT_FOUND);
+                        barcode = intent.getLongExtra(Constants.MESSAGE_RESULT, Constants.BARCODE_NOT_FOUND);
 
                         Log.d(LOG_TAG, "MessageReceiver result: " + messageKey);
                         Snackbar.make(rootView, messageKey, Snackbar.LENGTH_SHORT)
@@ -302,12 +341,14 @@ public class MainActivity extends AppCompatActivity
                         break;
 
                     case Constants.ACTION_VIEW_WEB:
-                        /* if no url passed, goes to OFF website */
-                        String url = intent.getStringExtra(Constants.RESULT_KEY);
+                        /* if no url passed, goes to OFF website.  If no domain, all links open
+                         * in a browser  */
+                        String url = intent.getStringExtra(Constants.MESSAGE_RESULT);
+                        String domain = intent.getStringExtra(Constants.PARAM_DOMAIN);
                         if (url.length() == 0 ) {
                             url = Constants.OFF_URL;
                         }
-                        launchWebView(url);
+                        launchWebFragment(url, domain);
                         break;
                 }
             }
@@ -479,17 +520,20 @@ public class MainActivity extends AppCompatActivity
     /* Displays a web view fragment to allow access to openfoodfacts.org, to register, change
      * password, etc.
      */
-    private void launchWebView(String url) {
-        WebFragment webFragment = WebFragment.newInstance(url);
+    private void launchWebFragment(String url, String domain) {
+        webFragment = WebFragment.newInstance(url, domain);
 
         // Handle right-hand pane on dual-pane layouts
         if (isTablet) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.right_pane_container, (Fragment) webFragment)
+                    .addToBackStack(null)
                     .commit();
         } else {
+            showBackArrow(true);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.tab_container, (Fragment) webFragment)
+                    .addToBackStack(null)
                     .commit();
         }
     }
@@ -504,10 +548,24 @@ public class MainActivity extends AppCompatActivity
                     .replace(R.id.right_pane_container, new SplashFragment())
                     .commit();
         } else {
+            showBackArrow(true);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.tab_container, new SplashFragment())
                     .commit();
         }
+    }
+
+    /* Hide or show back arrow, which only happens in single-pane mode
+     * Setting HomeAsUp seems to turn on Title, so turn it off
+     */
+    private void showBackArrow(boolean showArrow) {
+
+        if (isTablet) {
+            return;
+        }
+        getSupportActionBar().setDisplayHomeAsUpEnabled(showArrow);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
     }
 
     public void launchPhotoIntent(int whichPhoto) {
@@ -562,7 +620,7 @@ public class MainActivity extends AppCompatActivity
         searchFragment.setArguments(bundle);
 
         getSupportFragmentManager().beginTransaction()
-            .replace(R.id.search_fragment, searchFragment).commit();
+            .replace(R.id.fragment_search, searchFragment).commit();
 
     }
 

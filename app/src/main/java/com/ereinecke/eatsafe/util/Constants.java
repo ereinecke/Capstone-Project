@@ -26,6 +26,10 @@ public class Constants {
     public static final String ACTION_BACK_PRESS = "com.ereinecke.eatsafe.ACTION_BACK_PRESS";
     public static final String ACTION_VIEW_WEB = "com.ereinecke.eatsafe.ACTION_VIEW_WEB";
 
+    // WebView constants
+    public static final String PARAM_URL = "url";
+    public static final String PARAM_DOMAIN = "domain";
+
     // Camera & gallery constants
     public static final int CAMERA_IMAGE_REQUEST = 100;
     public static final int GALLERY_IMAGE_REQUEST = 200;
@@ -41,6 +45,11 @@ public class Constants {
     public static final int FRAG_SEARCH = 0;
     public static final int FRAG_UPLOAD = 1;
     public static final int FRAG_RESULTS = 2;
+
+    // Dialogue types
+    public static final String DIALOG_TYPE = "dialogue_type";
+    public static final String DIALOG_UPLOAD = "upload";
+    public static final String DIALOG_DELETE = "delete";
 
     // Scanner constants
     public static final String BARCODE_KEY = "barcode_key";
@@ -70,12 +79,5 @@ public class Constants {
     // Define a custom Intent action
     public static final String MESSAGE_EVENT = "message_event";
     public static final String MESSAGE_KEY = "message_key";
-    public static final String RESULT_KEY = "result_key";
-
-    // Bottom navigation button positions
-    public static final int UPLOAD_CAMERA_BUTTON  = 0;
-    public static final int UPLOAD_GALLERY_BUTTON = 1;
-    public static final int UPLOAD_UPLOAD_BUTTON  = 2;
-    public static final int PRODUCT_SHARE_BUTTON  = 0;
-    public static final int PRODUCT_DELETE_BUTTON = 1;
+    public static final String MESSAGE_RESULT = "message_result";
 }

@@ -50,7 +50,7 @@ public class TabPagerFragment extends Fragment {
 
         ViewGroup container1 = container;
 
-        ViewPager viewPager = (ViewPager) view.findViewById(R.id.tab_pager_fragment);
+        ViewPager viewPager = (ViewPager) view.findViewById(R.id.fragment_tab_pager);
         setupViewPager(viewPager);
         viewPager.setCurrentItem(whichFragment);
 

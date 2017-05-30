@@ -15,28 +15,19 @@ import com.ereinecke.eatsafe.util.Constants;
  * Creates a dialog asking the user if they want to upload new data.
  */
 
-public class UploadDialog  extends DialogFragment {
+public class DeleteDialog  extends DialogFragment {
 
-    private final static String LOG_TAG = UploadDialog.class.getSimpleName();
+    private final static String LOG_TAG = DeleteDialog.class.getSimpleName();
 
-    public UploadDialog newInstance() {
-        UploadDialog dialog = new UploadDialog();
+    public DeleteDialog newInstance() {
+
+        DeleteDialog dialog = new DeleteDialog();
         Bundle args = new Bundle();
-        args.putString(Constants.DIALOG_TYPE, Constants.DIALOG_UPLOAD );
+        args.putString(Constants.DIALOG_TYPE, Constants.DIALOG_DELETE );
         dialog.setArguments(args);
         return dialog;
     }
 
-    public static WebFragment newInstance(String url, String domain) {
-        WebFragment fragment = new WebFragment();
-        Bundle args = new Bundle();
-        args.putString(Constants.PARAM_URL, url);
-        if (domain != null) {
-            args.putString(Constants.PARAM_DOMAIN, domain);
-        }
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     // Use this instance of the interface to deliver action events
     NoticeDialogListener mListener;
@@ -61,28 +52,28 @@ public class UploadDialog  extends DialogFragment {
 
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(R.string.upload_dialog)
-                .setPositiveButton(R.string.upload_button, new DialogInterface.OnClickListener() {
+        builder.setMessage(R.string.delete_dialog)
+                .setPositiveButton(R.string.delete_button, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // FIRE ZE MISSILES!
                         Log.d(LOG_TAG, "PositiveButton clicked.");
-                        mListener.onDialogPositiveClick(UploadDialog.this);
+                        mListener.onDialogPositiveClick(DeleteDialog.this);
                     }
                 })
                 .setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         Log.d(LOG_TAG, "NegativeButton clicked.");
-                        mListener.onDialogNegativeClick(UploadDialog.this);
+                        mListener.onDialogNegativeClick(DeleteDialog.this);
                     }
                 });
         // Create the AlertDialog object and return it
         return builder.create();
     }
 
-   /* The activity that creates an instance of this dialog fragment must
-    * implement this interface in order to receive event callbacks.
-    * Each method passes the DialogFragment in case the host needs to query it.
-    */
+    /* The activity that creates an instance of this dialog fragment must
+     * implement this interface in order to receive event callbacks.
+     * Each method passes the DialogFragment in case the host needs to query it.
+     */
     public interface NoticeDialogListener {
         void onDialogPositiveClick(DialogFragment dialog);
         void onDialogNegativeClick(DialogFragment dialog);

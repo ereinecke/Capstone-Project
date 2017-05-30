@@ -7,7 +7,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -61,7 +60,6 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         super.onCreate(savedInstanceState);
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -84,9 +82,8 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
             shareActionProvider = null;
 
         } else {
-            BottomNavigationView bottomNavigation = (BottomNavigationView) rootView.findViewById(R.id.product_toolbar_bottom);
-            // May not be necessary, specified in layout file:
-            // bottomNavigation.inflateMenu(R.menu.upload_actions_menu);
+            BottomNavigationView bottomNavigation =
+                    (BottomNavigationView) rootView.findViewById(R.id.product_toolbar_bottom);
             bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -100,11 +97,10 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
                             break;
                         case R.id.action_delete:
                             Log.d(LOG_TAG, "Pressed delete button");
-                            deleteItem(barcode);
-                            Snackbar.make(rootView, getString(R.string.deleted, barcode),
-                                    Snackbar.LENGTH_SHORT)
-                                    .setAction("Action",null)
-                                    .show();
+                            // Confirmation dialog
+                            DeleteDialog deleteDialog = new DeleteDialog();
+                            deleteDialog.show(getActivity().getSupportFragmentManager(),
+                                    getString(R.string.delete));
                             break;
                     }
                     return true;
@@ -242,8 +238,9 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         }
     }
 
-    /* removes the current item from the database */
-    private void deleteItem(String barcode) {
+    /* removes the current item from the database
+    *  TODO: use URI approach */
+    public void deleteItem() {
 
         mContext.getContentResolver().delete(
                 OpenFoodContract.ProductEntry.CONTENT_URI,
@@ -252,7 +249,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         );
         requestResultsFragment();
         clearProductFragment();
-        Log.d(LOG_TAG,"Deleting item# " + barcode);
+        Log.d(LOG_TAG,"Deleted item# " + barcode);
     }
 
     /* prefixLabel formats a string, prepending fieldName in bold and concatenating fieldContents

@@ -3,15 +3,17 @@
     <string name="widget_name">EatSafe Scan</string>
 
     <!-- AdMob ad unit id (test ad) -->
-    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
 
     <!-- EatSafe app id for Firebase -->
-    <string name="app_id">ca-app-pub-1510034946187205/3201777371</string>
+    <string name="app_id" translatable="false">ca-app-pub-1510034946187205/3201777371</string>
 
     <!-- Menu actions -->
     <string name="action_scan">Scan</string>
     <string name="action_login">Log In</string>
     <string name="action_sensitivities">Sensitivities</string>
+    <string name="action_about_off">About OpenFoodFacts</string>
+    <string name="action_about">About EatSafe</string>
 
     <!-- Tab names -->
     <string name="results">History</string>
@@ -24,8 +26,10 @@
     <string name="upload_button">Upload</string>
     <string name="scan_barcode">Scan Barcode</string>
     <string name="cancel_button">Not Now</string>
+    <string name="delete_button">Delete</string>
 
     <!-- Prompts -->
+    <string name="delete_dialog">Delete product from your history?</string>
     <string name="upload_prompt">Upload barcode and three product photos: front of package, ingredients list, and nutrition information.</string>
     <string name="upload_dialog">Upload new product to OpenFoodFacts.org?</string>
     <string name="no_internet">Internet connection is required to look up product.</string>
@@ -62,15 +66,15 @@
     <string name="delete">Delete</string>
 
     <!-- Action for widget  -->
-    <string name="widget_action">android.appwidget.action.APPWIDGET_UPDATE</string>
+    <string name="widget_action" translatable="false">android.appwidget.action.APPWIDGET_UPDATE</string>
     <string name="ads_content_description">Ads by Google</string>
-    <string name="openfoodfacts">openfoodfacts.org</string>
+    <string name="openfoodfacts" translatable="false">openfoodfacts.org</string>
 
-    <!-- OpenFoodFacts logo -->
-    <string name="off_logo">https://static.openfoodfacts.org/images/misc/openfoodfacts-logo-en-178x150.png</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
+    <!-- sites for WebView -->
+    <string name="about_eatsafe" translatable="false">http://eatsafe.ereinecke.com</string>
+    <string name="eatsafe_domain" translatable="false">eatsafe.ereinecke.com</string>
+    <string name="about_off" translatable="false">http://world.openfoodfacts.org</string>
+    <string name="off_domain" translatable="false">world.openfoodfacts.org</string>
+    <string name="off_logo" translatable="false">https://static.openfoodfacts.org/images/misc/openfoodfacts-logo-en-178x150.png</string>
 
 </resources>
