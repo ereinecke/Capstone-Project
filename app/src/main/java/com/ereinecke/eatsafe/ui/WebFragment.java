@@ -95,12 +95,10 @@ public class WebFragment extends Fragment {
         @Override
         public void onReceivedError(WebView view, int errorCode,
                                     String description, String failing_url) {
-
-
         };
 
-
     }
+
 
     public boolean canGoBack() {
         return this.webView != null && this.webView.canGoBack();

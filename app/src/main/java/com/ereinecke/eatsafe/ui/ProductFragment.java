@@ -98,7 +98,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
                         case R.id.action_delete:
                             Log.d(LOG_TAG, "Pressed delete button");
                             // Confirmation dialog
-                            DeleteDialog deleteDialog = new DeleteDialog();
+                            DeleteDialog deleteDialog = new DeleteDialog().newInstance(barcode);
                             deleteDialog.show(getActivity().getSupportFragmentManager(),
                                     getString(R.string.delete));
                             break;
@@ -236,20 +236,6 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
             /* We want a back press here to pop the productFragment off the backstack. */
             requestBackPress();
         }
-    }
-
-    /* removes the current item from the database
-    *  TODO: use URI approach */
-    public void deleteItem() {
-
-        mContext.getContentResolver().delete(
-                OpenFoodContract.ProductEntry.CONTENT_URI,
-                OpenFoodContract.ProductEntry._ID + "=" + barcode,
-                null
-        );
-        requestResultsFragment();
-        clearProductFragment();
-        Log.d(LOG_TAG,"Deleted item# " + barcode);
     }
 
     /* prefixLabel formats a string, prepending fieldName in bold and concatenating fieldContents

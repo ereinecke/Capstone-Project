@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">EatSafe</string>
+    <string name="app_description">Short description of EatSafe</string>
     <string name="widget_name">EatSafe Scan</string>
 
     <!-- AdMob ad unit id (test ad) -->
@@ -48,6 +49,12 @@
     <string name="deleted">Item \"%1$s\" deleted.</string>
     <string name="no_login_yet">Login not yet implemented.</string>
     <string name="no_sensitivities_yet">Sensitivities personalization not yet implemented.</string>
+    <string name="user_name">username</string>
+    <string name="password">password</string>
+    <string name="register">Register</string>
+    <string name="lost_password">Lost password?</string>
+    <string name="login">Log in</string>
+    <string name="login_prompt">OpenFoodFacts login</string>
 
     <!-- Content descriptions -->
     <string name="mic_image">Speak product code</string>
@@ -71,10 +78,15 @@
     <string name="openfoodfacts" translatable="false">openfoodfacts.org</string>
 
     <!-- sites for WebView -->
-    <string name="about_eatsafe" translatable="false">http://eatsafe.ereinecke.com</string>
-    <string name="eatsafe_domain" translatable="false">eatsafe.ereinecke.com</string>
+    <string name="about_eatsafe" translatable="false">http://github.com/ereinecke/EatSafe</string>
+    <string name="eatsafe_domain" translatable="false">github.com</string>
     <string name="about_off" translatable="false">http://world.openfoodfacts.org</string>
     <string name="off_domain" translatable="false">world.openfoodfacts.org</string>
     <string name="off_logo" translatable="false">https://static.openfoodfacts.org/images/misc/openfoodfacts-logo-en-178x150.png</string>
+    <string name="register_url" translatable="false">https://world.openfoodfacts.org/cgi/user.pl</string>
+    <string name="lost_password_url" translatable="false">https://world.openfoodfacts.org/cgi/reset_password.pl</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 
 import com.ereinecke.eatsafe.R;
 import com.ereinecke.eatsafe.util.Constants;
@@ -19,11 +18,12 @@ public class DeleteDialog  extends DialogFragment {
 
     private final static String LOG_TAG = DeleteDialog.class.getSimpleName();
 
-    public DeleteDialog newInstance() {
+    public DeleteDialog newInstance(String barcode) {
 
         DeleteDialog dialog = new DeleteDialog();
         Bundle args = new Bundle();
         args.putString(Constants.DIALOG_TYPE, Constants.DIALOG_DELETE );
+        args.putString(Constants.BARCODE_KEY, barcode);
         dialog.setArguments(args);
         return dialog;
     }
@@ -56,13 +56,11 @@ public class DeleteDialog  extends DialogFragment {
                 .setPositiveButton(R.string.delete_button, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // FIRE ZE MISSILES!
-                        Log.d(LOG_TAG, "PositiveButton clicked.");
                         mListener.onDialogPositiveClick(DeleteDialog.this);
                     }
                 })
                 .setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Log.d(LOG_TAG, "NegativeButton clicked.");
                         mListener.onDialogNegativeClick(DeleteDialog.this);
                     }
                 });

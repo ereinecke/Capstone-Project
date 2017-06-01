@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -22,10 +23,11 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.commonsware.cwac.provider.StreamProvider;
+import com.ereinecke.eatsafe.data.OpenFoodContract;
 import com.ereinecke.eatsafe.services.OpenFoodService;
 import com.ereinecke.eatsafe.ui.DeleteDialog;
+import com.ereinecke.eatsafe.ui.LoginDialog;
 import com.ereinecke.eatsafe.ui.ProductFragment;
-import com.ereinecke.eatsafe.ui.ResultsFragment;
 import com.ereinecke.eatsafe.ui.SearchFragment;
 import com.ereinecke.eatsafe.ui.SplashFragment;
 import com.ereinecke.eatsafe.ui.TabPagerFragment;
@@ -39,6 +41,8 @@ import com.ereinecke.eatsafe.util.Utility.Callback;
 import com.google.android.gms.ads.MobileAds;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.mikepenz.aboutlibraries.LibsBuilder;
+import com.mikepenz.aboutlibraries.ui.LibsSupportFragment;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -55,13 +59,16 @@ public class MainActivity extends AppCompatActivity
     public static boolean isTablet = false;
     private long barcode = Constants.BARCODE_NONE; // most recent scanned or entered barcode
     private int currentFragment = 0;
+    private Bundle credentials;
     private String photoReceived;
     private View rootView;
     private WebFragment webFragment;
-    private ResultsFragment resultsFragment;
     private Toolbar toolbar;
+    private SharedPreferences preferences;
     private BroadcastReceiver messageReceiver;
     private final IntentFilter messageFilter = new IntentFilter(Constants.MESSAGE_EVENT);
+
+    /* === Lifecycle methods =============================================== */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +83,8 @@ public class MainActivity extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        credentials = loadCredentials();
 
         MobileAds.initialize(getApplicationContext(), getString(R.string.app_id));
 
@@ -131,68 +140,12 @@ public class MainActivity extends AppCompatActivity
         super.onDestroy();
     }
 
-
     @Override
-    public void onBackPressed() {
+    public boolean onCreateOptionsMenu(Menu menu) {
 
-        /* Capture back events when WebFragment is active and pass them to WebView */
-        if (webFragment != null) {
-            if (webFragment.canGoBack()) {
-                Log.d(LOG_TAG, "webFragment canGoBack, will take backPress");
-                webFragment.goBack();
-                return;
-            }
-        };
-
-        /* Only go back if we're in single-pane mode */
-        if (!isTablet) {
-            /* Assume we only have one level of navigation, clear back arrow and title */
-            showBackArrow(false);
-
-            /* if we are showing a child view (ProductFragment, WebFragment that can't go back) */
-            FragmentManager fm = getSupportFragmentManager();
-            int count = fm.getBackStackEntryCount();
-            Log.d(LOG_TAG, "BackStackEntryCount: " + count);
-            if (count == 0) {   // no fragments on backstack
-                super.onBackPressed();
-            } else {            // pop that fragment
-                getFragmentManager().popBackStackImmediate();
-            }
-        }
-    }
-
-    // The dialog fragment receives a reference to this Activity through the
-    // Fragment.onAttach() callback, which it uses to call the following methods
-    // defined by the NoticeDialogFragment.NoticeDialogListener interface
-    @Override
-    public void onDialogPositiveClick(DialogFragment dialog) {
-        // User touched the dialog's positive button
-        Bundle args = dialog.getArguments();
-        if (args == null) {
-            Log.d(LOG_TAG,"No args found in dialog intent");
-            return;
-        }
-        String dialogType = args.getString(Constants.DIALOG_TYPE);
-        Log.d(LOG_TAG, "Positive click on [" + dialogType + "]");
-        switch (dialogType) {
-            case Constants.DIALOG_DELETE:
-                ProductFragment productFragment = (ProductFragment) getSupportFragmentManager()
-                        .findFragmentById(R.id.fragment_product);
-                productFragment.deleteItem();
-                break;
-
-            case Constants.DIALOG_UPLOAD:
-                launchUploadFragment();
-                break;
-
-            default:
-                break;
-        }
-    }
-
-    @Override
-    public void onDialogNegativeClick(DialogFragment dialog) {
-        // User touched the dialog's negative button, do nothing
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
     }
 
     @Override
@@ -200,6 +153,7 @@ public class MainActivity extends AppCompatActivity
 
         savedInstanceState.putString(Constants.CURRENT_PHOTO, photoReceived);
         savedInstanceState.putInt(Constants.CURRENT_FRAGMENT, currentFragment);
+        savedInstanceState.putBundle(Constants.CREDENTIALS, credentials);
 
         super.onSaveInstanceState(savedInstanceState);
     }
@@ -211,16 +165,11 @@ public class MainActivity extends AppCompatActivity
         super.onRestoreInstanceState(savedInstanceState);
 
         savedInstanceState.getString(Constants.CURRENT_PHOTO);
-        savedInstanceState.getIntegerArrayList(Constants.CURRENT_FRAGMENT);
+        savedInstanceState.getInt(Constants.CURRENT_FRAGMENT);
+        savedInstanceState.getBundle(Constants.CREDENTIALS);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+    /* === User interactions =============================================== */
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -245,8 +194,8 @@ public class MainActivity extends AppCompatActivity
 
             //noinspection SimplifiableIfStatement
             case R.id.action_login:
-                Snackbar.make(rootView, getString(R.string.no_login_yet), Snackbar.LENGTH_SHORT)
-                        .setAction("Action", null).show();
+                loadCredentials();
+                LoginDialog.showLoginDialog(this, credentials);
                 return true;
 
             case R.id.action_sensitivities:
@@ -261,12 +210,88 @@ public class MainActivity extends AppCompatActivity
 
             case R.id.action_about:
                 // Need an about fragment for the app
-                launchWebFragment(getString(R.string.about_eatsafe), getString(R.string.eatsafe_domain));
+
+                launchAboutFragment();
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    /* Hide or show back arrow, which only happens in single-pane mode
+     * Setting HomeAsUp seems to turn on Title, so turn it off
+     */
+    private void showBackArrow(boolean showArrow) {
+
+        if (isTablet) {
+            return;
+        }
+        getSupportActionBar().setDisplayHomeAsUpEnabled(showArrow);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        /* Capture back events when WebFragment is active and pass them to WebView */
+        if (webFragment != null) {
+            if (webFragment.canGoBack()) {
+                // Log.d(LOG_TAG, "webFragment canGoBack, will take backPress");
+                webFragment.goBack();
+                return;
+            }
+        };
+
+        /* Only go back if we're in single-pane mode */
+        if (!isTablet) {
+            /* Assume we only have one level of navigation, clear back arrow and title */
+            showBackArrow(false);
+
+            /* if we are showing a child view (ProductFragment, WebFragment that can't go back) */
+            FragmentManager fm = getSupportFragmentManager();
+            int count = fm.getBackStackEntryCount();
+            // (LOG_TAG, "BackStackEntryCount: " + count);
+            if (count == 0) {   // no fragments on backstack
+                super.onBackPressed();
+            } else {            // pop that fragment
+                getFragmentManager().popBackStackImmediate();
+            }
+        }
+    }
+
+    // The dialog fragment receives a reference to this Activity through the
+    // Fragment.onAttach() callback, which it uses to call the following methods
+    // defined by the NoticeDialogFragment.NoticeDialogListener interface
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+        // User touched the dialog's positive button
+        Bundle args = dialog.getArguments();
+        if (args == null) {
+            // Log.d(LOG_TAG,"No args found in dialog intent");
+            return;
+        }
+        String dialogType = args.getString(Constants.DIALOG_TYPE);
+        Log.d(LOG_TAG, "Positive click on [" + dialogType + "]");
+        switch (dialogType) {
+            case Constants.DIALOG_DELETE:
+                String barcode = args.getString(Constants.BARCODE_KEY);
+                Log.d(LOG_TAG, "to delete item#: " + barcode);
+                deleteItem(barcode);
+                break;
+
+            case Constants.DIALOG_UPLOAD:
+                launchUploadFragment();
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        // User touched the dialog's negative button, do nothing
+    }
 
     @Override
     public void onItemSelected(String barcode) {
@@ -280,6 +305,9 @@ public class MainActivity extends AppCompatActivity
         }
     }
     
+
+    /* === Receivers ======================================================= */
+
     /* MessageReceiver is listening for any of the following:
      *   - an intent from OpenFoodService, containing a product barcode and a result string.
      *   - intents from various fragments, requesting that other fragments be displayed.
@@ -436,14 +464,13 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public long getBarcode() {
-        return barcode;
-    }
+
+    /* === Fragment management ============================================= */
 
     @Override
     public String PhotoRequest(int source, int photo) {
 
-        // TODO: check to make sure we have camera permissions here.
+        // TODO: check to make sure we have camera & storage permissions here.
         Log.d(LOG_TAG, "PhotoRequest(" + photo + ") received.");
         photoReceived = "";
         if (source == Constants.CAMERA_IMAGE_REQUEST) {
@@ -456,7 +483,6 @@ public class MainActivity extends AppCompatActivity
 
     /* Moves upload fragment to front   */
     private void launchUploadFragment() {
-        Log.d(LOG_TAG, "in launchUploadFragment()");
         if (findViewById(R.id.tab_container) != null) {
 
             Bundle bundle = new Bundle();
@@ -471,7 +497,7 @@ public class MainActivity extends AppCompatActivity
 
     /* Moves results fragment to front   */
     private void launchResultsFragment() {
-        Log.d(LOG_TAG, "in launchResultsFragment()");
+        // Log.d(LOG_TAG, "in launchResultsFragment()");
         if (findViewById(R.id.tab_container) != null) {
 
             Bundle bundle = new Bundle();
@@ -555,18 +581,33 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    /* Hide or show back arrow, which only happens in single-pane mode
-     * Setting HomeAsUp seems to turn on Title, so turn it off
+    /* Puts up SplashFragment.  Should only do in dual-pane mode, otherwise only menu items are
+     * available.
      */
-    private void showBackArrow(boolean showArrow) {
+    private void launchAboutFragment() {
 
+        LibsSupportFragment libsFragment = new LibsBuilder()
+                .withLicenseShown(false)
+                .withAboutVersionShown(true)
+                .withAboutAppName(getString(R.string.app_name))
+                .withAboutDescription(getString(R.string.app_description))
+                .supportFragment();
+
+        // Handle right-hand pane on dual-pane layouts
         if (isTablet) {
-            return;
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.right_pane_container, libsFragment)
+                    .commit();
+        } else {
+            showBackArrow(true);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.tab_container, libsFragment)
+                    .commit();
         }
-        getSupportActionBar().setDisplayHomeAsUpEnabled(showArrow);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-
     }
+
+
+    /* === Intent launchers ================================================ */
 
     public void launchPhotoIntent(int whichPhoto) {
 
@@ -625,8 +666,61 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    /** Returns a unique, opened file for image; sets photoReceived with filespec */
+    /* === Getter  ========================================================= */
 
+    public long getBarcode() {
+        return barcode;
+    }
+
+
+    /* === Utilities ======================================================= */
+    /*  TODO: candidates to move elsewhere?  */
+
+    private void saveCredentials(Bundle credentials) {
+        preferences = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+
+        editor.putString(Constants.USER_NAME, credentials.getString(Constants.USER_NAME));
+        editor.putString(Constants.AUTHENTICATION_TOKEN,
+                credentials.getString(Constants.AUTHENTICATION_TOKEN));
+        editor.commit();
+    }
+
+    /* Reads user credentials from shared preferences and returns them in a bundle */
+    private Bundle loadCredentials() {
+        preferences = getPreferences(Context.MODE_PRIVATE);
+        String userName = preferences.getString(Constants.USER_NAME, null);
+        String authToken = preferences.getString(Constants.AUTHENTICATION_TOKEN, null);
+        if (credentials == null) credentials = new Bundle();
+        credentials.putString(Constants.USER_NAME, userName);
+        credentials.putString(Constants.AUTHENTICATION_TOKEN, authToken);
+        return credentials;
+    }
+
+    /* start the login process in openfoodfacts-androidApp
+        apiClient = new Retrofit.Builder()
+                .baseUrl(BuildConfig.HOST)
+                .build()
+                .create(OpenFoodAPIService.class);
+     */
+
+    /* TODO: Figure out how to tell if successfully logged in */
+
+    /* removes the current item from the database
+     *  TODO: use URI approach */
+    public void deleteItem(String barcode) {
+
+        getContentResolver().delete(
+                OpenFoodContract.ProductEntry.CONTENT_URI,
+                OpenFoodContract.ProductEntry._ID + "=" + barcode,
+                null
+        );
+        launchSplashFragment();
+        launchResultsFragment();
+        Log.d(LOG_TAG,"Deleted item# " + barcode);
+    }
+
+    /** Returns a unique, opened file for image; sets photoReceived with filespec */
     public File openOutputMediaFile(){
 
         String appName = App.getContext().getString(R.string.app_name);

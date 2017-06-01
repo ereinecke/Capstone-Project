@@ -13,8 +13,8 @@ android {
         applicationId "com.ereinecke.eatsafe"
         minSdkVersion 17
         targetSdkVersion 25
-        versionCode 1
-        versionName "0.6-alpha"
+        versionCode 4
+        versionName "0.7-alpha"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -76,9 +76,9 @@ dependencies {
     annotationProcessor "android.arch.persistence.room:compiler:${archRoomVersion}"
 
     /* Retrofit */
-    compile 'com.squareup.retrofit2:retrofit:2.0.0-beta4'
-    compile 'com.squareup.retrofit2:converter-jackson:2.0.0-beta4'
-    compile 'com.squareup.okhttp3:logging-interceptor:3.3.1'
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    compile 'com.squareup.retrofit2:converter-jackson:2.3.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.8.0'
 
     /* GreenDAO */
     compile 'org.greenrobot:greendao:3.2.0'
@@ -106,7 +106,7 @@ dependencies {
     /* Image slider */
     compile 'com.hkm.loyalslider:library:1.9.4'
     /* About page library, adds credits for all libraries used */
-    compile('com.mikepenz:aboutlibraries:5.7.1@aar') {
+    compile('com.mikepenz:aboutlibraries:5.9.6@aar') {
         transitive = true
     }
     /* Material Design toast library */

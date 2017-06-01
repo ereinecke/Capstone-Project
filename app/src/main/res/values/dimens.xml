@@ -19,6 +19,8 @@
     <dimen name="custom_tab_layout_height">72dp</dimen>
 
     <dimen name="bottom_nav_height">56dp</dimen>
+    <dimen name="button_margin_horizontal">8dp</dimen>
+    <dimen name="button_margin_vertical">4dp</dimen>
 
     <dimen name="results_slider_height">240dp</dimen>
     <dimen name="slider_indicator_size">8dp</dimen>
@@ -29,6 +31,6 @@
     <dimen name="appbar_logo_horizontal_padding">32dp</dimen>
     <dimen name="appbar_logo_top_padding">0dp</dimen>
     <dimen name="appbar_logo_bottom_padding">0dp</dimen>
-    <dimen name="splash_margin">120dp</dimen>
+    <dimen name="splash_margin">80dp</dimen>
 
 </resources>

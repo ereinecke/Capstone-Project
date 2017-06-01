@@ -70,13 +70,14 @@
                 android:layout_gravity="center"
                 android:layout_marginBottom="24dp"
                 android:layout_marginTop="24dp"
-                android:background="@color/colorTabIndicators"
+                android:background="@color/transparent"
                 android:contentDescription="@string/scan_barcode"
                 android:minHeight="30dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:scaleType="centerInside"
-                android:text="@string/scan_barcode" />
+                android:text="@string/scan_barcode"
+                android:textColor="@color/material_teal_500" />
 
             <Space
                 android:layout_width="match_parent"

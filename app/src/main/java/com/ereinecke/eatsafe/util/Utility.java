@@ -1,10 +1,14 @@
 package com.ereinecke.eatsafe.util;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 
@@ -17,6 +21,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 
 /**
@@ -28,6 +35,67 @@ public class Utility {
     private static final int MAX_UPC_LENGTH = 13;
     private static final int MIN_UPC_LENGTH = 8;
 
+
+    /* from https://raz-soft.com/android/android-show-login-dialog/ */
+
+    public static boolean hasConnectivity(Context context,boolean wifiOnly)
+    {
+        try
+        {
+            boolean haveConnectedWifi = false;
+            boolean haveConnectedMobile = false;
+
+            ConnectivityManager cm = (ConnectivityManager)
+                    context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+            for (NetworkInfo ni : netInfo)
+            {
+                if (ni.getTypeName().equalsIgnoreCase("WIFI"))
+                    if (ni.isConnected())
+                        haveConnectedWifi = true;
+                if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
+                    if (ni.isConnected())
+                        haveConnectedMobile = true;
+            }
+
+            if (wifiOnly)
+                return haveConnectedWifi;
+            else
+                return haveConnectedWifi || haveConnectedMobile;
+
+        }
+        catch(Exception e)
+        {
+            return true; //just in case it fails move on, say yeah! we have Internet connection (hopefully)
+        }
+
+    }
+
+    /**
+     * SHA1 digest
+     * @param stringToDigest
+     * @return 40 len string
+     */
+    public static String computeSHA1Hash(String stringToDigest)
+    {
+        MessageDigest mdSha1 = null;
+        String SHAHash;
+        try
+        {
+            mdSha1 = MessageDigest.getInstance("SHA-1");
+        } catch (NoSuchAlgorithmException e1) {
+            return stringToDigest;
+        }
+        try {
+            mdSha1.update(stringToDigest.getBytes("ASCII"));
+        } catch (UnsupportedEncodingException e) {
+            return stringToDigest;
+        }
+        byte[] data = mdSha1.digest();
+        // SHAHash=bytesToHex(data);
+        SHAHash = null;
+        return SHAHash;
+    }
 
     /* If the flag Constants.TEST_ADS is set true, generates a test AdRequest for emulators and
      * specified devices, otherwise returns a live AdRequest.  The AdRequest is set to
@@ -141,6 +209,19 @@ public class Utility {
         } catch (FileNotFoundException e) {
         }
         return null;
+    }
+
+    /* Sends a broadcast message requesting that a WebFragment be displayed with the
+     * specified url and limited to the specified domain.
+     */
+    public static void requestWebView(String url, String domain) {
+        Log.d(LOG_TAG, "In requestWebView()");
+        Intent messageIntent = new Intent(Constants.MESSAGE_EVENT);
+        messageIntent.putExtra(Constants.MESSAGE_KEY, Constants.ACTION_VIEW_WEB);
+        messageIntent.putExtra(Constants.MESSAGE_RESULT, url);
+        messageIntent.putExtra(Constants.PARAM_DOMAIN, domain);
+        LocalBroadcastManager.getInstance(App.getContext())
+                .sendBroadcast(messageIntent);
     }
 
     /*
