@@ -49,6 +49,8 @@ ext {
     supportLibVersion = "25.3.1"
     archLifecycleVersion = "1.0.0-alpha1"
     archRoomVersion = "1.0.0-alpha1"
+    butterKnifeVersion = "8.6.0"
+    retrofitVersion = "2.3.0"
     jacksonLibVersion = "2.7.3"
     testLibVersion = "0.5"
 }
@@ -75,9 +77,13 @@ dependencies {
     annotationProcessor "android.arch.lifecycle:compiler:${archLifecycleVersion}"
     annotationProcessor "android.arch.persistence.room:compiler:${archRoomVersion}"
 
+    /* Butterknife */
+    compile "com.jakewharton:butterknife:${butterKnifeVersion}"
+    annotationProcessor "com.jakewharton:butterknife-compiler:${butterKnifeVersion}"
+
     /* Retrofit */
-    compile 'com.squareup.retrofit2:retrofit:2.3.0'
-    compile 'com.squareup.retrofit2:converter-jackson:2.3.0'
+    compile "com.squareup.retrofit2:retrofit:${retrofitVersion}"
+    compile "com.squareup.retrofit2:converter-jackson:${retrofitVersion}"
     compile 'com.squareup.okhttp3:logging-interceptor:3.8.0'
 
     /* GreenDAO */
@@ -91,6 +97,7 @@ dependencies {
 
     // Set this dependency to use JUnit 4 rules
     androidTestCompile "com.android.support.test:rules:${testLibVersion}"
+
     // Set this dependency to build and run Espresso tests
     androidTestCompile "com.android.support.test.espresso:espresso-core:2.2.2"
     configurations.all {
@@ -98,20 +105,27 @@ dependencies {
     }
     /* StreamProvider, workaround for FileProvider issues */
     compile 'com.commonsware.cwac:provider:0.4.0'
+
     /* Sugar ORM */
     compile 'com.github.satyan:sugar:1.5'
+
     /* ZXing barcode scanner */
-    compile 'me.dm7.barcodescanner:zxing:1.8.4'
+    compile 'me.dm7.barcodescanner:zxing:1.9'
     compile 'com.journeyapps:zxing-android-embedded:3.3.0'
+
     /* Image slider */
     compile 'com.hkm.loyalslider:library:1.9.4'
+
     /* About page library, adds credits for all libraries used */
     compile('com.mikepenz:aboutlibraries:5.9.6@aar') {
         transitive = true
     }
     /* Material Design toast library */
     compile 'net.steamcrafted:load-toast:1.0.10'
-    compile 'com.android.support:support-v4:25.3.1'
+
+    /* SuperToasts library */
+    compile 'com.github.johnpersano:supertoasts:2.0'
+
 }
 
 apply plugin: 'com.google.gms.google-services'

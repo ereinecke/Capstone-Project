@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -37,7 +36,9 @@ import com.ereinecke.eatsafe.ui.UploadFragment.PhotoRequest;
 import com.ereinecke.eatsafe.ui.WebFragment;
 import com.ereinecke.eatsafe.util.App;
 import com.ereinecke.eatsafe.util.Constants;
+import com.ereinecke.eatsafe.util.Utility;
 import com.ereinecke.eatsafe.util.Utility.Callback;
+import com.github.johnpersano.supertoasts.library.SuperActivityToast;
 import com.google.android.gms.ads.MobileAds;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -59,12 +60,11 @@ public class MainActivity extends AppCompatActivity
     public static boolean isTablet = false;
     private long barcode = Constants.BARCODE_NONE; // most recent scanned or entered barcode
     private int currentFragment = 0;
-    private Bundle credentials;
+    public static boolean loggedIn;
     private String photoReceived;
     private View rootView;
     private WebFragment webFragment;
     private Toolbar toolbar;
-    private SharedPreferences preferences;
     private BroadcastReceiver messageReceiver;
     private final IntentFilter messageFilter = new IntentFilter(Constants.MESSAGE_EVENT);
 
@@ -83,8 +83,6 @@ public class MainActivity extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        credentials = loadCredentials();
 
         MobileAds.initialize(getApplicationContext(), getString(R.string.app_id));
 
@@ -123,6 +121,15 @@ public class MainActivity extends AppCompatActivity
                 launchScannerIntent();
             }
         }
+
+        // Silent login at initial startup
+        if (savedInstanceState == null) {
+            if (silentLogin()) {
+                Log.d(LOG_TAG, "Login successful.");
+            } else {
+                Log.d(LOG_TAG, "Login failed");
+            }
+        }
     }
 
     @Override
@@ -145,6 +152,13 @@ public class MainActivity extends AppCompatActivity
 
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuItem loginItem = menu.findItem(R.id.action_login);
+        if (loggedIn) {
+                loginItem.setTitle(R.string.action_logout);
+        } else {
+            loginItem.setTitle(R.string.action_login);
+        }
+
         return true;
     }
 
@@ -153,7 +167,7 @@ public class MainActivity extends AppCompatActivity
 
         savedInstanceState.putString(Constants.CURRENT_PHOTO, photoReceived);
         savedInstanceState.putInt(Constants.CURRENT_FRAGMENT, currentFragment);
-        savedInstanceState.putBundle(Constants.CREDENTIALS, credentials);
+        savedInstanceState.putBoolean(Constants.LOGIN_STATE, loggedIn);
 
         super.onSaveInstanceState(savedInstanceState);
     }
@@ -166,7 +180,8 @@ public class MainActivity extends AppCompatActivity
 
         savedInstanceState.getString(Constants.CURRENT_PHOTO);
         savedInstanceState.getInt(Constants.CURRENT_FRAGMENT);
-        savedInstanceState.getBundle(Constants.CREDENTIALS);
+        savedInstanceState.getBoolean(Constants.LOGIN_STATE);
+
     }
 
     /* === User interactions =============================================== */
@@ -192,15 +207,19 @@ public class MainActivity extends AppCompatActivity
                 launchScannerIntent();
                 return true;
 
-            //noinspection SimplifiableIfStatement
+            // noinspection SimplifiableIfStatement
             case R.id.action_login:
-                loadCredentials();
-                LoginDialog.showLoginDialog(this, credentials);
+                if (isLoggedIn()) {
+                    logOut();
+                } else {
+                    LoginDialog.showLoginDialog(this);
+                }
                 return true;
 
             case R.id.action_sensitivities:
-                Snackbar.make(rootView, getString(R.string.no_sensitivities_yet), Snackbar.LENGTH_SHORT)
-                        .setAction("Action", null).show();
+                SuperActivityToast.create(this, Utility.errorStyle())
+                    .setText(getString(R.string.no_sensitivities_yet))
+                    .show();
                 return true;
 
             case R.id.action_about_off:
@@ -209,8 +228,6 @@ public class MainActivity extends AppCompatActivity
                 return true;
 
             case R.id.action_about:
-                // Need an about fragment for the app
-
                 launchAboutFragment();
                 return true;
         }
@@ -332,9 +349,9 @@ public class MainActivity extends AppCompatActivity
                         barcode = intent.getLongExtra(Constants.MESSAGE_RESULT, Constants.BARCODE_NOT_FOUND);
 
                         Log.d(LOG_TAG, "MessageReceiver result: " + messageKey);
-                        Snackbar.make(rootView, messageKey, Snackbar.LENGTH_SHORT)
-                                .setAction("Action", null).show();
-
+                        SuperActivityToast.create(context, Utility.infoStyle())
+                                .setText("Barcode " + messageKey + "received.")
+                                .show();
                         if (barcode == Constants.BARCODE_NOT_FOUND) {
                             launchSplashFragment();
                             UploadDialog uploadDialog = new UploadDialog();
@@ -408,8 +425,9 @@ public class MainActivity extends AppCompatActivity
                     if (result != null) {
                         String barcode = result.getContents();
                         if (result.getContents() == null) {
-                            Snackbar.make(rootView, getString(R.string.result_failed), Snackbar.LENGTH_SHORT)
-                                    .setAction("Action", null).show();
+                            SuperActivityToast.create(this, Utility.errorStyle())
+                                    .setText(getString(R.string.result_failed))
+                                    .show();
                         } else {
                             Log.d(LOG_TAG, "Scan result: " + result.toString());
                             // Have a (potentially) valid barcode, update text view and fetch product info
@@ -666,7 +684,7 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    /* === Getter  ========================================================= */
+    /* === Getters & setters  ============================================== */
 
     public long getBarcode() {
         return barcode;
@@ -676,35 +694,35 @@ public class MainActivity extends AppCompatActivity
     /* === Utilities ======================================================= */
     /*  TODO: candidates to move elsewhere?  */
 
-    private void saveCredentials(Bundle credentials) {
-        preferences = getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
+    /* Silent login */
+    private boolean silentLogin() {
+        SharedPreferences preferences = getSharedPreferences(Constants.LOGIN_PREFERENCES, Context.MODE_PRIVATE);
 
-        editor.putString(Constants.USER_NAME, credentials.getString(Constants.USER_NAME));
-        editor.putString(Constants.AUTHENTICATION_TOKEN,
-                credentials.getString(Constants.AUTHENTICATION_TOKEN));
-        editor.commit();
+        String password = preferences.getString(Constants.PASSWORD, "");
+        String userName = preferences.getString(Constants.USER_NAME, "");
+
+        loggedIn = LoginDialog.attemptLogin(this, userName, password, true);
+
+        return loggedIn;
     }
 
-    /* Reads user credentials from shared preferences and returns them in a bundle */
-    private Bundle loadCredentials() {
-        preferences = getPreferences(Context.MODE_PRIVATE);
-        String userName = preferences.getString(Constants.USER_NAME, null);
-        String authToken = preferences.getString(Constants.AUTHENTICATION_TOKEN, null);
-        if (credentials == null) credentials = new Bundle();
-        credentials.putString(Constants.USER_NAME, userName);
-        credentials.putString(Constants.AUTHENTICATION_TOKEN, authToken);
-        return credentials;
+    /* Returns true if there's a password set in SharedPreferences  */
+    public boolean isLoggedIn() {
+        return loggedIn;
     }
 
-    /* start the login process in openfoodfacts-androidApp
-        apiClient = new Retrofit.Builder()
-                .baseUrl(BuildConfig.HOST)
-                .build()
-                .create(OpenFoodAPIService.class);
-     */
+    private void logOut() {
+        SharedPreferences.Editor prefs = getSharedPreferences(Constants.LOGIN_PREFERENCES,
+                Context.MODE_PRIVATE).edit();
 
-    /* TODO: Figure out how to tell if successfully logged in */
+        prefs.putString(Constants.PASSWORD, "");
+        // TODO: clear cookies?
+        prefs.apply();
+        loggedIn = false;
+        Log.d(LOG_TAG, "Logged out.");
+        // change Log Out to Log In
+        invalidateOptionsMenu();
+    }
 
     /* removes the current item from the database
      *  TODO: use URI approach */

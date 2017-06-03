@@ -95,7 +95,7 @@ public class SearchFragment extends Fragment {
             }
         });
 
-        /* Ad displayed in bottom toolbar, respecting Constants.TEST_ADS flag  */
+        /* Ad displayed in bottom toolbar, respecting Constants.java.TEST_ADS flag  */
         AdView mAdView = (AdView) rootView.findViewById(R.id.adView);
         AdRequest adRequest = Utility.getAdRequest();
         if (mAdView != null) {
@@ -205,7 +205,7 @@ public class SearchFragment extends Fragment {
                 getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        text = getString(R.string.no_internet);
+        text = getString(R.string.error_no_internet);
         if (activeNetwork != null && activeNetwork.isConnectedOrConnecting()) {
             isConnected = true;
         } else {

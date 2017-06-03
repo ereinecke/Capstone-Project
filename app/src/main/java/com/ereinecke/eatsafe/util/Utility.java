@@ -1,5 +1,6 @@
 package com.ereinecke.eatsafe.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,8 +11,11 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.ereinecke.eatsafe.R;
+import com.github.johnpersano.supertoasts.library.Style;
 import com.google.ads.mediation.admob.AdMobAdapter;
 import com.google.android.gms.ads.AdRequest;
 
@@ -97,7 +101,7 @@ public class Utility {
         return SHAHash;
     }
 
-    /* If the flag Constants.TEST_ADS is set true, generates a test AdRequest for emulators and
+    /* If the flag Constants.java.TEST_ADS is set true, generates a test AdRequest for emulators and
      * specified devices, otherwise returns a live AdRequest.  The AdRequest is set to
      * "is_designed_for_families".
      */
@@ -224,6 +228,17 @@ public class Utility {
                 .sendBroadcast(messageIntent);
     }
 
+    public static void hideKeyboard(Activity activity) {
+
+        InputMethodManager imm = (InputMethodManager)
+                activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        View view = activity.getCurrentFocus();
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
     /*
      * Callback interface for product list item selection.
      */
@@ -231,6 +246,42 @@ public class Utility {
         void onItemSelected(String barcode);
     }
 
+
+    /* Styles for SuperToasts */
+
+    // Attributes common to all styles: frame, type, animation, message text color
+    private static Style EatSafeStyle() {
+        Context c = App.getContext();
+        final Style style = new Style();
+        style.type = Style.TYPE_STANDARD;
+        style.frame = Style.FRAME_KITKAT;
+        style.duration = Style.DURATION_MEDIUM;
+        style.messageTextColor = c.getColor(R.color.letterwhite);
+        style.animations = Style.ANIMATIONS_FLY;
+        return style;
+    }
+
+    public static Style errorStyle() {
+        Context c = App.getContext();
+        final Style style = EatSafeStyle();
+        style.color = c.getColor(R.color.error_red);
+        return style;
+
+    }
+
+    public static Style infoStyle() {
+        Context c = App.getContext();
+        final Style style = EatSafeStyle();
+        style.color = c.getColor(R.color.info_green);
+        return style;
+    }
+
+    public static Style warningStyle() {
+        Context c = App.getContext();
+        final Style style = EatSafeStyle();
+        style.color = c.getColor(R.color.warning_yellow);
+        return style;
+    }
 
 }
 

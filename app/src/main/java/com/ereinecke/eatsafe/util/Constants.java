@@ -14,8 +14,7 @@ public class Constants {
     public static final String OFF_API_URL = "https://ssl-api.openfoodfacts.org";
     public static final String OFF_API_TEST_URL = "https://ssl-api.openfoodfacts.org";
 
-
-    // ACTIONs.
+    // ACTIONs
     public static final String ACTION_SCAN_BARCODE   = "com.ereinecke.eatsafe.FETCH_SCAN";
     public static final String ACTION_FETCH_PRODUCT  = "com.ereinecke.eatsafe.services.action.FETCH_PRODUCT";
     // TODO: Should be using this action
@@ -57,8 +56,9 @@ public class Constants {
 
     // Login
     public static final String USER_NAME = "user_name";
-    public static final String AUTHENTICATION_TOKEN = "authentication_token";
-    public static final String LOGIN_RESULT = "login_result";
+    public static final String PASSWORD = "password";
+    public static final String LOGIN_STATE = "login_state";
+    public static final String LOGIN_PREFERENCES = "com.ereinecke.eatsafe.LOGIN";
 
     // Scanner constants
     public static final String BARCODE_KEY = "barcode_key";
