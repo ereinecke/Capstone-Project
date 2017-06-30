@@ -2,6 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/fragment_splash">
@@ -29,13 +30,14 @@
                 android:layout_weight="1"
                 android:background="@color/transparent"
                 android:contentDescription="@string/openfoodfacts"
+                android:paddingBottom="@dimen/vertical_padding"
                 android:paddingEnd="@dimen/horizontal_padding"
                 android:paddingLeft="@dimen/horizontal_padding"
                 android:paddingRight="@dimen/horizontal_padding"
                 android:paddingStart="@dimen/horizontal_padding"
-                android:paddingTop="@dimen/vertical_padding"
+                android:paddingTop="@dimen/appbar_logo_horizontal_padding"
                 android:scaleType="fitCenter"
-                android:src="@drawable/openfoodfacts_logo_356" />
+                android:src="@drawable/openfoodfacts_logo_356x246" />
 
             <ImageButton
                 android:id="@+id/logoView"
@@ -46,22 +48,28 @@
                 android:layout_weight="1"
                 android:background="@color/transparent"
                 android:contentDescription="@string/app_name"
+                android:paddingBottom="@dimen/vertical_padding"
                 android:paddingEnd="@dimen/horizontal_padding"
                 android:paddingLeft="@dimen/horizontal_padding"
                 android:paddingRight="@dimen/horizontal_padding"
                 android:paddingStart="@dimen/horizontal_padding"
                 android:paddingTop="@dimen/vertical_padding"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/eatsafe_logotext_513x180" />
+                app:srcCompat="@drawable/eatsafe_logo_text_356x246" />
 
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_weight="1"
-                android:text="Blah blah blah"
+                android:paddingEnd="@dimen/horizontal_padding"
+                android:paddingLeft="@dimen/horizontal_padding"
+                android:paddingRight="@dimen/horizontal_padding"
+                android:paddingStart="@dimen/horizontal_padding"
+                android:paddingTop="@dimen/vertical_padding"
+                android:text="EatSafe tagline and blurb"
                 android:textAlignment="center"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                android:textAppearance="@android:style/TextAppearance.Material.Headline" />
 
         </LinearLayout>
 

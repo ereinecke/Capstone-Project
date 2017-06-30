@@ -52,6 +52,8 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.ereinecke.eatsafe.util.Utility.infoStyle;
+
 public class MainActivity extends AppCompatActivity
         implements Callback, PhotoRequest,
         UploadDialog.NoticeDialogListener, DeleteDialog.NoticeDialogListener {
@@ -153,6 +155,7 @@ public class MainActivity extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         MenuItem loginItem = menu.findItem(R.id.action_login);
+
         if (loggedIn) {
                 loginItem.setTitle(R.string.action_logout);
         } else {
@@ -278,7 +281,8 @@ public class MainActivity extends AppCompatActivity
 
     // The dialog fragment receives a reference to this Activity through the
     // Fragment.onAttach() callback, which it uses to call the following methods
-    // defined by the NoticeDialogFragment.NoticeDialogListener interface
+    // defined by the NoticeDialog.NoticeDialogListener interface or
+    // UploadDialog.NoticeDialogListener
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
         // User touched the dialog's positive button
@@ -348,16 +352,18 @@ public class MainActivity extends AppCompatActivity
                     case Constants.BARCODE_KEY:
                         barcode = intent.getLongExtra(Constants.MESSAGE_RESULT, Constants.BARCODE_NOT_FOUND);
 
-                        Log.d(LOG_TAG, "MessageReceiver result: " + messageKey);
-                        SuperActivityToast.create(context, Utility.infoStyle())
-                                .setText("Barcode " + messageKey + "received.")
-                                .show();
                         if (barcode == Constants.BARCODE_NOT_FOUND) {
-                            launchSplashFragment();
-                            UploadDialog uploadDialog = new UploadDialog();
+                            if (isTablet) {
+                                launchSplashFragment();
+                            }
+                            UploadDialog uploadDialog = UploadDialog.newInstance(Constants.DIALOG_UPLOAD);
                             uploadDialog.show(getSupportFragmentManager(), getString(R.string.upload));
-
                         } else {
+                            Log.d(LOG_TAG, "MessageReceiver result: " + messageKey);
+                            SuperActivityToast.create(MainActivity.this, infoStyle())
+                                    .setText("Barcode " + barcode + "received.")
+                                    .show();
+
                             launchProductFragment(barcode);
                         }
                         break;
@@ -501,6 +507,7 @@ public class MainActivity extends AppCompatActivity
 
     /* Moves upload fragment to front   */
     private void launchUploadFragment() {
+        Log.d(LOG_TAG, "Launching UploadFragment");
         if (findViewById(R.id.tab_container) != null) {
 
             Bundle bundle = new Bundle();
@@ -714,12 +721,18 @@ public class MainActivity extends AppCompatActivity
     private void logOut() {
         SharedPreferences.Editor prefs = getSharedPreferences(Constants.LOGIN_PREFERENCES,
                 Context.MODE_PRIVATE).edit();
-
         prefs.putString(Constants.PASSWORD, "");
+
+        SharedPreferences prefsRead = getSharedPreferences(Constants.LOGIN_PREFERENCES,
+                Context.MODE_PRIVATE);
+        String userName = prefsRead.getString(Constants.USER_NAME, "");
         // TODO: clear cookies?
         prefs.apply();
         loggedIn = false;
         Log.d(LOG_TAG, "Logged out.");
+        SuperActivityToast st = new SuperActivityToast(this, infoStyle());
+        st.setText(getString(R.string.result_logout, userName));
+        st.show();
         // change Log Out to Log In
         invalidateOptionsMenu();
     }

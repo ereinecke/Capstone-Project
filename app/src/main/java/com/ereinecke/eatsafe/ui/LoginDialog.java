@@ -9,12 +9,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.ereinecke.eatsafe.R;
 import com.ereinecke.eatsafe.network.OpenFoodAPIClient;
 import com.ereinecke.eatsafe.util.Constants;
 import com.ereinecke.eatsafe.util.Utility;
+import com.github.johnpersano.supertoasts.library.Style;
 import com.github.johnpersano.supertoasts.library.SuperActivityToast;
 
 import net.steamcrafted.loadtoast.LoadToast;
@@ -43,6 +43,9 @@ public class LoginDialog {
     private static String password;
 
     private static OpenFoodAPIClient apiClient;
+    private static SuperActivityToast loginToast;
+    private static SuperActivityToast errorToast;
+    private static SuperActivityToast successToast;
 
     public static void showLoginDialog(final Context c)  {
 
@@ -106,7 +109,7 @@ public class LoginDialog {
                 }
             });
 
-        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setNegativeButton(c.getString(R.string.cancel_button), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id)
             {
@@ -124,18 +127,19 @@ public class LoginDialog {
     public static boolean attemptLogin(final Context c, final String userName,
                                        final String password, final boolean silent) {
         final LoadToast lt;
-        boolean loggedIn = false;
+        final boolean loggedIn = false;
 
         apiClient = new Retrofit.Builder()
                 .baseUrl(Constants.OFF_API_TEST_URL)
                 .build()
                 .create(OpenFoodAPIClient.class);
 
-        /* Basic password format validation
-         * TODO: Confirm that password criteria are current and correct
-         */
-        lt = new LoadToast(c);
+        loginToast = new SuperActivityToast(c, Utility.infoStyle());
+        loginToast.setIndeterminate(true);
+        errorToast = new SuperActivityToast(c, Utility.errorStyle());
+        successToast = new SuperActivityToast(c, Utility.infoStyle());
 
+        /* Basic password format validation  */
         if (!silent) {
             if (!(password.length() >= 6)) {
                 passwordView.setError(c.getString(R.string.error_invalid_password));
@@ -149,10 +153,8 @@ public class LoginDialog {
                 return false;
             }
 
-            lt.setText("logging in...");
-            lt.setBackgroundColor(c.getResources().getColor(R.color.colorAccent));
-            lt.setTextColor(c.getResources().getColor(R.color.white));
-            lt.show();
+            loginToast.setText("Logging in...");
+            loginToast.show();
         }
 
         // This generates the POST to the login page and collects cookies, saves to SharedPrefs
@@ -161,8 +163,10 @@ public class LoginDialog {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (!response.isSuccessful()) {
                     if (!silent) {
-                        lt.setText(c.getString(R.string.error_no_internet));
-                        // lt.error();
+                        loginToast.dismiss();
+                        errorToast.setText(c.getString(R.string.error_no_internet));
+                        errorToast.setDuration(Style.DURATION_MEDIUM);
+                        errorToast.show();
                         // Utility.hideKeyboard();
                     }
                     Log.d(LOG_TAG, c.getString(R.string.error_no_internet));
@@ -184,12 +188,15 @@ public class LoginDialog {
                         || htmlNotParsed.contains("See you soon!")) {
 
                     if (!silent) {
-                        lt.error();
-                        Toast.makeText(c, c.getString(R.string.error_login), Toast.LENGTH_LONG).show();
+                        loginToast.dismiss();
+                        errorToast.setText(c.getString(R.string.error_no_internet));
+                        errorToast.setDuration(Style.DURATION_MEDIUM);
+                        errorToast.setText(c.getString(R.string.error_login));
+                        errorToast.show();
+
                         userNameView.setText("");
                         passwordView.setText("");
                     }
-                    Log.d(LOG_TAG, c.getString(R.string.error_invalid_password));
 
                     // Clear credentials from SharedPrefs
                     prefs.putString(Constants.PASSWORD, "");
@@ -211,9 +218,11 @@ public class LoginDialog {
                     }
 
                     if (!silent) {
-                        lt.success();
-                        Toast.makeText(c, c.getResources().getText(R.string.result_login, userName),
-                            Toast.LENGTH_LONG).show();
+                        loginToast.dismiss();
+                        String msg = c.getResources().getString(R.string.result_login, userName);
+                        Log.d(LOG_TAG, msg);
+                        successToast.setText(msg);
+                        successToast.show();
                     }
                     Log.d(LOG_TAG, "userName: \"" + userName + "\"; password: \"" + password + "\"");
                     // Store credential in SharedPrefs
@@ -226,13 +235,14 @@ public class LoginDialog {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(c, c.getString(R.string.error_no_internet), Toast.LENGTH_LONG).show();
-                lt.error();
+                loginToast.dismiss();
+                errorToast.setText(c.getString(R.string.error_no_internet));
+                errorToast.show();
                 // Utility.hideKeyboard(c);
-
-
             }
         });
+
+        loginToast.dismiss();
 
         // There must be a better way to tell if we succeeded...
         String pword = "";

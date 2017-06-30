@@ -37,6 +37,7 @@
     <string name="error_no_internet">Internet connection is required.</string>
     <string name="error_login">Username or password incorrect.</string>
     <string name="result_login">Logged in as %1$s.</string>
+    <string name="result_logout">%1$s logged out.</string>
     <string name="result_scan_succeeded">Scan successful</string>
     <string name="result_failed">Scan failed</string>
     <string name="result_failed_why">Don\'t know why</string>

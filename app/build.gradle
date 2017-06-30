@@ -6,13 +6,13 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
 
-    compileSdkVersion 25
-    buildToolsVersion '25.0.3'
+    compileSdkVersion 26
+    buildToolsVersion '26.0.0 rc2'
 
     defaultConfig {
         applicationId "com.ereinecke.eatsafe"
         minSdkVersion 17
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 4
         versionName "0.7-alpha"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -46,7 +46,7 @@ android {
 }
 
 ext {
-    supportLibVersion = "25.3.1"
+    supportLibVersion = "26.0.0-beta2"
     archLifecycleVersion = "1.0.0-alpha1"
     archRoomVersion = "1.0.0-alpha1"
     butterKnifeVersion = "8.6.0"
@@ -99,10 +99,11 @@ dependencies {
     androidTestCompile "com.android.support.test:rules:${testLibVersion}"
 
     // Set this dependency to build and run Espresso tests
-    androidTestCompile "com.android.support.test.espresso:espresso-core:2.2.2"
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
     configurations.all {
         resolutionStrategy.force "com.android.support:support-annotations:23.0.1"
     }
+
     /* StreamProvider, workaround for FileProvider issues */
     compile 'com.commonsware.cwac:provider:0.4.0'
 
@@ -120,12 +121,12 @@ dependencies {
     compile('com.mikepenz:aboutlibraries:5.9.6@aar') {
         transitive = true
     }
+
     /* Material Design toast library */
     compile 'net.steamcrafted:load-toast:1.0.10'
 
     /* SuperToasts library */
     compile 'com.github.johnpersano:supertoasts:2.0'
-
 }
 
 apply plugin: 'com.google.gms.google-services'

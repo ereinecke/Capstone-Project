@@ -54,6 +54,9 @@ public class OpenFoodService extends IntentService {
      *      true if product found, either in ContentProvider or downloaded
      *          from OpenFoodFacts.org.
      *      false if product not found for whatever reason.
+     *
+     * Makes a call on ContentResolver to check local entries before attempting to
+     * download from OFF.
      */
     private boolean fetchProduct(String barcode) {
 
@@ -74,6 +77,7 @@ public class OpenFoodService extends IntentService {
                 null  // sort order
         );
 
+        /* found in local db */
         assert productEntry != null;
         if(productEntry.getCount() > 0) {
             String response = getResources().getString(R.string.barcode_already_downloaded, barcode);
@@ -97,7 +101,7 @@ public class OpenFoodService extends IntentService {
 
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
-            Log.d(LOG_TAG, "URLConnection: " + urlConnection.toString());
+            // Log.d(LOG_TAG, "URLConnection: " + urlConnection.toString());
 
             try {
                 urlConnection.connect();
@@ -232,6 +236,7 @@ public class OpenFoodService extends IntentService {
                 .sendBroadcast(messageIntent);
     }
 
+    /* Writes to the content provider to store locally */
     private void writeProduct(long productId, String productName, String imgUrl,
                               String thumbUrl, String ingredientsImgUrl,
                               String nutritionImgUrl, String brands, String labels, String servingSize,

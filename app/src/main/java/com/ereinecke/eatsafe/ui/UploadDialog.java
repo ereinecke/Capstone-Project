@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 
 import com.ereinecke.eatsafe.R;
 import com.ereinecke.eatsafe.util.Constants;
@@ -18,7 +19,7 @@ public class UploadDialog  extends DialogFragment {
 
     private final static String LOG_TAG = UploadDialog.class.getSimpleName();
 
-    public UploadDialog newInstance(String barcode) {
+    public static UploadDialog newInstance(String barcode) {
         UploadDialog dialog = new UploadDialog();
         Bundle args = new Bundle();
         args.putString(Constants.DIALOG_TYPE, Constants.DIALOG_UPLOAD );
@@ -53,6 +54,7 @@ public class UploadDialog  extends DialogFragment {
                 .setPositiveButton(R.string.upload_button, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // FIRE ZE MISSILES!
+                        Log.d(LOG_TAG, "Fire ze missiles!");
                         mListener.onDialogPositiveClick(UploadDialog.this);
                     }
                 })

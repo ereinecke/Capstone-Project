@@ -5,7 +5,7 @@
     <color name="textColorPrimary">#dddddd</color>
     <color name="colorAccent">#d06a8b</color>
 
-    <color name="colorTabs">#949D93</color>
+    <color name="colorTabs">#949d93</color>
     <color name="colorTabIndicators">@color/colorAccent</color>
 
     <color name="colorSelectedButton">#99ffffff</color>
