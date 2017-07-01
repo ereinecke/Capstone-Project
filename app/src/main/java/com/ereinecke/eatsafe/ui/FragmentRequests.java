@@ -7,7 +7,7 @@ import com.ereinecke.eatsafe.util.App;
 import com.ereinecke.eatsafe.util.Constants;
 
 /**
- * Created by ereinecke on 6/3/17.
+ * Utility functions to bring specific fragments to the fore.
  */
 
 public class FragmentRequests {

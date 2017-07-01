@@ -79,6 +79,7 @@ public class ResultsFragment extends Fragment implements LoaderManager.LoaderCal
             new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     Snackbar.make(rootView, "@string/history search_not_enabled",
                         Snackbar.LENGTH_SHORT)
                             .setAction("Action", null).show();

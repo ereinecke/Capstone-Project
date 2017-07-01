@@ -92,7 +92,7 @@
     <string name="register_url" translatable="false">https://world.openfoodfacts.org/cgi/user.pl</string>
     <string name="lost_password_url" translatable="false">https://world.openfoodfacts.org/cgi/reset_password.pl</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
+    <!-- About text -->
+    <string name="about_title">About EatSafe</string>
+    <string name="about_text">EatSafe is an open-source project aimed at travelers and expats with dietary restrictions.\nUsing the OpenFoodFacts database (https://openfoodfacts.org), you can scan product labels and get ingredient and nutritional info in your native language. \n\n      Author: Erik Reinecke\n      Version: %1$s\n      Source code: https://github.com/ereinecke/EatSafe\n\nThanks to the following open-source components:\n</string>
 </resources>

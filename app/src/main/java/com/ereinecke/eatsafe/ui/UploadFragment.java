@@ -104,6 +104,7 @@ public class UploadFragment extends Fragment {
 
     /* TODO: validate that we have minimum required data and upload to OpenFoodFacts.org */
     private void uploadProductInfo() {
+
         Snackbar.make(rootView, "Upload not yet implemented", Snackbar.LENGTH_LONG)
             .setAction("Action", null).show();
     }

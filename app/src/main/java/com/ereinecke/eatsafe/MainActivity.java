@@ -24,6 +24,7 @@ import android.view.View;
 import com.commonsware.cwac.provider.StreamProvider;
 import com.ereinecke.eatsafe.data.OpenFoodContract;
 import com.ereinecke.eatsafe.services.OpenFoodService;
+import com.ereinecke.eatsafe.ui.AboutFragment;
 import com.ereinecke.eatsafe.ui.DeleteDialog;
 import com.ereinecke.eatsafe.ui.LoginDialog;
 import com.ereinecke.eatsafe.ui.ProductFragment;
@@ -606,10 +607,21 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    /* Puts up SplashFragment.  Should only do in dual-pane mode, otherwise only menu items are
-     * available.
+    /* Puts up AboutFragment.
      */
     private void launchAboutFragment() {
+
+        // Handle right-hand pane on dual-pane layouts
+        if (isTablet) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.right_pane_container, new AboutFragment())
+                    .commit();
+        } else {
+            showBackArrow(true);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.tab_container, new AboutFragment())
+                    .commit();
+        }
 
         LibsSupportFragment libsFragment = new LibsBuilder()
                 .withLicenseShown(false)
@@ -618,17 +630,10 @@ public class MainActivity extends AppCompatActivity
                 .withAboutDescription(getString(R.string.app_description))
                 .supportFragment();
 
-        // Handle right-hand pane on dual-pane layouts
-        if (isTablet) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.right_pane_container, libsFragment)
-                    .commit();
-        } else {
-            showBackArrow(true);
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.tab_container, libsFragment)
-                    .commit();
-        }
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.about_libs_fragment, libsFragment)
+                .commit();
+
     }
 
 
