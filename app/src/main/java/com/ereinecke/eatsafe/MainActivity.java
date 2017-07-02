@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -62,12 +61,10 @@ public class MainActivity extends AppCompatActivity
     private final static String LOG_TAG = MainActivity.class.getSimpleName();
     public static boolean isTablet = false;
     private long barcode = Constants.BARCODE_NONE; // most recent scanned or entered barcode
-    private int currentFragment = 0;
-    public static boolean loggedIn;
+    private final int currentFragment = 0;
+    private static boolean loggedIn;
     private String photoReceived;
-    private View rootView;
     private WebFragment webFragment;
-    private Toolbar toolbar;
     private BroadcastReceiver messageReceiver;
     private final IntentFilter messageFilter = new IntentFilter(Constants.MESSAGE_EVENT);
 
@@ -81,10 +78,11 @@ public class MainActivity extends AppCompatActivity
         boolean scanner = false;
 
         setContentView(R.layout.activity_main);
-        rootView = findViewById(android.R.id.content);
+        View rootView = findViewById(android.R.id.content);
 
-        toolbar = (Toolbar) findViewById(R.id.app_bar);
+        Toolbar toolbar = findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
+        //noinspection ConstantConditions
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         MobileAds.initialize(getApplicationContext(), getString(R.string.app_id));
@@ -246,7 +244,12 @@ public class MainActivity extends AppCompatActivity
         if (isTablet) {
             return;
         }
-        getSupportActionBar().setDisplayHomeAsUpEnabled(showArrow);
+        try {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(showArrow);
+        } catch (Exception e) {
+            Log.d(LOG_TAG, "Exception in showBackArrow: " + e.getMessage());
+            e.printStackTrace();
+        }
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
     }
@@ -261,7 +264,7 @@ public class MainActivity extends AppCompatActivity
                 webFragment.goBack();
                 return;
             }
-        };
+        }
 
         /* Only go back if we're in single-pane mode */
         if (!isTablet) {
@@ -294,6 +297,7 @@ public class MainActivity extends AppCompatActivity
         }
         String dialogType = args.getString(Constants.DIALOG_TYPE);
         Log.d(LOG_TAG, "Positive click on [" + dialogType + "]");
+        assert dialogType != null;
         switch (dialogType) {
             case Constants.DIALOG_DELETE:
                 String barcode = args.getString(Constants.BARCODE_KEY);
@@ -429,21 +433,19 @@ public class MainActivity extends AppCompatActivity
                     IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
                     Log.d(LOG_TAG, "IntentResult: " + result.toString());
 
-                    if (result != null) {
-                        String barcode = result.getContents();
-                        if (result.getContents() == null) {
-                            SuperActivityToast.create(this, Utility.errorStyle())
-                                    .setText(getString(R.string.result_failed))
-                                    .show();
-                        } else {
-                            Log.d(LOG_TAG, "Scan result: " + result.toString());
-                            // Have a (potentially) valid barcode, update text view and fetch product info
-                            SearchFragment.handleScanResult(barcode);
-                            Intent productIntent = new Intent(this, OpenFoodService.class);
-                            productIntent.putExtra(Constants.BARCODE_KEY, barcode);
-                            productIntent.setAction(Constants.ACTION_FETCH_PRODUCT);
-                            startService(productIntent);
-                        }
+                    String barcode = result.getContents();
+                    if (result.getContents() == null) {
+                        SuperActivityToast.create(this, Utility.errorStyle())
+                                .setText(getString(R.string.result_failed))
+                                .show();
+                    } else {
+                        Log.d(LOG_TAG, "Scan result: " + result.toString());
+                        // Have a (potentially) valid barcode, update text view and fetch product info
+                        SearchFragment.handleScanResult(barcode);
+                        Intent productIntent = new Intent(this, OpenFoodService.class);
+                        productIntent.putExtra(Constants.BARCODE_KEY, barcode);
+                        productIntent.setAction(Constants.ACTION_FETCH_PRODUCT);
+                        startService(productIntent);
                     }
                 } else {
                     Log.d(LOG_TAG, "Error scanning barcode: " + resultCode);
@@ -469,6 +471,7 @@ public class MainActivity extends AppCompatActivity
                 if (resultCode == RESULT_OK) {
                     final Uri imageUri = intent.getData();
                     try {
+                        // TODO: figure out what imageStream might be needed
                         imageStream = getContentResolver().openInputStream(imageUri);
                         Log.d(LOG_TAG, "Gallery image request returned Uri: " + imageUri);
                         UploadFragment.updateImageFromGallery(imageUri);
@@ -543,22 +546,30 @@ public class MainActivity extends AppCompatActivity
             args.putLong(Constants.BARCODE_KEY, barcode);
 
             /* Set up back arrow */
-            Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+            Toolbar toolbar = findViewById(R.id.app_bar);
             setSupportActionBar(toolbar);
 
             ProductFragment ProductFragment = new ProductFragment();
             ProductFragment.setArguments(args);
 
             if (!isTablet) {  // productFragment replaces TabPagerFragment
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                getSupportActionBar().setDisplayShowTitleEnabled(false);
+                try {
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setDisplayShowTitleEnabled(false);
+                } catch (Exception e) {
+                    Log.d(LOG_TAG, "Exception in launchProductFragment: " + e.getMessage());
+                }
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.tab_container, ProductFragment)
                         .addToBackStack(null)
                         .commit();
 
             } else {  // productFragment replaces splashFragment
-                getSupportActionBar().setDisplayShowTitleEnabled(false);
+                try {
+                    getSupportActionBar().setDisplayShowTitleEnabled(false);
+                } catch (Exception e) {
+                    Log.d(LOG_TAG, "Exception in launchProductFragment: " + e.getMessage());
+                }
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.right_pane_container, ProductFragment)
                         .addToBackStack(null)
@@ -578,13 +589,13 @@ public class MainActivity extends AppCompatActivity
         // Handle right-hand pane on dual-pane layouts
         if (isTablet) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.right_pane_container, (Fragment) webFragment)
+                    .replace(R.id.right_pane_container, webFragment)
                     .addToBackStack(null)
                     .commit();
         } else {
             showBackArrow(true);
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.tab_container, (Fragment) webFragment)
+                    .replace(R.id.tab_container, webFragment)
                     .addToBackStack(null)
                     .commit();
         }
@@ -639,7 +650,7 @@ public class MainActivity extends AppCompatActivity
 
     /* === Intent launchers ================================================ */
 
-    public void launchPhotoIntent(int whichPhoto) {
+    private void launchPhotoIntent(int whichPhoto) {
 
         Log.d(LOG_TAG, "Launching intent for photo #" + whichPhoto);
         // create Intent to take a picture and return control to the calling application
@@ -655,7 +666,11 @@ public class MainActivity extends AppCompatActivity
 
                 Uri photoUri = StreamProvider
                         .getUriForFile("com.ereinecke.eatsafe.fileprovider", photoFile);
-                Log.d(LOG_TAG, "photoUri: " + photoUri.toString());
+                try {
+                    Log.d(LOG_TAG, "photoUri: " + photoUri.toString());
+                } catch (Exception e) {
+                    Log.d(LOG_TAG, "photoUri is null: " + e.getMessage());
+                }
                 // set the image file name
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
                 takePictureIntent.putExtra(Constants.WHICH_PHOTO, whichPhoto);
@@ -669,7 +684,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public void launchGalleryIntent(int whichPhoto) {
+    private void launchGalleryIntent(int whichPhoto) {
 
         Log.d(LOG_TAG, "Launching intent for photo #" + whichPhoto);
         // create Intent to take a picture and return control to the calling application
@@ -719,7 +734,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     /* Returns true if there's a password set in SharedPreferences  */
-    public boolean isLoggedIn() {
+    private boolean isLoggedIn() {
         return loggedIn;
     }
 
@@ -744,7 +759,7 @@ public class MainActivity extends AppCompatActivity
 
     /* removes the current item from the database
      *  TODO: use URI approach */
-    public void deleteItem(String barcode) {
+    private void deleteItem(String barcode) {
 
         getContentResolver().delete(
                 OpenFoodContract.ProductEntry.CONTENT_URI,
@@ -757,7 +772,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     /** Returns a unique, opened file for image; sets photoReceived with filespec */
-    public File openOutputMediaFile(){
+    private File openOutputMediaFile(){
 
         String appName = App.getContext().getString(R.string.app_name);
         if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {

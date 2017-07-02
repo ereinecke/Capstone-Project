@@ -35,7 +35,7 @@ public class Search implements Serializable {
     private Integer page;
     private List<Product> products = new ArrayList<>();
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<>();
+    private final Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
      *

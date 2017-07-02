@@ -48,13 +48,11 @@ public class TabPagerFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_tab_pager, container, false);
 
-        ViewGroup container1 = container;
-
-        ViewPager viewPager = (ViewPager) view.findViewById(R.id.fragment_tab_pager);
+        ViewPager viewPager = view.findViewById(R.id.fragment_tab_pager);
         setupViewPager(viewPager);
         viewPager.setCurrentItem(whichFragment);
 
-        TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tabs);
+        TabLayout tabLayout = view.findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
         return view;

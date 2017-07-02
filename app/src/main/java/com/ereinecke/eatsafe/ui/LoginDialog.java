@@ -3,6 +3,7 @@ package com.ereinecke.eatsafe.ui;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
@@ -19,7 +20,6 @@ import com.github.johnpersano.supertoasts.library.SuperActivityToast;
 
 import net.steamcrafted.loadtoast.LoadToast;
 
-import java.io.IOException;
 import java.net.HttpCookie;
 
 import okhttp3.ResponseBody;
@@ -36,13 +36,10 @@ import retrofit2.Retrofit;
 
 public class LoginDialog {
 
-    public static final String LOG_TAG = LoginDialog.class.getSimpleName();
+    private static final String LOG_TAG = LoginDialog.class.getSimpleName();
     private static EditText passwordView;
     private static EditText userNameView;
-    private static String userName;
-    private static String password;
 
-    private static OpenFoodAPIClient apiClient;
     private static SuperActivityToast loginToast;
     private static SuperActivityToast errorToast;
     private static SuperActivityToast successToast;
@@ -54,12 +51,14 @@ public class LoginDialog {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(c);
         alertDialogBuilder.setView(prompt);
 
-        passwordView = (EditText) prompt.findViewById(R.id.password);
-        userNameView = (EditText) prompt.findViewById(R.id.user_name);
+        passwordView = prompt.findViewById(R.id.password);
+        userNameView = prompt.findViewById(R.id.user_name);
 
         /* get credentials */
         SharedPreferences preferences = c.getSharedPreferences(Constants.LOGIN_PREFERENCES,
                 Context.MODE_PRIVATE);
+        String userName;
+        String password;
         if (preferences != null) {
             userName = preferences.getString(Constants.USER_NAME, null);
             password = preferences.getString(Constants.PASSWORD, null);
@@ -92,7 +91,7 @@ public class LoginDialog {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
                     //check for internet connectivity
-                    if (!Utility.hasConnectivity(c, false)) {
+                    if (Utility.hasConnectivity(c, false)) {
                         final SuperActivityToast st = new SuperActivityToast(c, Utility.errorStyle());
                         st.setText(c.getString(R.string.error_no_internet));
                         st.show();
@@ -129,7 +128,7 @@ public class LoginDialog {
         final LoadToast lt;
         final boolean loggedIn = false;
 
-        apiClient = new Retrofit.Builder()
+        OpenFoodAPIClient apiClient = new Retrofit.Builder()
                 .baseUrl(Constants.OFF_API_TEST_URL)
                 .build()
                 .create(OpenFoodAPIClient.class);
@@ -160,7 +159,7 @@ public class LoginDialog {
         // This generates the POST to the login page and collects cookies, saves to SharedPrefs
         apiClient.signIn(userName, password, "Sign-in").enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (!response.isSuccessful()) {
                     if (!silent) {
                         loginToast.dismiss();
@@ -176,8 +175,8 @@ public class LoginDialog {
                 String htmlNotParsed = null;
                 try {
                     htmlNotParsed = response.body().string();
-                } catch (IOException e) {
-                    Log.d(LOG_TAG, "Unable to parse the login response page", e);
+                } catch (Exception e) {
+                    Log.d(LOG_TAG, "Unable to parse the login response page, " + e.getMessage());
                 }
 
                 SharedPreferences.Editor prefs = c.getSharedPreferences(Constants.LOGIN_PREFERENCES,
@@ -234,7 +233,7 @@ public class LoginDialog {
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                 loginToast.dismiss();
                 errorToast.setText(c.getString(R.string.error_no_internet));
                 errorToast.show();
@@ -259,11 +258,6 @@ public class LoginDialog {
             return false;
         }
     }
-
-    public static void whatever() {
-
-    }
-
 }
 
 

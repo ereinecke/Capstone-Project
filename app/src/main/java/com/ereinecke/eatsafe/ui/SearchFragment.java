@@ -46,9 +46,13 @@ public class SearchFragment extends Fragment {
     @SuppressWarnings("EmptyMethod")
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        if (getArguments() != null &&
-                getArguments().getString(Constants.MESSAGE_KEY).equals(Constants.ACTION_SCAN_BARCODE))
-            startScan = true;
+        try {
+            if (getArguments() != null &&
+                    getArguments().getString(Constants.MESSAGE_KEY).equals(Constants.ACTION_SCAN_BARCODE))
+                startScan = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         super.onCreate(savedInstanceState);
     }
 
@@ -59,7 +63,7 @@ public class SearchFragment extends Fragment {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_search, container, false);
 
-        barcodeView = (EditText) rootView.findViewById(R.id.barcode);
+        barcodeView = rootView.findViewById(R.id.barcode);
 
         barcodeView.setOnEditorActionListener(
                 new EditText.OnEditorActionListener() {
@@ -77,7 +81,7 @@ public class SearchFragment extends Fragment {
                 });
 
         /* Search button */
-        ImageButton searchButton = (ImageButton) rootView.findViewById(R.id.search_button);
+        ImageButton searchButton = rootView.findViewById(R.id.search_button);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,7 +98,7 @@ public class SearchFragment extends Fragment {
         });
 
         /* Ad displayed in bottom toolbar, respecting Constants.java.TEST_ADS flag  */
-        AdView mAdView = (AdView) rootView.findViewById(R.id.adView);
+        AdView mAdView = rootView.findViewById(R.id.adView);
         AdRequest adRequest = Utility.getAdRequest();
         if (mAdView != null) {
             mAdView.loadAd(adRequest);
@@ -158,7 +162,7 @@ public class SearchFragment extends Fragment {
     }
 
     /* Sends an intent to OpenFoodService to fetch product info */
-    public void callFetchProduct(String barcodeStr) {
+    private void callFetchProduct(String barcodeStr) {
         Log.d(LOG_TAG, "in callFetchProduct: " + barcodeStr);
 
         // Have a (potentially) valid barcode, fetch product info

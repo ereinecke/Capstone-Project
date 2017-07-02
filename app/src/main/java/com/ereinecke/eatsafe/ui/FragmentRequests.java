@@ -10,7 +10,7 @@ import com.ereinecke.eatsafe.util.Constants;
  * Utility functions to bring specific fragments to the fore.
  */
 
-public class FragmentRequests {
+class FragmentRequests {
 
     /* Broadcast Intent to MainActivity.MessageReceiver with product display request */
     public void requestProductFragment() {

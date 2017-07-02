@@ -30,13 +30,14 @@ public class ProductListAdapter extends CursorAdapter {
         public int productImageSize;
 
         public ViewHolder(View view) {
-            productImage = (ImageView) view.findViewById(R.id.product_image);
-            productName = (TextView) view.findViewById(R.id.product_name);
-            productBrand = (TextView) view.findViewById(R.id.product_brand);
-            productCode = (TextView) view.findViewById(R.id.code);
+            productImage = view.findViewById(R.id.product_image);
+            productName = view.findViewById(R.id.product_name);
+            productBrand = view.findViewById(R.id.product_brand);
+            productCode = view.findViewById(R.id.code);
         }
     }
 
+    @SuppressWarnings("SameParameterValue")
     public ProductListAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
     }

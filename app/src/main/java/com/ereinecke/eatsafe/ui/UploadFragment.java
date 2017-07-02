@@ -50,8 +50,8 @@ public class UploadFragment extends Fragment {
 
             // Inflate the layout for this fragment
             rootView = inflater.inflate(R.layout.fragment_upload, container, false);
-            uploadImageView = (ImageView) rootView.findViewById(R.id.upload_imageView);
-            BottomNavigationView bottomNavigation = (BottomNavigationView) rootView.findViewById(R.id.upload_toolbar_bottom);
+            uploadImageView = rootView.findViewById(R.id.upload_imageView);
+            BottomNavigationView bottomNavigation = rootView.findViewById(R.id.upload_toolbar_bottom);
             // May not be necessary, specified in layout file:
             // bottomNavigation.inflateMenu(R.menu.upload_actions_menu);
             bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -78,7 +78,6 @@ public class UploadFragment extends Fragment {
 
 
     public static void updateImage(String imageFile) {
-        String currentImageFile = imageFile;
 
         if (imageFile != null) {
 
@@ -88,10 +87,8 @@ public class UploadFragment extends Fragment {
     }
 
     public static void updateImageFromGallery(Uri imageUri) {
-        Uri currentImageUri = imageUri;
 
         if (imageUri != null) {
-
             uploadImageView.setImageURI(imageUri);
         }
     }
@@ -117,7 +114,7 @@ public class UploadFragment extends Fragment {
     }
 
     /* TODO: Guide user through taking three photos with appropriate prompts (front, ingredients, nutrition panel.)
-     * temporarily using just one with key PHTOTO_TEST.
+     * temporarily using just one with key PHOTO_TEST.
      */
     private void takeProductPhotos(int photo) {
         mCurrentPhoto = photoRequest.PhotoRequest(Constants.CAMERA_IMAGE_REQUEST, photo);

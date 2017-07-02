@@ -195,7 +195,7 @@ public class OpenFoodService extends IntentService {
         return true;
     }
 
-    /* Gets item by key from specified JSONObject, catching JSONExceptiopn */
+    /* Gets item by key from specified JSONObject, catching JSONException */
     private String getProductItem(JSONObject productObject, String key) {
 
         try {

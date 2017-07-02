@@ -20,8 +20,6 @@ import com.ereinecke.eatsafe.R;
 
 public class AboutFragment extends Fragment {
 
-    View rootView;
-
     public AboutFragment() {
         // Required empty public constructor
     }
@@ -34,7 +32,7 @@ public class AboutFragment extends Fragment {
         String version;
 
         // Inflate the layout for this fragment
-        rootView = inflater.inflate(R.layout.fragment_about, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_about, container, false);
 
         // Get version number
         PackageManager manager = context.getPackageManager();

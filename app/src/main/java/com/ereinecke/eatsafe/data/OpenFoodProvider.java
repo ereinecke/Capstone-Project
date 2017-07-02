@@ -167,7 +167,7 @@ public class OpenFoodProvider extends ContentProvider {
         if (selection == null || rowsDeleted != 0) {
             try {
                 getContext().getContentResolver().notifyChange(uri, null);
-            } catch(NullPointerException e) {
+            } catch (NullPointerException e) {
                 Log.d(LOG_TAG, e.getMessage());
             }
         }
@@ -191,7 +191,7 @@ public class OpenFoodProvider extends ContentProvider {
         if (rowsUpdated != 0) {
             try {
                 getContext().getContentResolver().notifyChange(uri, null);
-            } catch(NullPointerException e) {
+            } catch (NullPointerException e) {
                 Log.d(LOG_TAG, e.getMessage());
             }
         }

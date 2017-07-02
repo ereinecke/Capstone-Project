@@ -26,7 +26,7 @@ public class EatSafeWidgetProvider extends AppWidgetProvider {
         final int N = appWidgetIds.length;
 
         // The following assumes a single widget for EatSafe; otherwise, loop through appWidgetIds
-        for (int i = 0; i < N; i++) {
+        for (int appWidgetId1 : appWidgetIds) {
             int appWidgetId = appWidgetIds[0];
 
             Log.d(LOG_TAG, "in onUpdate()");

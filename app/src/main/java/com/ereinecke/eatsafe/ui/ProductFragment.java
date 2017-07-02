@@ -45,7 +45,6 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     private final static String LOG_TAG = ProductFragment.class.getSimpleName();
     private static final int LOADER_ID = 1;
     private String barcode;
-    private Context mContext;
     private View rootView;
     private ShareActionProvider shareActionProvider;
 
@@ -56,7 +55,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     @SuppressWarnings("EmptyMethod")
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        mContext = App.getContext();
+        Context mContext = App.getContext();
         super.onCreate(savedInstanceState);
     }
 
@@ -83,7 +82,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
         } else {
             BottomNavigationView bottomNavigation =
-                    (BottomNavigationView) rootView.findViewById(R.id.product_toolbar_bottom);
+                    rootView.findViewById(R.id.product_toolbar_bottom);
             bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -153,7 +152,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
                 .setText(prefixLabel(R.string.code, barcode));
         Log.d(LOG_TAG, "onLoadFinished, barcode: " + barcode);
 
-        PagerIndicator pagerIndicator = (PagerIndicator) rootView.findViewById(R.id.custom_indicator);
+        PagerIndicator pagerIndicator = rootView.findViewById(R.id.custom_indicator);
 
         String productName = data.getString(data.getColumnIndex(OpenFoodContract.ProductEntry.PRODUCT_NAME));
         ((TextView) rootView.findViewById(R.id.product_name)).setText(productName);
@@ -189,7 +188,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
         ArrayList<AdjustableSlide> list = new ArrayList<>();
 
-        SliderLayout sliderLayout = (SliderLayout) rootView.findViewById(R.id.results_slider);
+        SliderLayout sliderLayout = rootView.findViewById(R.id.results_slider);
 
         // TODO: If there are no product images, collapse slider view
         if (urlImages.size() == 0) {
@@ -241,7 +240,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     /* prefixLabel formats a string, prepending fieldName in bold and concatenating fieldContents
      * Returns a spannable suitable for insertion into a TextView.
      */
-    public Spanned prefixLabel(int fieldName, String fieldContents) {
+    private Spanned prefixLabel(int fieldName, String fieldContents) {
 
         Spanned result;
 

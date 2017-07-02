@@ -11,7 +11,7 @@ import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.Transient;
 
 /**
- * Created by ereinecke on 5/28/17.
+ * Data model for product info sent to openfoodfacts.org
  */
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -154,7 +154,7 @@ public class SendProduct {
     /**
      * Compress the image according to the {@link ProductImageField}.
      * Add a "_small" prefix in the image name after the compression
-     * @param field
+     * @param field describes which image is being compressed; one of FRONT, INGREDIENTS or NUTRITION
      */
     public void compress(ProductImageField field) {
         switch (field) {

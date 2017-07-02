@@ -16,8 +16,6 @@ import com.ereinecke.eatsafe.util.Utility;
  */
 public class SplashFragment extends Fragment {
 
-    View rootView;
-
     public SplashFragment() {
         // Required empty public constructor
     }
@@ -27,7 +25,7 @@ public class SplashFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        rootView = inflater.inflate(R.layout.fragment_splash, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_splash, container, false);
 
         // Button listener - launch OpenFoodFacts.org in a WebView
         rootView.findViewById(R.id.offLogoView).setOnClickListener(new View.OnClickListener() {

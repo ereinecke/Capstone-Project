@@ -11,10 +11,10 @@ import android.provider.BaseColumns;
 public class OpenFoodContract {
 
     public static final String CONTENT_AUTHORITY = "com.ereinecke.eatsafe";
-    public static final Uri    BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+    private static final Uri    BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     public static final String PATH_PRODUCTS = "products";
-    public static final String PATH_INGREDIENTS = "ingredients";
-    public static final String PATH_ALLERGENS = "allergens";
+    private static final String PATH_INGREDIENTS = "ingredients";
+    private static final String PATH_ALLERGENS = "allergens";
     public static final String PATH_PRODUCT = "product";
 
     // TODO: Add flag to indicate uploaded product and username

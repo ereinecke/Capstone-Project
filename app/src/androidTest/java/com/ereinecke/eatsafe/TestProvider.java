@@ -9,6 +9,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.test.AndroidTestCase;
+import android.util.Log;
 
 import com.ereinecke.eatsafe.data.OpenFoodContract;
 
@@ -18,9 +19,14 @@ import com.ereinecke.eatsafe.data.OpenFoodContract;
  */
 @SuppressWarnings("deprecation")
 public class TestProvider extends AndroidTestCase {
-    public static final String LOG_TAG = TestProvider.class.getSimpleName();
+    private static final String LOG_TAG = TestProvider.class.getSimpleName();
 
     public void setUp() {
+        try {
+            super.setUp();
+        } catch(Exception e) {
+            Log.d(LOG_TAG, "Exception in setUp()" + e.getMessage());
+        }
         deleteAllRecords();
     }
 

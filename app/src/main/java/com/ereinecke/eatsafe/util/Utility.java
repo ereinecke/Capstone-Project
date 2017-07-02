@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
@@ -42,7 +43,8 @@ public class Utility {
 
     /* from https://raz-soft.com/android/android-show-login-dialog/ */
 
-    public static boolean hasConnectivity(Context context,boolean wifiOnly)
+    @SuppressWarnings("SameParameterValue")
+    public static boolean hasConnectivity(Context context, boolean wifiOnly)
     {
         try
         {
@@ -63,26 +65,26 @@ public class Utility {
             }
 
             if (wifiOnly)
-                return haveConnectedWifi;
+                return !haveConnectedWifi;
             else
-                return haveConnectedWifi || haveConnectedMobile;
+                return !haveConnectedWifi && !haveConnectedMobile;
 
         }
         catch(Exception e)
         {
-            return true; //just in case it fails move on, say yeah! we have Internet connection (hopefully)
+            return false; //just in case it fails move on, say yeah! we have Internet connection (hopefully)
         }
 
     }
 
     /**
      * SHA1 digest
-     * @param stringToDigest
+     * @param stringToDigest String to hash
      * @return 40 len string
      */
     public static String computeSHA1Hash(String stringToDigest)
     {
-        MessageDigest mdSha1 = null;
+        MessageDigest mdSha1;
         String SHAHash;
         try
         {
@@ -96,9 +98,9 @@ public class Utility {
             return stringToDigest;
         }
         byte[] data = mdSha1.digest();
+        // TODO: why is this here?
         // SHAHash=bytesToHex(data);
-        SHAHash = null;
-        return SHAHash;
+        return null;
     }
 
     /* If the flag Constants.java.TEST_ADS is set true, generates a test AdRequest for emulators and
@@ -189,7 +191,7 @@ public class Utility {
     }
 
     // Decodes image and scales it to reduce memory consumption
-    public static Bitmap decodeFile(File f) {
+    private static Bitmap decodeFile(File f) {
         try {
             // Decode image size
             BitmapFactory.Options o = new BitmapFactory.Options();
@@ -211,6 +213,7 @@ public class Utility {
             o2.inSampleSize = scale;
             return BitmapFactory.decodeStream(new FileInputStream(f), null, o2);
         } catch (FileNotFoundException e) {
+            Log.d(LOG_TAG, "Exception: " + e.getMessage());
         }
         return null;
     }
@@ -256,7 +259,7 @@ public class Utility {
         style.type = Style.TYPE_STANDARD;
         style.frame = Style.FRAME_KITKAT;
         style.duration = Style.DURATION_MEDIUM;
-        style.messageTextColor = c.getColor(R.color.letterwhite);
+        style.messageTextColor = ContextCompat.getColor(c,R.color.letterwhite);
         style.animations = Style.ANIMATIONS_FLY;
         return style;
     }
@@ -264,7 +267,7 @@ public class Utility {
     public static Style errorStyle() {
         Context c = App.getContext();
         final Style style = EatSafeStyle();
-        style.color = c.getColor(R.color.error_red);
+        style.color = ContextCompat.getColor(c,R.color.error_red);
         return style;
 
     }
@@ -272,14 +275,14 @@ public class Utility {
     public static Style infoStyle() {
         Context c = App.getContext();
         final Style style = EatSafeStyle();
-        style.color = c.getColor(R.color.info_green);
+        style.color = ContextCompat.getColor(c,R.color.info_green);
         return style;
     }
 
     public static Style warningStyle() {
         Context c = App.getContext();
         final Style style = EatSafeStyle();
-        style.color = c.getColor(R.color.warning_yellow);
+        style.color = ContextCompat.getColor(c,R.color.warning_yellow);
         return style;
     }
 

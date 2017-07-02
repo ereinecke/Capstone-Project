@@ -57,7 +57,7 @@ public class WebFragment extends Fragment {
 
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_web, container, false);
-        webView = (WebView) rootView.findViewById(R.id.web_view);
+        webView = rootView.findViewById(R.id.web_view);
 
         // More secure if not needed
         webView.getSettings().setJavaScriptEnabled(false);
@@ -95,7 +95,7 @@ public class WebFragment extends Fragment {
         @Override
         public void onReceivedError(WebView view, int errorCode,
                                     String description, String failing_url) {
-        };
+        }
 
     }
 

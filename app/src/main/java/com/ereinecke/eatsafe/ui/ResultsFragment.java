@@ -33,11 +33,9 @@ public class ResultsFragment extends Fragment implements LoaderManager.LoaderCal
 
     private static final String LOG_TAG = ResultsFragment.class.getSimpleName();
     private ProductListAdapter productListAdapter;
-    final int position = ListView.INVALID_POSITION;
-    final int LOADER_ID = 10;
     private EditText searchText;
     private Cursor cursor;
-    ListView productList;
+    private ListView productList;
 
     public ResultsFragment() {
         // Required empty public constructor
@@ -70,11 +68,11 @@ public class ResultsFragment extends Fragment implements LoaderManager.LoaderCal
             Log.d(LOG_TAG, "Cursor returned " + cursor.getCount() + " results.");
         }
 
-        productList = (ListView) rootView.findViewById(R.id.product_list);
+        productList = rootView.findViewById(R.id.product_list);
         productListAdapter = new ProductListAdapter(getActivity(), cursor, 0);
 
         /* TODO: Add search (product_name || brand) */
-        searchText = (EditText) rootView.findViewById(R.id.searchText);
+        searchText = rootView.findViewById(R.id.searchText);
         rootView.findViewById(R.id.searchButton).setOnClickListener(
             new View.OnClickListener() {
                 @Override
@@ -89,11 +87,11 @@ public class ResultsFragment extends Fragment implements LoaderManager.LoaderCal
 
         /* TODO: add an EditText handler to trigger local history search */
 
-        ListView productList = (ListView) rootView.findViewById(R.id.product_list);
+        ListView productList = rootView.findViewById(R.id.product_list);
         productList.setAdapter(productListAdapter);
 
         /* Ad displayed in bottom toolbar, respecting Constants.TEST_ADS flag   */
-        AdView mAdView = (AdView) rootView.findViewById(R.id.adView);
+        AdView mAdView = rootView.findViewById(R.id.adView);
         AdRequest adRequest = Utility.getAdRequest();
         if (mAdView != null) {
             mAdView.loadAd(adRequest);
@@ -119,6 +117,7 @@ public class ResultsFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     public void restartLoader() {
+        int LOADER_ID = 10;
         getLoaderManager().restartLoader(LOADER_ID, null, this);
     }
 
@@ -154,10 +153,12 @@ public class ResultsFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onLoadFinished(android.support.v4.content.Loader<Cursor> loader, Cursor data) {
         productListAdapter.swapCursor(data);
+        //noinspection ConstantConditions
+        int position = ListView.INVALID_POSITION;
         if (position != ListView.INVALID_POSITION) {
             productList.smoothScrollToPosition(position);
         }
-        // Cursor neeeds to be closed to prevent leaks
+        // Cursor needs to be closed to prevent leaks
         if (cursor != null) {
             cursor.close();
         }
