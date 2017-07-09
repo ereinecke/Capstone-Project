@@ -14,7 +14,7 @@ android {
         minSdkVersion 17
         targetSdkVersion 26
         versionCode 4
-        versionName "0.7-alpha"
+        versionName "0.71-alpha"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -53,6 +53,7 @@ ext {
     retrofitVersion = "2.3.0"
     jacksonLibVersion = "2.7.3"
     testLibVersion = "0.5"
+    espressoLibVersion = "2.2.2"
 }
 
 repositories {
@@ -63,13 +64,19 @@ repositories {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
     compile "com.android.support:appcompat-v7:${supportLibVersion}"
     compile "com.android.support:cardview-v7:${supportLibVersion}"
     compile "com.android.support:support-v13:${supportLibVersion}"
     compile "com.android.support:design:${supportLibVersion}"
     compile "com.android.support:support-v4:${supportLibVersion}"
-    compile 'com.google.firebase:firebase-ads:11.0.1'
+    compile 'com.google.firebase:firebase-ads:11.0.2'
+
+    /* Instrumentation dependencies */
+    testCompile 'junit:junit:4.12'
+    androidTestCompile "com.android.support.test.espresso:espresso-core:${espressoLibVersion}"
+    androidTestCompile "com.android.support.test.espresso:espresso-intents:${espressoLibVersion}"
+    androidTestCompile "com.android.support.test:runner:${testLibVersion}"
+    androidTestCompile "com.android.support.test:rules:${testLibVersion}"
 
     /* Android architecture components introduced with O */
     compile "android.arch.lifecycle:extensions:${archLifecycleVersion}"
@@ -93,7 +100,6 @@ dependencies {
     compile "com.fasterxml.jackson.core:jackson-core:${jacksonLibVersion}"
     compile "com.fasterxml.jackson.core:jackson-databind:${jacksonLibVersion}"
     compile "com.fasterxml.jackson.core:jackson-annotations:${jacksonLibVersion}"
-    androidTestCompile "com.android.support.test:runner:${testLibVersion}"
 
     // Set this dependency to use JUnit 4 rules
     androidTestCompile "com.android.support.test:rules:${testLibVersion}"

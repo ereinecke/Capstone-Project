@@ -62,6 +62,11 @@
     <string name="error_invalid_password">The password needs to be at least 6 characters long.</string>
     <string name="error_field_required">This field is required.</string>
 
+    <!-- Image descriptions -->
+    <string name="product_photo">Product Image</string>
+    <string name="ingredients_photo">Ingredients label image</string>
+    <string name="nutrition_photo">Nutrition label image</string>
+
     <!-- Content descriptions -->
     <string name="mic_image">Speak product code</string>
     <string name="product_images">Product Images</string>
@@ -96,4 +101,5 @@
     <string name="about_title">About EatSafe</string>
     <string name="about_text">EatSafe is an open-source project aimed at travelers and expats with dietary restrictions.\nUsing the OpenFoodFacts database (https://openfoodfacts.org), you can scan product labels and get ingredient and nutritional info in your native language. \n\n      Author: Erik Reinecke\n      Version: %1$s\n      Source code: https://github.com/ereinecke/EatSafe\n\nThanks to the following open-source components:\n</string>
     <string name="eatsafe_splash_text">EatSafe tagline and blurb</string>
+
 </resources>
