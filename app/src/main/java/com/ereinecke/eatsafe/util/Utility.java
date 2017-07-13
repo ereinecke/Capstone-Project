@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.ereinecke.eatsafe.BuildConfig;
 import com.ereinecke.eatsafe.R;
 import com.github.johnpersano.supertoasts.library.Style;
 import com.google.ads.mediation.admob.AdMobAdapter;
@@ -39,7 +40,6 @@ public class Utility {
     private static final String LOG_TAG = Utility.class.getSimpleName();
     private static final int MAX_UPC_LENGTH = 13;
     private static final int MIN_UPC_LENGTH = 8;
-
 
     /* from https://raz-soft.com/android/android-show-login-dialog/ */
 
@@ -137,10 +137,10 @@ public class Utility {
     public static boolean validateBarcode(String barcode) {
 
         if (barcode.length() > MAX_UPC_LENGTH || barcode.length() < MIN_UPC_LENGTH) {
-            Log.d(LOG_TAG, "Bad barcode length: " + barcode.length());
+            Logd(LOG_TAG, "Bad barcode length: " + barcode.length());
             return false;
         } else if (barcode.contains(".")) {
-            Log.d(LOG_TAG, "Barcode contains \'.\'");
+            Logd(LOG_TAG, "Barcode contains \'.\'");
             return false;
         }
         return true;
@@ -213,7 +213,7 @@ public class Utility {
             o2.inSampleSize = scale;
             return BitmapFactory.decodeStream(new FileInputStream(f), null, o2);
         } catch (FileNotFoundException e) {
-            Log.d(LOG_TAG, "Exception: " + e.getMessage());
+            Logd(LOG_TAG, "Exception: " + e.getMessage());
         }
         return null;
     }
@@ -222,7 +222,7 @@ public class Utility {
      * specified url and limited to the specified domain.
      */
     public static void requestWebView(String url, String domain) {
-        Log.d(LOG_TAG, "In requestWebView()");
+        Logd(LOG_TAG, "In requestWebView()");
         Intent messageIntent = new Intent(Constants.MESSAGE_EVENT);
         messageIntent.putExtra(Constants.MESSAGE_KEY, Constants.ACTION_VIEW_WEB);
         messageIntent.putExtra(Constants.MESSAGE_RESULT, url);
@@ -284,6 +284,12 @@ public class Utility {
         final Style style = EatSafeStyle();
         style.color = ContextCompat.getColor(c,R.color.warning_yellow);
         return style;
+    }
+
+    /* Logs statements only in debug mode */
+    public static void Logd(String logTag, String msg) {
+        if (!BuildConfig.DEBUG) { return; }
+        else { Log.d(logTag, msg); }
     }
 
 }

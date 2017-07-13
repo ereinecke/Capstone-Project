@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +16,8 @@ import com.ereinecke.eatsafe.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.ereinecke.eatsafe.util.Utility.Logd;
 
 /**
  * TabPagerFragment holds ViewPager with tabbed views for search, upload and results
@@ -41,7 +42,7 @@ public class TabPagerFragment extends Fragment {
         try {
             whichFragment = getArguments().getInt(Constants.CURRENT_FRAGMENT);
         } catch(Exception e) {
-            Log.d(LOG_TAG, "Current fragment parameter not found in onCreateView().");
+            Logd(LOG_TAG, "Current fragment parameter not found in onCreateView().");
             whichFragment = 0;
         }
 

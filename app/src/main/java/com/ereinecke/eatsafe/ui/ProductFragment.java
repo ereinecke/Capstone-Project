@@ -16,7 +16,6 @@ import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.widget.ShareActionProvider;
 import android.text.Html;
 import android.text.Spanned;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,6 +34,8 @@ import com.hkm.slider.SliderTypes.AdjustableSlide;
 import com.hkm.slider.SliderTypes.BaseSliderView;
 
 import java.util.ArrayList;
+
+import static com.ereinecke.eatsafe.util.Utility.Logd;
 
 /**
  * ProductFragment displays detailed information for a product, whose barcode is passed to
@@ -72,7 +73,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
         if (args != null) {
             showBlankFragment = (args.getLong(Constants.BARCODE_KEY) == Constants.BARCODE_NONE);
-            Log.d(LOG_TAG, "showBlankFragment: " + showBlankFragment);
+            Logd(LOG_TAG, "showBlankFragment: " + showBlankFragment);
             getLoaderManager().restartLoader(LOADER_ID, args, this);
         }
 
@@ -89,13 +90,13 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
                     switch (menuItem.getItemId()) {
                         case R.id.action_share:
-                            Log.d(LOG_TAG, "Pressed share button");
+                            Logd(LOG_TAG, "Pressed share button");
                             shareActionProvider = (ShareActionProvider)
                                     MenuItemCompat.getActionProvider(menuItem);
                             setShareActionProvider(barcode);
                             break;
                         case R.id.action_delete:
-                            Log.d(LOG_TAG, "Pressed delete button");
+                            Logd(LOG_TAG, "Pressed delete button");
                             // Confirmation dialog
                             DeleteDialog deleteDialog = new DeleteDialog().newInstance(barcode);
                             deleteDialog.show(getActivity().getSupportFragmentManager(),
@@ -127,7 +128,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
             barcode = args.getLong(Constants.BARCODE_KEY);
         } catch (Exception e) {
             barcode = Constants.BARCODE_NONE;
-            Log.d(LOG_TAG,"No barcode requested, should return nothing.");
+            Logd(LOG_TAG,"No barcode requested, should return nothing.");
         }
         String barcodeStr = Long.toString(barcode);
 
@@ -150,7 +151,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         barcode = data.getString(data.getColumnIndex(OpenFoodContract.ProductEntry._ID));
         ((TextView) rootView.findViewById(R.id.code))
                 .setText(prefixLabel(R.string.code, barcode));
-        Log.d(LOG_TAG, "onLoadFinished, barcode: " + barcode);
+        Logd(LOG_TAG, "onLoadFinished, barcode: " + barcode);
 
         PagerIndicator pagerIndicator = rootView.findViewById(R.id.custom_indicator);
 
@@ -192,7 +193,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
         // TODO: If there are no product images, collapse slider view
         if (urlImages.size() == 0) {
-            Log.d(LOG_TAG, "No images found.");
+            Logd(LOG_TAG, "No images found.");
             // Hide slider view if there are no images
             ViewGroup.LayoutParams params = sliderLayout.getLayoutParams();
             params.height = 0;

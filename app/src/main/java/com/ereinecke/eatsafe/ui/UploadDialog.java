@@ -7,10 +7,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 
 import com.ereinecke.eatsafe.R;
 import com.ereinecke.eatsafe.util.Constants;
+
+import static com.ereinecke.eatsafe.util.Utility.Logd;
 
 /**
  * Creates a dialog asking the user if they want to upload new data.
@@ -56,7 +57,7 @@ public class UploadDialog  extends DialogFragment {
                 .setPositiveButton(R.string.upload_button, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // FIRE ZE MISSILES!
-                        Log.d(LOG_TAG, "Fire ze missiles!");
+                        Logd(LOG_TAG, "Fire ze missiles!");
                         mListener.onDialogPositiveClick(UploadDialog.this);
                     }
                 })

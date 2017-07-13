@@ -52,6 +52,7 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.ereinecke.eatsafe.util.Utility.Logd;
 import static com.ereinecke.eatsafe.util.Utility.infoStyle;
 
 public class MainActivity extends AppCompatActivity
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity
         // See if activity was started by widget
         Intent intent = getIntent();  // may not be needed here
         if (intent != null) {
-            Log.d(LOG_TAG, "in onCreate(), intent: " + intent.toString());
+            Logd(LOG_TAG, "in onCreate(), intent: " + intent.toString());
             String message = intent.getStringExtra(Constants.MESSAGE_KEY);
             if (message != null && message.equals(Constants.ACTION_SCAN_BARCODE)) {
                 scanner = true;
@@ -126,9 +127,9 @@ public class MainActivity extends AppCompatActivity
         // Silent login at initial startup
         if (savedInstanceState == null) {
             if (silentLogin()) {
-                Log.d(LOG_TAG, "Login successful.");
+                Logd(LOG_TAG, "Login successful.");
             } else {
-                Log.d(LOG_TAG, "Login failed");
+                Logd(LOG_TAG, "Login failed");
             }
         }
     }
@@ -247,7 +248,7 @@ public class MainActivity extends AppCompatActivity
         try {
             getSupportActionBar().setDisplayHomeAsUpEnabled(showArrow);
         } catch (Exception e) {
-            Log.d(LOG_TAG, "Exception in showBackArrow: " + e.getMessage());
+            Logd(LOG_TAG, "Exception in showBackArrow: " + e.getMessage());
             e.printStackTrace();
         }
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -260,7 +261,7 @@ public class MainActivity extends AppCompatActivity
         /* Capture back events when WebFragment is active and pass them to WebView */
         if (webFragment != null) {
             if (webFragment.canGoBack()) {
-                // Log.d(LOG_TAG, "webFragment canGoBack, will take backPress");
+                // Logd(LOG_TAG, "webFragment canGoBack, will take backPress");
                 webFragment.goBack();
                 return;
             }
@@ -292,16 +293,16 @@ public class MainActivity extends AppCompatActivity
         // User touched the dialog's positive button
         Bundle args = dialog.getArguments();
         if (args == null) {
-            // Log.d(LOG_TAG,"No args found in dialog intent");
+            // Logd(LOG_TAG,"No args found in dialog intent");
             return;
         }
         String dialogType = args.getString(Constants.DIALOG_TYPE);
-        Log.d(LOG_TAG, "Positive click on [" + dialogType + "]");
+        Logd(LOG_TAG, "Positive click on [" + dialogType + "]");
         assert dialogType != null;
         switch (dialogType) {
             case Constants.DIALOG_DELETE:
                 String barcode = args.getString(Constants.BARCODE_KEY);
-                Log.d(LOG_TAG, "to delete item#: " + barcode);
+                Logd(LOG_TAG, "to delete item#: " + barcode);
                 deleteItem(barcode);
                 break;
 
@@ -343,14 +344,14 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(LOG_TAG, "in onReceive(), intent: " + intent.getAction());
+            Logd(LOG_TAG, "in onReceive(), intent: " + intent.getAction());
 
             // Assume any other message key will be the barcode
             // Barcode returned from OpenFoodService
             if (intent.getAction().equals(Constants.MESSAGE_EVENT)) {
 
                 String messageKey = intent.getStringExtra(Constants.MESSAGE_KEY);
-                Log.d(LOG_TAG, "messageKey: " + messageKey);
+                Logd(LOG_TAG, "messageKey: " + messageKey);
 
                 switch (messageKey) {
 
@@ -364,7 +365,7 @@ public class MainActivity extends AppCompatActivity
                             UploadDialog uploadDialog = UploadDialog.newInstance(Constants.DIALOG_UPLOAD);
                             uploadDialog.show(getSupportFragmentManager(), getString(R.string.upload));
                         } else {
-                            Log.d(LOG_TAG, "MessageReceiver result: " + messageKey);
+                            Logd(LOG_TAG, "MessageReceiver result: " + messageKey);
                             SuperActivityToast.create(MainActivity.this, infoStyle())
                                     .setText("Barcode " + barcode + "received.")
                                     .show();
@@ -417,12 +418,12 @@ public class MainActivity extends AppCompatActivity
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
 
         if (intent == null) {
-            Log.d(LOG_TAG, "in onActivityResult, null intent received");
-            Log.d(LOG_TAG, "   requestCode: " + requestCode);
-            Log.d(LOG_TAG, "   resultCode: " + resultCode);
+            Logd(LOG_TAG, "in onActivityResult, null intent received");
+            Logd(LOG_TAG, "   requestCode: " + requestCode);
+            Logd(LOG_TAG, "   resultCode: " + resultCode);
             return;
         }
-        Log.d(LOG_TAG, "requestCode: " + requestCode + "; resultCode: " + resultCode +
+        Logd(LOG_TAG, "requestCode: " + requestCode + "; resultCode: " + resultCode +
                 "; intent: " + intent.toString());
 
         switch (requestCode) {
@@ -430,8 +431,9 @@ public class MainActivity extends AppCompatActivity
             case IntentIntegrator.REQUEST_CODE: {
             /* Catching result from barcode scan */
                 if (resultCode == RESULT_OK) {
-                    IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-                    Log.d(LOG_TAG, "IntentResult: " + result.toString());
+                    IntentResult result = IntentIntegrator.parseActivityResult(requestCode,
+                            resultCode, intent);
+                    Logd(LOG_TAG, "IntentResult: " + result.toString());
 
                     String barcode = result.getContents();
                     if (result.getContents() == null) {
@@ -439,16 +441,17 @@ public class MainActivity extends AppCompatActivity
                                 .setText(getString(R.string.result_failed))
                                 .show();
                     } else {
-                        Log.d(LOG_TAG, "Scan result: " + result.toString());
+                        Logd(LOG_TAG, "Scan result: " + result.toString());
                         // Have a (potentially) valid barcode, update text view and fetch product info
                         SearchFragment.handleScanResult(barcode);
+                        // TODO: Need a progress spinner here
                         Intent productIntent = new Intent(this, OpenFoodService.class);
-                        productIntent.putExtra(Constants.BARCODE_KEY, barcode);
+                        productIntent.putExtra (Constants.BARCODE_KEY, barcode);
                         productIntent.setAction(Constants.ACTION_FETCH_PRODUCT);
                         startService(productIntent);
                     }
                 } else {
-                    Log.d(LOG_TAG, "Error scanning barcode: " + resultCode);
+                    Logd(LOG_TAG, "Error scanning barcode: " + resultCode);
                 }
                 break;
             }
@@ -459,7 +462,7 @@ public class MainActivity extends AppCompatActivity
                     scanMedia(photoReceived);
                     UploadFragment.updateImage(photoReceived);
                 } else { // capture image request came back with error
-                    Log.d(LOG_TAG, "Error taking photo: " + resultCode);
+                    Logd(LOG_TAG, "Error taking photo: " + resultCode);
                 }
                 break;
             }
@@ -471,22 +474,22 @@ public class MainActivity extends AppCompatActivity
                 if (resultCode == RESULT_OK) {
                     final Uri imageUri = intent.getData();
                     try {
-                        // TODO: figure out what imageStream might be needed
+                        // TODO: figure out what imageStream might be needed for?
                         imageStream = getContentResolver().openInputStream(imageUri);
-                        Log.d(LOG_TAG, "Gallery image request returned Uri: " + imageUri);
+                        Logd(LOG_TAG, "Gallery image request returned Uri: " + imageUri);
                         UploadFragment.updateImageFromGallery(imageUri);
                     } catch (FileNotFoundException e) {
-                        Log.d(LOG_TAG, e.getMessage());
+                        Logd(LOG_TAG, e.getMessage());
                     }
 
                 } else {
-                    Log.d(LOG_TAG, "Error picking photo from gallery: " + resultCode);
+                    Logd(LOG_TAG, "Error picking photo from gallery: " + resultCode);
                 }
                 break;
             }
 
             default: {
-                Log.d(LOG_TAG, "Unexpected requestCode received: " + requestCode);
+                Logd(LOG_TAG, "Unexpected requestCode received: " + requestCode);
                 // super.onActivityResult(requestCode, resultCode, intent);
             }
         }
@@ -499,7 +502,7 @@ public class MainActivity extends AppCompatActivity
     public String PhotoRequest(int source, int photo) {
 
         // TODO: check to make sure we have camera & storage permissions here.
-        Log.d(LOG_TAG, "PhotoRequest(" + photo + ") received.");
+        Logd(LOG_TAG, "PhotoRequest(" + photo + ") received.");
         photoReceived = "";
         if (source == Constants.CAMERA_IMAGE_REQUEST) {
             launchPhotoIntent(photo);
@@ -510,8 +513,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     /* Moves upload fragment to front   */
-    private void launchUploadFragment() {
-        Log.d(LOG_TAG, "Launching UploadFragment");
+    public void launchUploadFragment() {
+        Logd(LOG_TAG, "Launching UploadFragment");
         if (findViewById(R.id.tab_container) != null) {
 
             Bundle bundle = new Bundle();
@@ -526,7 +529,7 @@ public class MainActivity extends AppCompatActivity
 
     /* Moves results fragment to front   */
     private void launchResultsFragment() {
-        // Log.d(LOG_TAG, "in launchResultsFragment()");
+        // Logd(LOG_TAG, "in launchResultsFragment()");
         if (findViewById(R.id.tab_container) != null) {
 
             Bundle bundle = new Bundle();
@@ -557,7 +560,7 @@ public class MainActivity extends AppCompatActivity
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                     getSupportActionBar().setDisplayShowTitleEnabled(false);
                 } catch (Exception e) {
-                    Log.d(LOG_TAG, "Exception in launchProductFragment: " + e.getMessage());
+                    Logd(LOG_TAG, "Exception in launchProductFragment: " + e.getMessage());
                 }
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.tab_container, ProductFragment)
@@ -568,7 +571,7 @@ public class MainActivity extends AppCompatActivity
                 try {
                     getSupportActionBar().setDisplayShowTitleEnabled(false);
                 } catch (Exception e) {
-                    Log.d(LOG_TAG, "Exception in launchProductFragment: " + e.getMessage());
+                    Logd(LOG_TAG, "Exception in launchProductFragment: " + e.getMessage());
                 }
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.right_pane_container, ProductFragment)
@@ -576,7 +579,7 @@ public class MainActivity extends AppCompatActivity
                         .commit();
             }
         } else {
-            Log.d(LOG_TAG, "Barcode not found, not launching product fragment.");
+            Logd(LOG_TAG, "Barcode not found, not launching product fragment.");
         }
     }
 
@@ -652,7 +655,7 @@ public class MainActivity extends AppCompatActivity
 
     private void launchPhotoIntent(int whichPhoto) {
 
-        Log.d(LOG_TAG, "Launching intent for photo #" + whichPhoto);
+        Logd(LOG_TAG, "Launching intent for photo #" + whichPhoto);
         // create Intent to take a picture and return control to the calling application
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
@@ -660,16 +663,16 @@ public class MainActivity extends AppCompatActivity
 
             // Create the File where the photo should go
             File photoFile = openOutputMediaFile();
-            Log.d(LOG_TAG, "photoReceived: " + photoReceived);
+            Logd(LOG_TAG, "photoReceived: " + photoReceived);
 
             if (photoFile != null) {
 
                 Uri photoUri = StreamProvider
                         .getUriForFile("com.ereinecke.eatsafe.fileprovider", photoFile);
                 try {
-                    Log.d(LOG_TAG, "photoUri: " + photoUri.toString());
+                    Logd(LOG_TAG, "photoUri: " + photoUri.toString());
                 } catch (Exception e) {
-                    Log.d(LOG_TAG, "photoUri is null: " + e.getMessage());
+                    Logd(LOG_TAG, "photoUri is null: " + e.getMessage());
                 }
                 // set the image file name
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
@@ -686,7 +689,7 @@ public class MainActivity extends AppCompatActivity
 
     private void launchGalleryIntent(int whichPhoto) {
 
-        Log.d(LOG_TAG, "Launching intent for photo #" + whichPhoto);
+        Logd(LOG_TAG, "Launching intent for photo #" + whichPhoto);
         // create Intent to take a picture and return control to the calling application
         Intent pickPictureIntent = new Intent(Intent.ACTION_PICK);
         pickPictureIntent.setType("image/*");
@@ -749,7 +752,7 @@ public class MainActivity extends AppCompatActivity
         // TODO: clear cookies?
         prefs.apply();
         loggedIn = false;
-        Log.d(LOG_TAG, "Logged out.");
+        Logd(LOG_TAG, "Logged out.");
         SuperActivityToast st = new SuperActivityToast(this, infoStyle());
         st.setText(getString(R.string.result_logout, userName));
         st.show();
@@ -768,7 +771,7 @@ public class MainActivity extends AppCompatActivity
         );
         launchSplashFragment();
         launchResultsFragment();
-        Log.d(LOG_TAG,"Deleted item# " + barcode);
+        Logd(LOG_TAG,"Deleted item# " + barcode);
     }
 
     /** Returns a unique, opened file for image; sets photoReceived with filespec */
@@ -780,12 +783,12 @@ public class MainActivity extends AppCompatActivity
         }
 
         File mediaStorageDir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), appName);
-        Log.d(LOG_TAG, "mediaStorageDir: " + mediaStorageDir.toString());
+        Logd(LOG_TAG, "mediaStorageDir: " + mediaStorageDir.toString());
 
         // Create the storage directory if it does not exist
         if (! mediaStorageDir.exists()) {
             if (! mediaStorageDir.mkdirs()) {
-                Log.d(LOG_TAG, "failed to create directory " + mediaStorageDir);
+                Logd(LOG_TAG, "failed to create directory " + mediaStorageDir);
                 return null;
             }
         }
@@ -799,10 +802,10 @@ public class MainActivity extends AppCompatActivity
         // Open a temp file to pass to Camera
         try {
             imageFile = File.createTempFile(fileName, ".jpg", mediaStorageDir);
-            Log.d(LOG_TAG, "imageFile: " + imageFile);
+            Logd(LOG_TAG, "imageFile: " + imageFile);
         } catch(IOException e) {
             e.printStackTrace();
-            Log.d(LOG_TAG, e.getMessage());
+            Logd(LOG_TAG, e.getMessage());
         }
 
         // Generate a file: path for use with intent

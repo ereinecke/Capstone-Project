@@ -90,4 +90,7 @@ public class Constants {
     public static final String MESSAGE_EVENT = "message_event";
     public static final String MESSAGE_KEY = "message_key";
     public static final String MESSAGE_RESULT = "message_result";
+
+    // Testing constants
+    public static String TEST_BARCODE = "737628064502";
 }

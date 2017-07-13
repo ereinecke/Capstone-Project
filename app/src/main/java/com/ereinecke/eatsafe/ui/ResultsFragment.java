@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +21,8 @@ import com.ereinecke.eatsafe.util.ProductListAdapter;
 import com.ereinecke.eatsafe.util.Utility;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+
+import static com.ereinecke.eatsafe.util.Utility.Logd;
 
 /**
  * ResultsFragment shows all products stored in ContentReceiver.  In future, there will be a
@@ -63,9 +64,9 @@ public class ResultsFragment extends Fragment implements LoaderManager.LoaderCal
         );
 
         if (cursor == null) {
-            Log.d(LOG_TAG, "Cursor returned 0 results.");
+            Logd(LOG_TAG, "Cursor returned 0 results.");
         } else {
-            Log.d(LOG_TAG, "Cursor returned " + cursor.getCount() + " results.");
+            Logd(LOG_TAG, "Cursor returned " + cursor.getCount() + " results.");
         }
 
         productList = rootView.findViewById(R.id.product_list);
@@ -96,7 +97,7 @@ public class ResultsFragment extends Fragment implements LoaderManager.LoaderCal
         if (mAdView != null) {
             mAdView.loadAd(adRequest);
         } else {
-            Log.d(LOG_TAG, "adView not found");
+            Logd(LOG_TAG, "adView not found");
         }
 
         productList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -104,7 +105,7 @@ public class ResultsFragment extends Fragment implements LoaderManager.LoaderCal
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Cursor cursor = productListAdapter.getCursor();
-                Log.d(LOG_TAG, "Item # " + l + " selected.");
+                Logd(LOG_TAG, "Item # " + l + " selected.");
                 if (cursor != null && cursor.moveToPosition(position)) {
                     ((Utility.Callback) getActivity())
                             .onItemSelected(cursor.getString(cursor

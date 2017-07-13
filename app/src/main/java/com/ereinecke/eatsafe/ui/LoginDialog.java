@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -27,6 +26,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+
+import static com.ereinecke.eatsafe.util.Utility.Logd;
 
 /**
  * Opens a Login dialog box with Register and Lost Password buttons
@@ -75,7 +76,7 @@ public class LoginDialog {
                     new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
-                    Log.d(LOG_TAG, "in onRegisterClick()");
+                    Logd(LOG_TAG, "in onRegisterClick()");
                     // TODO: Some kind of toast?
                     // Call up a WebFragment
                     Utility.requestWebView(c.getString(R.string.register_url),
@@ -168,7 +169,7 @@ public class LoginDialog {
                         errorToast.show();
                         // Utility.hideKeyboard();
                     }
-                    Log.d(LOG_TAG, c.getString(R.string.error_no_internet));
+                    Logd(LOG_TAG, c.getString(R.string.error_no_internet));
                     return;
                 }
 
@@ -176,7 +177,7 @@ public class LoginDialog {
                 try {
                     htmlNotParsed = response.body().string();
                 } catch (Exception e) {
-                    Log.d(LOG_TAG, "Unable to parse the login response page, " + e.getMessage());
+                    Logd(LOG_TAG, "Unable to parse the login response page, " + e.getMessage());
                 }
 
                 SharedPreferences.Editor prefs = c.getSharedPreferences(Constants.LOGIN_PREFERENCES,
@@ -208,7 +209,7 @@ public class LoginDialog {
                         if (httpCookie.getDomain().equals(".openfoodfacts.org") && httpCookie.getPath().equals("/")) {
                             String[] cookieValues = httpCookie.getValue().split("&");
                             for (int i = 0; i < cookieValues.length; i++) {
-                                Log.d(LOG_TAG, "cookieValues[" + i + "]: " + cookieValues[i] +
+                                Logd(LOG_TAG, "cookieValues[" + i + "]: " + cookieValues[i] +
                                         ": " + cookieValues[i + 1]);
                                 prefs.putString(cookieValues[i], cookieValues[++i]);
                             }
@@ -219,11 +220,11 @@ public class LoginDialog {
                     if (!silent) {
                         loginToast.dismiss();
                         String msg = c.getResources().getString(R.string.result_login, userName);
-                        Log.d(LOG_TAG, msg);
+                        Logd(LOG_TAG, msg);
                         successToast.setText(msg);
                         successToast.show();
                     }
-                    Log.d(LOG_TAG, "userName: \"" + userName + "\"; password: \"" + password + "\"");
+                    Logd(LOG_TAG, "userName: \"" + userName + "\"; password: \"" + password + "\"");
                     // Store credential in SharedPrefs
                     prefs.putString(Constants.USER_NAME, userName);
                     prefs.putString(Constants.PASSWORD, password);
@@ -251,10 +252,10 @@ public class LoginDialog {
             pword = preferences.getString(Constants.PASSWORD, "");
         }
         if (pword.length() > 0) {
-            Log.d(LOG_TAG, "Login successful.");
+            Logd(LOG_TAG, "Login successful.");
             return true;
         } else {
-            Log.d(LOG_TAG, "Login failed.");
+            Logd(LOG_TAG, "Login failed.");
             return false;
         }
     }

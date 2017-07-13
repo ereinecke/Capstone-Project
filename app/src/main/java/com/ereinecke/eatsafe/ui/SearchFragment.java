@@ -8,7 +8,6 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +24,8 @@ import com.ereinecke.eatsafe.util.Utility;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.zxing.integration.android.IntentIntegrator;
+
+import static com.ereinecke.eatsafe.util.Utility.Logd;
 
 /**
  * SearchFragment allows the user to search the database by UPC code.  The code can be scanned
@@ -103,7 +104,7 @@ public class SearchFragment extends Fragment {
         if (mAdView != null) {
             mAdView.loadAd(adRequest);
         } else {
-            Log.d(LOG_TAG, "adView not found");
+            Logd(LOG_TAG, "adView not found");
         }
 
         if (savedInstanceState != null) {
@@ -163,7 +164,7 @@ public class SearchFragment extends Fragment {
 
     /* Sends an intent to OpenFoodService to fetch product info */
     private void callFetchProduct(String barcodeStr) {
-        Log.d(LOG_TAG, "in callFetchProduct: " + barcodeStr);
+        Logd(LOG_TAG, "in callFetchProduct: " + barcodeStr);
 
         // Have a (potentially) valid barcode, fetch product info
         Intent productIntent = new Intent(getActivity(), OpenFoodService.class);

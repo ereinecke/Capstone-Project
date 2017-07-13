@@ -23,10 +23,13 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import static com.ereinecke.eatsafe.util.Utility.Logd;
+
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread.
-  */
+ */
+
 public class OpenFoodService extends IntentService {
 
     private final String LOG_TAG = OpenFoodService.class.getSimpleName();
@@ -41,7 +44,7 @@ public class OpenFoodService extends IntentService {
             final String action = intent.getAction();
             if (Constants.ACTION_FETCH_PRODUCT.equals(action)) {
                 final String barcode = intent.getStringExtra(Constants.BARCODE_KEY);
-                Log.d(LOG_TAG, "Handling intent ACTION_FETCH_PRODUCT " + barcode);
+                Logd(LOG_TAG, "Handling intent ACTION_FETCH_PRODUCT " + barcode);
                 // returns true if product found - not sure if I want to do anything with that here
                 fetchProduct(barcode);
             }
@@ -81,8 +84,8 @@ public class OpenFoodService extends IntentService {
         assert productEntry != null;
         if(productEntry.getCount() > 0) {
             String response = getResources().getString(R.string.barcode_already_downloaded, barcode);
-            Log.d(LOG_TAG, response);
-            Log.d(LOG_TAG, "productEntry.getCount(): " + productEntry.getCount());
+            Logd(LOG_TAG, response);
+            Logd(LOG_TAG, "productEntry.getCount(): " + productEntry.getCount());
             returnResult(response, Long.parseLong(barcode));
             productEntry.close();
             return true;
@@ -97,23 +100,23 @@ public class OpenFoodService extends IntentService {
                     .build();
 
             URL url = new URL(builtUri.toString());
-            Log.d(LOG_TAG, "URL requested: " + url);
+            Logd(LOG_TAG, "URL requested: " + url);
 
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
-            // Log.d(LOG_TAG, "URLConnection: " + urlConnection.toString());
+            // Logd(LOG_TAG, "URLConnection: " + urlConnection.toString());
 
             try {
                 urlConnection.connect();
             } catch (Exception e) {
-                Log.d(LOG_TAG, "Network connection error");
+                Logd(LOG_TAG, "Network connection error");
                 return false;
             }
 
             InputStream inputStream = urlConnection.getInputStream();
             StringBuilder buffer = new StringBuilder();
             if (inputStream == null) {
-                Log.d(LOG_TAG, "Input buffer null");
+                Logd(LOG_TAG, "Input buffer null");
                 return false;
             }
 
@@ -143,7 +146,7 @@ public class OpenFoodService extends IntentService {
             }
         }
 
-        Log.d(LOG_TAG, productJsonString);
+        Logd(LOG_TAG, productJsonString);
 
         /*  JSON parsing happens here */
         try {
@@ -152,13 +155,13 @@ public class OpenFoodService extends IntentService {
 
             if(productJson.has(Constants.STATUS)) {
                 if (productJson.getInt(Constants.STATUS) == 1) {
-                    Log.d(LOG_TAG, "Product status: found");
+                    Logd(LOG_TAG, "Product status: found");
                     productObject = productJson.getJSONObject(Constants.PRODUCT);
                 } else {
                     // No product found
                     String result = getResources()
                             .getString(R.string.barcode_not_found);
-                    Log.d(LOG_TAG, result);
+                    Logd(LOG_TAG, result);
                     returnResult(result, Constants.BARCODE_NOT_FOUND);
                     return false;
                 }
@@ -181,6 +184,8 @@ public class OpenFoodService extends IntentService {
                 writeProduct(productId, productName, imgUrl, thumbUrl, ingredientsImgUrl,
                         nutritionImgUrl, brands, labels, servingSize,
                         allergens, ingredients, origins);
+
+                // TODO: get ingredients, allergens
 
                 // Broadcast result
                 String result = getResources().getString(R.string.barcode_found,
@@ -221,7 +226,7 @@ public class OpenFoodService extends IntentService {
             try {
                 ingredients = product.getString(Constants.INGREDIENTS);
             } catch(JSONException j) {
-                Log.d(LOG_TAG, "Ingredients not found.");
+                Logd(LOG_TAG, "Ingredients not found.");
             }
         }
         return ingredients;
@@ -255,7 +260,7 @@ public class OpenFoodService extends IntentService {
         values.put(OpenFoodContract.ProductEntry.INGREDIENTS, ingredients);
         values.put(OpenFoodContract.ProductEntry.ORIGINS, origins);
 
-        Log.d(LOG_TAG, "writeBackProject: values=" + values.toString());
+        Logd(LOG_TAG, "writeBackProject: values=" + values.toString());
         getContentResolver().insert(OpenFoodContract.ProductEntry.CONTENT_URI,values);
     }
 }

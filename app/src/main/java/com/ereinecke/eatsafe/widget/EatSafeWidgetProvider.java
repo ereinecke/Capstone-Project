@@ -5,12 +5,13 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.ereinecke.eatsafe.MainActivity;
 import com.ereinecke.eatsafe.R;
 import com.ereinecke.eatsafe.util.Constants;
+
+import static com.ereinecke.eatsafe.util.Utility.Logd;
 
 /**
  * Widget Provider for EatSafe.  When clicking on the widget, EatSafe is launched and a barcode
@@ -29,7 +30,7 @@ public class EatSafeWidgetProvider extends AppWidgetProvider {
         for (int appWidgetId1 : appWidgetIds) {
             int appWidgetId = appWidgetIds[0];
 
-            Log.d(LOG_TAG, "in onUpdate()");
+            Logd(LOG_TAG, "in onUpdate()");
 
             // Create an Intent to launch MainActivity
             Intent intent = new Intent(context, MainActivity.class);
