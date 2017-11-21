@@ -39,7 +39,7 @@ public class launchScannerTest {
     private static String LOG_TAG = launchScannerTest.class.getSimpleName();
 
     @Rule
-    public IntentsTestRule<MainActivity> mActivityRule = new IntentsTestRule<MainActivity>
+    public IntentsTestRule<MainActivity> mActivityRule = new IntentsTestRule<>
             (MainActivity.class);
 
     @Before

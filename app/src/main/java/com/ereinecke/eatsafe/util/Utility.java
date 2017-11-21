@@ -288,7 +288,7 @@ public class Utility {
 
     /* Logs statements only in debug mode */
     public static void Logd(String logTag, String msg) {
-        if (!BuildConfig.DEBUG) { return; }
+        if (!BuildConfig.DEBUG) { }
         else { Log.d(logTag, msg); }
     }
 

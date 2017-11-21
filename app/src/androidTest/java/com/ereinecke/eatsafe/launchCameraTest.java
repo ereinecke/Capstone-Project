@@ -37,7 +37,7 @@ public class launchCameraTest {
     // IntentsTestRule is an extension of ActivityTestRule. IntentsTestRule sets up Espresso-Intents
     // before each Test is executed to allow stubbing and validation of intents.
     @Rule
-    public IntentsTestRule<MainActivity> mActivityRule = new IntentsTestRule<MainActivity>
+    public IntentsTestRule<MainActivity> mActivityRule = new IntentsTestRule<>
             (MainActivity.class);
 
     @Before

@@ -62,12 +62,13 @@ public class ContentProviderTest extends ProviderTestCase2<OpenFoodProvider> {
     @Override
     protected void tearDown() throws Exception {
         mContext.deleteDatabase(DbHelper.DATABASE_NAME);
+        super.tearDown();
     }
 
     private void getDb() {
         if (dbHelper == null) {
             dbHelper = new DbHelper(mContext);
-        };
+        }
         db = dbHelper.getWritableDatabase();
     }
 

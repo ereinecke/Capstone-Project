@@ -46,7 +46,7 @@
     <string name="barcode_already_downloaded">Barcode \"%1$s\" already downloaded.</string>
     <string name="searching_for_barcode">Searching for \"%1$s\"</string>
     <string name="barcode_found">Product \"%1$d\" found.</string>
-    <string name="barcode_not_found">Product not found.  Upload product?</string>
+    <string name="barcode_not_found">Product \"%1$d\" not found.  Upload product?</string>
     <string name="product_results_prompt">Search by product name or brand</string>
     <string name="share_text">Check out this product:\U0200</string>
     <string name="no_delete_yet">Delete not yet implemented.</string>
