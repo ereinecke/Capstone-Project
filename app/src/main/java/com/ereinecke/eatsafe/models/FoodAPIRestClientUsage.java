@@ -1,6 +1,6 @@
 package com.ereinecke.eatsafe.models;
 
-public class FoodAPIRestClientUsage {
+class FoodAPIRestClientUsage {
 
     // Ported from OpenFoodFacts-androidApp.
     /*

@@ -13,19 +13,21 @@ import java.util.Set;
 
 
 /**
- * TestDb tests creation of database as well as insertion of a record
+ * DbTest tests creation of database as well as insertion of a record
  */
 
-@SuppressWarnings("deprecation")
-public class TestDb extends AndroidTestCase {
-    public static final String LOG_TAG = TestDb.class.getSimpleName();
+//    @RunWith(AndroidJUnit4.class)
+public class DbTest extends AndroidTestCase {
+    public static final String LOG_TAG = DbTest.class.getSimpleName();
 
-    public final static  long BARCODE = 737628064502L;
+    final static  long BARCODE = 737628064502L;
     private final static String PRODUCT_NAME  = "Stir-Fry Rice Noodles";
     private final static String IMG_URL = "http://static.openfoodfacts.org/images/products/073/762/806/4502/front_en.6.200.jpg";
     private final static String THUMB_URL = "http://static.openfoodfacts.org/images/products/073/762/806/4502/front_en.6.100.jpg";
 
-    public void testCreateDb() throws Throwable {
+
+//    @Test
+    public void createDbTest() throws Throwable {
         mContext.deleteDatabase(DbHelper.DATABASE_NAME);
         SQLiteDatabase db = new DbHelper(
                 this.mContext).getWritableDatabase();
@@ -33,7 +35,8 @@ public class TestDb extends AndroidTestCase {
         db.close();
     }
 
-    public void testInsertReadDb() {
+    //    @Test
+    public void insertReadDbTest() {
 
         DbHelper dbHelper = new DbHelper(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -63,52 +66,6 @@ public class TestDb extends AndroidTestCase {
 
         validateCursor(cursor, values);
 
-        /* Replace with tests for Ingredients and Allergens table
-
-        values = getAuthorValues();
-
-        retEan = db.insert(OpenFoodContract.AuthorEntry.TABLE_NAME, null, values);
-
-        columns = new String[]{
-                OpenFoodContract.AuthorEntry._ID,
-                OpenFoodContract.AuthorEntry.AUTHOR
-        };
-
-        cursor = db.query(
-                OpenFoodContract.AuthorEntry.TABLE_NAME,  // Table to Query
-                columns,
-                null, // Columns for the "where" clause
-                null, // Values for the "where" clause
-                null, // columns to group by
-                null, // columns to filter by row groups
-                null // sort order
-        );
-
-        validateCursor(cursor, values);
-        // test category table
-
-        values = getCategoryValues();
-        retEan = db.insert(OpenFoodContract.CategoryEntry.TABLE_NAME, null, values);
-
-        columns = new String[]{
-                OpenFoodContract.CategoryEntry._ID,
-                OpenFoodContract.CategoryEntry.CATEGORY
-        };
-
-        cursor = db.query(
-                OpenFoodContract.CategoryEntry.TABLE_NAME,  // Table to Query
-                columns,
-                null, // Columns for the "where" clause
-                null, // Values for the "where" clause
-                null, // columns to group by
-                null, // columns to filter by row groups
-                null // sort order
-        );
-
-        validateCursor(cursor, values);
-
-        dbHelper.close();
-        */
     }
 
     static void validateCursor(Cursor valueCursor, ContentValues expectedValues) {

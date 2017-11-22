@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">EatSafe</string>
+    <string name="app_description">Short description of EatSafe</string>
     <string name="widget_name">EatSafe Scan</string>
 
     <!-- AdMob ad unit id (test ad) -->
@@ -11,6 +12,7 @@
     <!-- Menu actions -->
     <string name="action_scan">Scan</string>
     <string name="action_login">Log In</string>
+    <string name="action_logout">Log Out</string>
     <string name="action_sensitivities">Sensitivities</string>
     <string name="action_about_off">About OpenFoodFacts</string>
     <string name="action_about">About EatSafe</string>
@@ -32,8 +34,11 @@
     <string name="delete_dialog">Delete product from your history?</string>
     <string name="upload_prompt">Upload barcode and three product photos: front of package, ingredients list, and nutrition information.</string>
     <string name="upload_dialog">Upload new product to OpenFoodFacts.org?</string>
-    <string name="no_internet">Internet connection is required to look up product.</string>
-    <string name="result_succeeded">Scan successful</string>
+    <string name="error_no_internet">Internet connection is required.</string>
+    <string name="error_login">Username or password incorrect.</string>
+    <string name="result_login">Logged in as %1$s.</string>
+    <string name="result_logout">%1$s logged out.</string>
+    <string name="result_scan_succeeded">Scan successful</string>
     <string name="result_failed">Scan failed</string>
     <string name="result_failed_why">Don\'t know why</string>
     <string name="not_found">Product not found</string>
@@ -41,13 +46,26 @@
     <string name="barcode_already_downloaded">Barcode \"%1$s\" already downloaded.</string>
     <string name="searching_for_barcode">Searching for \"%1$s\"</string>
     <string name="barcode_found">Product \"%1$d\" found.</string>
-    <string name="barcode_not_found">Product not found.  Upload product?</string>
+    <string name="barcode_not_found">Product \"%1$d\" not found.  Upload product?</string>
     <string name="product_results_prompt">Search by product name or brand</string>
     <string name="share_text">Check out this product:\U0200</string>
     <string name="no_delete_yet">Delete not yet implemented.</string>
     <string name="deleted">Item \"%1$s\" deleted.</string>
     <string name="no_login_yet">Login not yet implemented.</string>
     <string name="no_sensitivities_yet">Sensitivities personalization not yet implemented.</string>
+    <string name="user_name">username</string>
+    <string name="password">password</string>
+    <string name="register">Register</string>
+    <string name="lost_password">Lost password?</string>
+    <string name="login">Log in</string>
+    <string name="login_prompt">OpenFoodFacts login</string>
+    <string name="error_invalid_password">The password needs to be at least 6 characters long.</string>
+    <string name="error_field_required">This field is required.</string>
+
+    <!-- Image descriptions -->
+    <string name="product_photo">Product Image</string>
+    <string name="ingredients_photo">Ingredients label image</string>
+    <string name="nutrition_photo">Nutrition label image</string>
 
     <!-- Content descriptions -->
     <string name="mic_image">Speak product code</string>
@@ -71,10 +89,17 @@
     <string name="openfoodfacts" translatable="false">openfoodfacts.org</string>
 
     <!-- sites for WebView -->
-    <string name="about_eatsafe" translatable="false">http://eatsafe.ereinecke.com</string>
-    <string name="eatsafe_domain" translatable="false">eatsafe.ereinecke.com</string>
+    <string name="about_eatsafe" translatable="false">http://github.com/ereinecke/EatSafe</string>
+    <string name="eatsafe_domain" translatable="false">github.com</string>
     <string name="about_off" translatable="false">http://world.openfoodfacts.org</string>
     <string name="off_domain" translatable="false">world.openfoodfacts.org</string>
     <string name="off_logo" translatable="false">https://static.openfoodfacts.org/images/misc/openfoodfacts-logo-en-178x150.png</string>
+    <string name="register_url" translatable="false">https://world.openfoodfacts.org/cgi/user.pl</string>
+    <string name="lost_password_url" translatable="false">https://world.openfoodfacts.org/cgi/reset_password.pl</string>
+
+    <!-- About text -->
+    <string name="about_title">About EatSafe</string>
+    <string name="about_text">EatSafe is an open-source project aimed at travelers and expats with dietary restrictions.\nUsing the OpenFoodFacts database (https://openfoodfacts.org), you can scan product labels and get ingredient and nutritional info in your native language. \n\n      Author: Erik Reinecke\n      Version: %1$s\n      Source code: https://github.com/ereinecke/EatSafe\n\nThanks to the following open-source components:\n</string>
+    <string name="eatsafe_splash_text">EatSafe tagline and blurb</string>
 
 </resources>

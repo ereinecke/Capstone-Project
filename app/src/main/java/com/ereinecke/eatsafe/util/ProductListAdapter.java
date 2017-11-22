@@ -3,7 +3,6 @@ package com.ereinecke.eatsafe.util;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +12,8 @@ import android.widget.TextView;
 import com.ereinecke.eatsafe.R;
 import com.ereinecke.eatsafe.data.OpenFoodContract;
 import com.squareup.picasso.Picasso;
+
+import static com.ereinecke.eatsafe.util.Utility.Logd;
 
 /**
  * List adapter to display list of products downloaded to this device
@@ -30,13 +31,14 @@ public class ProductListAdapter extends CursorAdapter {
         public int productImageSize;
 
         public ViewHolder(View view) {
-            productImage = (ImageView) view.findViewById(R.id.product_image);
-            productName = (TextView) view.findViewById(R.id.product_name);
-            productBrand = (TextView) view.findViewById(R.id.product_brand);
-            productCode = (TextView) view.findViewById(R.id.code);
+            productImage = view.findViewById(R.id.product_image);
+            productName = view.findViewById(R.id.product_name);
+            productBrand = view.findViewById(R.id.product_brand);
+            productCode = view.findViewById(R.id.code);
         }
     }
 
+    @SuppressWarnings("SameParameterValue")
     public ProductListAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
     }
@@ -55,7 +57,7 @@ public class ProductListAdapter extends CursorAdapter {
                     .centerCrop()
                     .into(viewHolder.productImage);
         } catch (Exception e) {
-            Log.d(LOG_TAG,"Exception loading " + imgUrl + "; Stacktrace:\n" + e.getMessage());
+            Logd(LOG_TAG,"Exception loading " + imgUrl + "; Stacktrace:\n" + e.getMessage());
         }
 
         String productName = cursor.getString(cursor.getColumnIndex(OpenFoodContract.ProductEntry.PRODUCT_NAME));

@@ -11,8 +11,10 @@ public class Constants {
     // TODO: Change write URLs to openfoodfacts.org when out of test
     public static final String PRODUCTS_BASE_URL = "http://world.openfoodfacts.org/api/v0/product/";
     public static final String OFF_URL = "http://world.openfoodfacts.org";
+    public static final String OFF_API_URL = "https://ssl-api.openfoodfacts.org";
+    public static final String OFF_API_TEST_URL = "https://ssl-api.openfoodfacts.org";
 
-    // ACTIONs.
+    // ACTIONs
     public static final String ACTION_SCAN_BARCODE   = "com.ereinecke.eatsafe.FETCH_SCAN";
     public static final String ACTION_FETCH_PRODUCT  = "com.ereinecke.eatsafe.services.action.FETCH_PRODUCT";
     // TODO: Should be using this action
@@ -47,9 +49,16 @@ public class Constants {
     public static final int FRAG_RESULTS = 2;
 
     // Dialogue types
-    public static final String DIALOG_TYPE = "dialogue_type";
+    public static final String DIALOG_TYPE = "dialog_type";
     public static final String DIALOG_UPLOAD = "upload";
     public static final String DIALOG_DELETE = "delete";
+    public static final String DIALOG_LOGIN = "login";
+
+    // Login
+    public static final String USER_NAME = "user_name";
+    public static final String PASSWORD = "password";
+    public static final String LOGIN_STATE = "login_state";
+    public static final String LOGIN_PREFERENCES = "com.ereinecke.eatsafe.LOGIN";
 
     // Scanner constants
     public static final String BARCODE_KEY = "barcode_key";
@@ -59,6 +68,7 @@ public class Constants {
     // keys for savedInstanceStates
     public static final String CURRENT_PHOTO = "current_photo";
     public static final String CURRENT_FRAGMENT = "current_fragment";
+    public static final String CREDENTIALS = "credentials";
 
     // JSON keys
     public static final String STATUS = "status";
@@ -80,4 +90,7 @@ public class Constants {
     public static final String MESSAGE_EVENT = "message_event";
     public static final String MESSAGE_KEY = "message_key";
     public static final String MESSAGE_RESULT = "message_result";
+
+    // Testing constants
+    public static String TEST_BARCODE = "737628064502";
 }

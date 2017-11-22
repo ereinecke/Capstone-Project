@@ -339,7 +339,7 @@ public class Product implements Serializable{
     @JsonProperty("complete")
     private long complete;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<>();
+    private final Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
      *

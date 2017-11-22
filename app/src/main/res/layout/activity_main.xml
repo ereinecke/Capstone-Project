@@ -21,7 +21,8 @@
         android:paddingTop="@dimen/appbar_logo_top_padding"
         android:scaleType="fitStart"
         android:src="@drawable/eatsafe_cutout_white_op30"
-        tools:ignore="RtlSymmetry" />
+        tools:ignore="RtlSymmetry"
+        tools:targetApi="lollipop" />
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/app_bar"

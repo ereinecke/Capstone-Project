@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/fragment_splash">
@@ -13,21 +13,62 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true">
 
-        <ImageButton
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/logoView"
-            android:src="@drawable/openfoodfacts_logo_356"
-            android:contentDescription="@string/openfoodfacts"
-            android:paddingLeft="@dimen/horizontal_padding"
-            android:paddingRight="@dimen/horizontal_padding"
-            android:paddingTop="@dimen/vertical_padding"
-            android:paddingEnd="@dimen/horizontal_padding"
-            android:paddingStart="@dimen/horizontal_padding"
-            android:scaleType="fitCenter"
-            android:layout_marginLeft="@dimen/splash_margin"
-            android:layout_marginRight="@dimen/splash_margin"
-            android:background="@color/transparent" />
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/offLogoView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginLeft="@dimen/splash_margin"
+                android:layout_marginRight="@dimen/splash_margin"
+                android:layout_weight="1"
+                android:background="@color/transparent"
+                android:contentDescription="@string/openfoodfacts"
+                android:paddingBottom="@dimen/vertical_padding"
+                android:paddingEnd="@dimen/horizontal_padding"
+                android:paddingLeft="@dimen/horizontal_padding"
+                android:paddingRight="@dimen/horizontal_padding"
+                android:paddingStart="@dimen/horizontal_padding"
+                android:paddingTop="@dimen/appbar_logo_horizontal_padding"
+                android:scaleType="fitCenter"
+                android:src="@drawable/openfoodfacts_logo_356x246" />
+
+            <ImageButton
+                android:id="@+id/logoView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginLeft="@dimen/splash_margin"
+                android:layout_marginRight="@dimen/splash_margin"
+                android:layout_weight="1"
+                android:background="@color/transparent"
+                android:contentDescription="@string/app_name"
+                android:paddingBottom="@dimen/vertical_padding"
+                android:paddingEnd="@dimen/horizontal_padding"
+                android:paddingLeft="@dimen/horizontal_padding"
+                android:paddingRight="@dimen/horizontal_padding"
+                android:paddingStart="@dimen/horizontal_padding"
+                android:paddingTop="@dimen/vertical_padding"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/eatsafe_logo_text_356x246" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:paddingEnd="@dimen/horizontal_padding"
+                android:paddingLeft="@dimen/horizontal_padding"
+                android:paddingRight="@dimen/horizontal_padding"
+                android:paddingStart="@dimen/horizontal_padding"
+                android:paddingTop="@dimen/vertical_padding"
+                android:text="@string/eatsafe_splash_text"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+
+        </LinearLayout>
 
     </ScrollView>
 
@@ -40,3 +81,5 @@
         android:background="@color/colorTabs" />
 
 </RelativeLayout>
+
+

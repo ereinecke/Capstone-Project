@@ -8,8 +8,6 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,12 +19,13 @@ import android.widget.TextView;
 
 import com.ereinecke.eatsafe.R;
 import com.ereinecke.eatsafe.services.OpenFoodService;
-import com.ereinecke.eatsafe.util.App;
 import com.ereinecke.eatsafe.util.Constants;
 import com.ereinecke.eatsafe.util.Utility;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.zxing.integration.android.IntentIntegrator;
+
+import static com.ereinecke.eatsafe.util.Utility.Logd;
 
 /**
  * SearchFragment allows the user to search the database by UPC code.  The code can be scanned
@@ -48,9 +47,13 @@ public class SearchFragment extends Fragment {
     @SuppressWarnings("EmptyMethod")
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        if (getArguments() != null &&
-                getArguments().getString(Constants.MESSAGE_KEY).equals(Constants.ACTION_SCAN_BARCODE))
-            startScan = true;
+        try {
+            if (getArguments() != null &&
+                    getArguments().getString(Constants.MESSAGE_KEY).equals(Constants.ACTION_SCAN_BARCODE))
+                startScan = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         super.onCreate(savedInstanceState);
     }
 
@@ -61,7 +64,7 @@ public class SearchFragment extends Fragment {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_search, container, false);
 
-        barcodeView = (EditText) rootView.findViewById(R.id.barcode);
+        barcodeView = rootView.findViewById(R.id.barcode);
 
         barcodeView.setOnEditorActionListener(
                 new EditText.OnEditorActionListener() {
@@ -79,7 +82,7 @@ public class SearchFragment extends Fragment {
                 });
 
         /* Search button */
-        ImageButton searchButton = (ImageButton) rootView.findViewById(R.id.search_button);
+        ImageButton searchButton = rootView.findViewById(R.id.search_button);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -95,13 +98,13 @@ public class SearchFragment extends Fragment {
             }
         });
 
-        /* Ad displayed in bottom toolbar, respecting Constants.TEST_ADS flag  */
-        AdView mAdView = (AdView) rootView.findViewById(R.id.adView);
+        /* Ad displayed in bottom toolbar, respecting Constants.java.TEST_ADS flag  */
+        AdView mAdView = rootView.findViewById(R.id.adView);
         AdRequest adRequest = Utility.getAdRequest();
         if (mAdView != null) {
             mAdView.loadAd(adRequest);
         } else {
-            Log.d(LOG_TAG, "adView not found");
+            Logd(LOG_TAG, "adView not found");
         }
 
         if (savedInstanceState != null) {
@@ -160,8 +163,8 @@ public class SearchFragment extends Fragment {
     }
 
     /* Sends an intent to OpenFoodService to fetch product info */
-    public void callFetchProduct(String barcodeStr) {
-        Log.d(LOG_TAG, "in callFetchProduct: " + barcodeStr);
+    private void callFetchProduct(String barcodeStr) {
+        Logd(LOG_TAG, "in callFetchProduct: " + barcodeStr);
 
         // Have a (potentially) valid barcode, fetch product info
         Intent productIntent = new Intent(getActivity(), OpenFoodService.class);
@@ -169,30 +172,6 @@ public class SearchFragment extends Fragment {
         productIntent.setAction(Constants.ACTION_FETCH_PRODUCT);
         getActivity().startService(productIntent);
      }
-
-    /* Broadcast Intent to MainActivity.MessageReceiver with product display request */
-    private void requestProductFragment() {
-        Intent messageIntent = new Intent(Constants.MESSAGE_EVENT);
-        messageIntent.putExtra(Constants.MESSAGE_KEY, Constants.ACTION_PRODUCT_FRAGMENT);
-        LocalBroadcastManager.getInstance(App.getContext())
-                .sendBroadcast(messageIntent);
-    }
-
-    /* Broadcast Intent to MainActivity.MessageReceiver with resultsFragment display request */
-    private void requestResultsFragment() {
-        Intent messageIntent = new Intent(Constants.MESSAGE_EVENT);
-        messageIntent.putExtra(Constants.MESSAGE_KEY, Constants.ACTION_RESULTS_FRAGMENT);
-        LocalBroadcastManager.getInstance(App.getContext())
-                .sendBroadcast(messageIntent);
-    }
-
-    /* Broadcast Intent to MainActivity.MessageReceiver with fragment display request */
-    private void requestSplashFragment() {
-        Intent messageIntent = new Intent(Constants.MESSAGE_EVENT);
-        messageIntent.putExtra(Constants.MESSAGE_KEY, Constants.ACTION_SPLASH_FRAGMENT);
-        LocalBroadcastManager.getInstance(App.getContext())
-                .sendBroadcast(messageIntent);
-    }
 
     /* Returns a boolean representing internet connectivity */
     private boolean checkConnectivity() {
@@ -205,7 +184,7 @@ public class SearchFragment extends Fragment {
                 getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        text = getString(R.string.no_internet);
+        text = getString(R.string.error_no_internet);
         if (activeNetwork != null && activeNetwork.isConnectedOrConnecting()) {
             isConnected = true;
         } else {

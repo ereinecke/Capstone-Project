@@ -9,7 +9,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.util.Log;
+
+import static com.ereinecke.eatsafe.util.Utility.Logd;
 
 /**
  * ContentProvider for EatSafe
@@ -26,7 +27,6 @@ public class OpenFoodProvider extends ContentProvider {
     private static final int INGREDIENT = 201;
 
     private static final int ALLERGEN_ID = 300;
-
     private static final int ALLERGEN = 301;
 
     private static final UriMatcher uriMatcher = buildUriMatcher();
@@ -47,6 +47,12 @@ public class OpenFoodProvider extends ContentProvider {
 
         matcher.addURI(authority, OpenFoodContract.PATH_PRODUCTS, PRODUCT);
         matcher.addURI(authority, OpenFoodContract.PATH_PRODUCTS+"/#", PRODUCT);
+
+        matcher.addURI(authority, OpenFoodContract.PATH_INGREDIENTS, INGREDIENT);
+        matcher.addURI(authority, OpenFoodContract.PATH_INGREDIENTS+"/#", INGREDIENT);
+
+        matcher.addURI(authority, OpenFoodContract.PATH_ALLERGENS, ALLERGEN);
+        matcher.addURI(authority, OpenFoodContract.PATH_ALLERGENS+"/#", ALLERGEN);
 
         return matcher;
     }
@@ -85,6 +91,55 @@ public class OpenFoodProvider extends ContentProvider {
                         sortOrder
                 );
                 break;
+
+                case INGREDIENT:
+                retCursor=dbHelper.getReadableDatabase().query(
+                        OpenFoodContract.ProductEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selection==null? null : selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+
+            case INGREDIENT_ID:
+                retCursor=dbHelper.getReadableDatabase().query(
+                        OpenFoodContract.IngredientEntry.TABLE_NAME,
+                        projection,
+                        OpenFoodContract.IngredientEntry._ID + " = '" + ContentUris.parseId(uri) + "'",
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+
+                case ALLERGEN:
+                retCursor=dbHelper.getReadableDatabase().query(
+                        OpenFoodContract.AllergenEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selection==null? null : selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+
+            case ALLERGEN_ID:
+                retCursor=dbHelper.getReadableDatabase().query(
+                        OpenFoodContract.AllergenEntry.TABLE_NAME,
+                        projection,
+                        OpenFoodContract.AllergenEntry._ID + " = '" + ContentUris.parseId(uri) + "'",
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -92,8 +147,9 @@ public class OpenFoodProvider extends ContentProvider {
         try {
             retCursor.setNotificationUri(getContext().getContentResolver(), uri);
         } catch(NullPointerException e) {
-            Log.d(LOG_TAG, e.getMessage());
+            Logd(LOG_TAG, e.getMessage());
         }
+
         return retCursor;
     }
 
@@ -106,6 +162,14 @@ public class OpenFoodProvider extends ContentProvider {
             case PRODUCT_ID:
                 return OpenFoodContract.ProductEntry.CONTENT_ITEM_TYPE;
             case PRODUCT:
+                return OpenFoodContract.ProductEntry.CONTENT_TYPE;
+            case INGREDIENT_ID:
+                return OpenFoodContract.ProductEntry.CONTENT_ITEM_TYPE;
+            case INGREDIENT:
+                return OpenFoodContract.ProductEntry.CONTENT_TYPE;
+            case ALLERGEN_ID:
+                return OpenFoodContract.ProductEntry.CONTENT_ITEM_TYPE;
+            case ALLERGEN:
                 return OpenFoodContract.ProductEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -130,9 +194,17 @@ public class OpenFoodProvider extends ContentProvider {
                     getContext().getContentResolver().notifyChange(OpenFoodContract.ProductEntry
                             .buildProductUri(_id), null);
                 } catch(NullPointerException e) {
-                    Log.d(LOG_TAG, e.getMessage());
+                    Logd(LOG_TAG, e.getMessage());
                 }
                 break;
+            }
+            case INGREDIENT: {
+                // TODO: implement inserting ingredients
+                Logd(LOG_TAG, "Inserting ingredient not yet implemented.");
+            }
+            case ALLERGEN: {
+                // TODO: implement inserting allergens
+                Logd(LOG_TAG, "Inserting allergens not yet implemented.");
             }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -142,21 +214,55 @@ public class OpenFoodProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
+        String sqlString;
         final SQLiteDatabase db = dbHelper.getWritableDatabase();
         final int match = uriMatcher.match(uri);
-        Log.d(LOG_TAG, "match: " + match + "; uri: " + uri.toString());
+        Logd(LOG_TAG, "match: " + match + "; uri: " + uri.toString());
 
         int rowsDeleted;
         switch (match) {
+            // Delete product table
             case PRODUCT:
                 rowsDeleted = db.delete(
                         OpenFoodContract.ProductEntry.TABLE_NAME, selection, selectionArgs);
                 break;
+            // Delete specified product
             case PRODUCT_ID:
-                String sqlString = OpenFoodContract.ProductEntry._ID + " = '" + ContentUris.parseId(uri) + "'";
-                Log.d(LOG_TAG, sqlString);
+                sqlString = OpenFoodContract.ProductEntry._ID + " = '" +
+                        ContentUris.parseId(uri) + "'";
+                Logd(LOG_TAG, sqlString);
                 rowsDeleted = db.delete(
                         OpenFoodContract.ProductEntry.TABLE_NAME,
+                        sqlString,
+                        selectionArgs);
+                break;
+            // Delete ingredient table
+            case INGREDIENT:
+                rowsDeleted = db.delete(
+                        OpenFoodContract.IngredientEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            // Delete specified ingredient
+            case INGREDIENT_ID:
+                sqlString = OpenFoodContract.IngredientEntry._ID + " = '" +
+                        ContentUris.parseId(uri) + "'";
+                Logd(LOG_TAG, sqlString);
+                rowsDeleted = db.delete(
+                        OpenFoodContract.IngredientEntry.TABLE_NAME,
+                        sqlString,
+                        selectionArgs);
+                break;
+            // Delete allergen table
+            case ALLERGEN:
+                rowsDeleted = db.delete(
+                        OpenFoodContract.AllergenEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            // Delete specified allergen
+            case ALLERGEN_ID:
+                sqlString = OpenFoodContract.AllergenEntry._ID + " = '" +
+                        ContentUris.parseId(uri) + "'";
+                Logd(LOG_TAG, sqlString);
+                rowsDeleted = db.delete(
+                        OpenFoodContract.AllergenEntry.TABLE_NAME,
                         sqlString,
                         selectionArgs);
                 break;
@@ -167,8 +273,8 @@ public class OpenFoodProvider extends ContentProvider {
         if (selection == null || rowsDeleted != 0) {
             try {
                 getContext().getContentResolver().notifyChange(uri, null);
-            } catch(NullPointerException e) {
-                Log.d(LOG_TAG, e.getMessage());
+            } catch (NullPointerException e) {
+                Logd(LOG_TAG, e.getMessage());
             }
         }
 
@@ -191,8 +297,8 @@ public class OpenFoodProvider extends ContentProvider {
         if (rowsUpdated != 0) {
             try {
                 getContext().getContentResolver().notifyChange(uri, null);
-            } catch(NullPointerException e) {
-                Log.d(LOG_TAG, e.getMessage());
+            } catch (NullPointerException e) {
+                Logd(LOG_TAG, e.getMessage());
             }
         }
         return rowsUpdated;

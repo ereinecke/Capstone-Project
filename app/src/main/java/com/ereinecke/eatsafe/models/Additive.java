@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "name",
         "risk"
 })
-public class Additive extends SugarRecord {
+class Additive extends SugarRecord {
 
     @JsonProperty("code")
     private String code;

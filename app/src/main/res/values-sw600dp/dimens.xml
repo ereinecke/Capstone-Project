@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="app_bar_height">120dp</dimen>
+    <dimen name="app_bar_height">100dp</dimen>
     <dimen name="results_slider_height">300dp</dimen>
     <dimen name="upload_image_height">180dp</dimen>
 
     <dimen name="appbar_logo_horizontal_padding">48dp</dimen>
     <dimen name="appbar_logo_top_padding">0dp</dimen>
     <dimen name="appbar_logo_bottom_padding">0dp</dimen>
+    <dimen name="splash_margin">120dp</dimen>
 </resources>

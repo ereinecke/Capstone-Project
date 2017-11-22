@@ -24,8 +24,7 @@ import org.greenrobot.greendao.annotation.Index;
 @Entity(indexes = {
         @Index(value = "name", unique = true)
 })
-
-public class Allergen {
+class Allergen {
 
     private String enable;
     private String url;

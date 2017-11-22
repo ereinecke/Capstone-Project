@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +13,8 @@ import android.webkit.WebViewClient;
 
 import com.ereinecke.eatsafe.R;
 import com.ereinecke.eatsafe.util.Constants;
+
+import static com.ereinecke.eatsafe.util.Utility.Logd;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -57,7 +58,7 @@ public class WebFragment extends Fragment {
 
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_web, container, false);
-        webView = (WebView) rootView.findViewById(R.id.web_view);
+        webView = rootView.findViewById(R.id.web_view);
 
         // More secure if not needed
         webView.getSettings().setJavaScriptEnabled(false);
@@ -79,7 +80,7 @@ public class WebFragment extends Fragment {
             try {
                 uri = Uri.parse(url);
             } catch (Exception e) {
-                Log.d(LOG_TAG, "Exception parsing uri: " + url);
+                Logd(LOG_TAG, "Exception parsing uri: " + url);
                 return false;
             }
             /* If the new uri ends with the specified domain, allow it. */
@@ -95,12 +96,10 @@ public class WebFragment extends Fragment {
         @Override
         public void onReceivedError(WebView view, int errorCode,
                                     String description, String failing_url) {
-
-
-        };
-
+        }
 
     }
+
 
     public boolean canGoBack() {
         return this.webView != null && this.webView.canGoBack();

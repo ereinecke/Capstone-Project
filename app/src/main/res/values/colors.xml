@@ -3,17 +3,29 @@
     <color name="colorPrimary">#4cb748</color>
     <color name="colorPrimaryDark">#2d8941</color>
     <color name="textColorPrimary">#dddddd</color>
-    <color name="colorAccent">#cd6a82</color>
-    <color name="colorTabs">#949D93</color>
-    <color name="colorTabIndicators">#99DDDDDD</color>
-    <color name="colorSelectedButton">#99FFFFFF</color>
+    <color name="colorAccent">#d06a8b</color>
+
+    <color name="colorTabs">#949d93</color>
+    <color name="colorTabIndicators">@color/colorAccent</color>
+
+    <color name="colorSelectedButton">#99ffffff</color>
     <color name="colorInactiveButton">@color/colorSelectedButton</color>
-    <color name="colorLoadToastBackground">#77000000</color>
-    <color name="colorLoadToastText">#DDDDDD</color>
-    <color name="colorLoadToastProgress">@color/colorAccent</color>
-    <color name="image_background">#DDDDDD</color>
+
+    <color name="image_background">#dddddd</color>
     <color name="white">#ffffff</color>
+
     <color name="color_slider_selected">@color/colorAccent</color>
     <color name="color_slider_unselected">#55333333</color>
     <color name="transparent">#00000000</color>
+
+    <!-- SuperToast colors -->
+    <color name="info_green">#4caf50</color>
+    <color name="warning_yellow">#ffeb3b</color>
+    <color name="error_red">#f44336</color>
+
+    <!-- Misc material colors -->
+    <color name="material_amber_300">#ffd54f</color>
+    <color name="material_pink_500">#e91e63</color>
+    <color name="material_teal_500">#009688</color>
+    <color name="material_deep_orange_300">#FF8A65</color>
 </resources>

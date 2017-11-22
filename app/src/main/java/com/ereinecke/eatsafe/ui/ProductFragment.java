@@ -16,7 +16,6 @@ import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.widget.ShareActionProvider;
 import android.text.Html;
 import android.text.Spanned;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +35,8 @@ import com.hkm.slider.SliderTypes.BaseSliderView;
 
 import java.util.ArrayList;
 
+import static com.ereinecke.eatsafe.util.Utility.Logd;
+
 /**
  * ProductFragment displays detailed information for a product, whose barcode is passed to
  * ProductFragment as an argument.
@@ -45,7 +46,6 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     private final static String LOG_TAG = ProductFragment.class.getSimpleName();
     private static final int LOADER_ID = 1;
     private String barcode;
-    private Context mContext;
     private View rootView;
     private ShareActionProvider shareActionProvider;
 
@@ -56,7 +56,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
     @SuppressWarnings("EmptyMethod")
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        mContext = App.getContext();
+        Context mContext = App.getContext();
         super.onCreate(savedInstanceState);
     }
 
@@ -73,7 +73,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
         if (args != null) {
             showBlankFragment = (args.getLong(Constants.BARCODE_KEY) == Constants.BARCODE_NONE);
-            Log.d(LOG_TAG, "showBlankFragment: " + showBlankFragment);
+            Logd(LOG_TAG, "showBlankFragment: " + showBlankFragment);
             getLoaderManager().restartLoader(LOADER_ID, args, this);
         }
 
@@ -83,22 +83,22 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
         } else {
             BottomNavigationView bottomNavigation =
-                    (BottomNavigationView) rootView.findViewById(R.id.product_toolbar_bottom);
+                    rootView.findViewById(R.id.product_toolbar_bottom);
             bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
                     switch (menuItem.getItemId()) {
                         case R.id.action_share:
-                            Log.d(LOG_TAG, "Pressed share button");
+                            Logd(LOG_TAG, "Pressed share button");
                             shareActionProvider = (ShareActionProvider)
                                     MenuItemCompat.getActionProvider(menuItem);
                             setShareActionProvider(barcode);
                             break;
                         case R.id.action_delete:
-                            Log.d(LOG_TAG, "Pressed delete button");
+                            Logd(LOG_TAG, "Pressed delete button");
                             // Confirmation dialog
-                            DeleteDialog deleteDialog = new DeleteDialog();
+                            DeleteDialog deleteDialog = new DeleteDialog().newInstance(barcode);
                             deleteDialog.show(getActivity().getSupportFragmentManager(),
                                     getString(R.string.delete));
                             break;
@@ -128,7 +128,7 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
             barcode = args.getLong(Constants.BARCODE_KEY);
         } catch (Exception e) {
             barcode = Constants.BARCODE_NONE;
-            Log.d(LOG_TAG,"No barcode requested, should return nothing.");
+            Logd(LOG_TAG,"No barcode requested, should return nothing.");
         }
         String barcodeStr = Long.toString(barcode);
 
@@ -151,9 +151,9 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         barcode = data.getString(data.getColumnIndex(OpenFoodContract.ProductEntry._ID));
         ((TextView) rootView.findViewById(R.id.code))
                 .setText(prefixLabel(R.string.code, barcode));
-        Log.d(LOG_TAG, "onLoadFinished, barcode: " + barcode);
+        Logd(LOG_TAG, "onLoadFinished, barcode: " + barcode);
 
-        PagerIndicator pagerIndicator = (PagerIndicator) rootView.findViewById(R.id.custom_indicator);
+        PagerIndicator pagerIndicator = rootView.findViewById(R.id.custom_indicator);
 
         String productName = data.getString(data.getColumnIndex(OpenFoodContract.ProductEntry.PRODUCT_NAME));
         ((TextView) rootView.findViewById(R.id.product_name)).setText(productName);
@@ -189,11 +189,11 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
 
         ArrayList<AdjustableSlide> list = new ArrayList<>();
 
-        SliderLayout sliderLayout = (SliderLayout) rootView.findViewById(R.id.results_slider);
+        SliderLayout sliderLayout = rootView.findViewById(R.id.results_slider);
 
         // TODO: If there are no product images, collapse slider view
         if (urlImages.size() == 0) {
-            Log.d(LOG_TAG, "No images found.");
+            Logd(LOG_TAG, "No images found.");
             // Hide slider view if there are no images
             ViewGroup.LayoutParams params = sliderLayout.getLayoutParams();
             params.height = 0;
@@ -238,24 +238,10 @@ public class ProductFragment extends Fragment implements LoaderManager.LoaderCal
         }
     }
 
-    /* removes the current item from the database
-    *  TODO: use URI approach */
-    public void deleteItem() {
-
-        mContext.getContentResolver().delete(
-                OpenFoodContract.ProductEntry.CONTENT_URI,
-                OpenFoodContract.ProductEntry._ID + "=" + barcode,
-                null
-        );
-        requestResultsFragment();
-        clearProductFragment();
-        Log.d(LOG_TAG,"Deleted item# " + barcode);
-    }
-
     /* prefixLabel formats a string, prepending fieldName in bold and concatenating fieldContents
      * Returns a spannable suitable for insertion into a TextView.
      */
-    public Spanned prefixLabel(int fieldName, String fieldContents) {
+    private Spanned prefixLabel(int fieldName, String fieldContents) {
 
         Spanned result;
 

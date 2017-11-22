@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">EatSafe</string>
+    <string name="app_description">EatSafeとは</string>
+    <string name="widget_name">EatSafeスキャン</string>
+
+    <!--AdMob ad unit id (test ad) -->
+
+    <!--EatSafe app id for Firebase -->
+
+    <!-- Menu actions -->
+    <string name="action_scan">スキャン</string>
+    <string name="action_login">ログイン</string>
+    <string name="action_logout">ログアウト</string>
+    <string name="action_sensitivities">アレルギー</string>
+    <string name="action_about_off">OpenFoodFactsについて</string>
+    <string name="action_about">EatSafeについて</string>
+
+    <!-- Tab names -->
+    <string name="results">履歴</string>
+    <string name="upload">アップロード</string>
+    <string name="search">検索</string>
+
+    <!-- Button text -->
+    <string name="camera_button">カメラ</string>
+    <string name="gallery_button">ギャラリー</string>
+    <string name="upload_button">アップロード</string>
+    <string name="scan_barcode">バーコード　スキャン</string>
+    <string name="cancel_button">戻る</string>
+    <string name="delete_button">削除</string>
+
+    <!-- Prompts -->
+    <string name="delete_dialog">食品を履歴から削除する</string>
+    <string name="upload_prompt">バーコードと3品目の写真(パッケージの前面、原料表、栄養表)をアップロードする.</string>
+    <string name="upload_dialog">食品をOpenFoodFacts.orgにデーターをアップロードする</string>
+    <string name="error_no_internet">インターネットに接続してください.</string>
+    <string name="error_login">ユーザー名かパスワードが間違ています.</string>
+    <string name="result_login">%1$sとしてログインされています.</string>
+    <string name="result_logout">%1$sがログアウトされました.</string>
+    <string name="result_scan_succeeded">スキャン成功</string>
+    <string name="result_failed">スキャン不可</string>
+    <string name="result_failed_why">原因不明</string>
+    <string name="not_found">商品が見つかりません</string>
+    <string name="barcode_validation_failed">バーコード\"%1$s\"は無効です.</string>
+    <string name="barcode_already_downloaded">バーコード\"%1$s\"は既にダウンロードされています.</string>
+    <string name="searching_for_barcode">\"%1$s\"を探す</string>
+    <string name="barcode_found">品目\"%1$s\"が見つかりました.</string>
+    <string name="barcode_not_found">品目がみつかりません。品目をアップロードしますか？</string>
+    <string name="product_results_prompt">品目の名前または商品名で探す</string>
+    <string name="share_text">この品目を見てみる:\U0200</string>
+    <string name="no_delete_yet">消去はまだ完了していません.</string>
+    <string name="deleted">\"%1$s\"は消去されました.</string>
+    <string name="no_login_yet">まだ完全にログインできていません.</string>
+    <string name="no_sensitivities_yet">Sensitivities personalization not yet implemented.</string>
+    <string name="user_name">ユーザー名</string>
+    <string name="password">パスワード</string>
+    <string name="register">登録</string>
+    <string name="lost_password">Lost password?</string>
+    <string name="login">ログイン</string>
+    <string name="login_prompt">OpenFoodFactsログイン</string>
+    <string name="error_invalid_password">パスワードには6文字以上必要です.</string>
+    <string name="error_field_required">必須項目</string>
+
+    <!-- Image descriptions -->
+    <string name="product_photo">品目の画像</string>
+    <string name="ingredients_photo">原料表の画像</string>
+    <string name="nutrition_photo">栄養表の画像</string>
+
+    <!-- Content descriptions -->
+    <string name="mic_image">品目コードを話す</string>
+    <string name="product_images">品目の画像</string>
+    <string name="search_hint">品目コードを入力する</string>
+    <string name="product_name">食品名</string>
+    <string name="brands">商品名</string>
+    <string name="origins">Origins</string>
+    <string name="allergens">アレルゲン食品</string>
+    <string name="ingredients">食材</string>
+    <string name="code">品目コード</string>
+    <string name="serving_size">サイズ</string>
+    <string name="barcode">バーコード</string>
+    <string name="labels">ラベル</string>
+    <string name="share">共有</string>
+    <string name="delete">削除</string>
+
+    <!-- Action for widget  -->
+    <string name="ads_content_description">Ads by Google</string>
+
+    <!-- sites for WebView -->
+
+    <!-- About text -->
+    <string name="about_title">EatSafeについて</string>
+    <string name="about_text">EatSafeは食事制限のある旅行者と海外在住者を対象としたオープンソースプロジェクトです。OpenFoodFacts(https://openfoodfacts.org)のデータベースを使用し、品目のラベルをスキャンすることによって、あなたの母国語で原材料や栄養に関する情報を入手できます。
+製作者:エリック・ライネキ
+バージョン: %1$s
+ソースコード: https://github.com/ereinecke/EatSafe\n\nThanks to the following open-source components:\n</string>
+    <string name="eatsafe_splash_text">EatSafe tagline and blurb</string>
+
+</resources>

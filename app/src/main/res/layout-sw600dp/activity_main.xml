@@ -23,7 +23,8 @@
         android:paddingBottom="@dimen/appbar_logo_bottom_padding"
         android:paddingStart="@dimen/appbar_logo_horizontal_padding"
         android:paddingTop="@dimen/appbar_logo_top_padding"
-        tools:ignore="RtlSymmetry" />
+        tools:ignore="RtlSymmetry"
+        tools:targetApi="lollipop" />
 
 
     <!--
