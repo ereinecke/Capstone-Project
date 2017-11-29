@@ -1,15 +1,20 @@
 package com.ereinecke.eatsafe.ui;
 
+import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
+import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
 
+import com.ereinecke.eatsafe.MainActivity;
 import com.ereinecke.eatsafe.R;
 import com.ereinecke.eatsafe.network.OpenFoodAPIClient;
 import com.ereinecke.eatsafe.util.Constants;
@@ -35,9 +40,11 @@ import static com.ereinecke.eatsafe.util.Utility.Logd;
  * A Register button launches a WebFragment to the OpenFoodFacts new user page.
  */
 
-public class LoginDialog {
+public class LoginDialog extends DialogFragment {
 
     private static final String LOG_TAG = LoginDialog.class.getSimpleName();
+    private Context c = null;
+
     private static EditText passwordView;
     private static EditText userNameView;
 
@@ -45,15 +52,92 @@ public class LoginDialog {
     private static SuperActivityToast errorToast;
     private static SuperActivityToast successToast;
 
-    public static void showLoginDialog(final Context c)  {
+    public static LoginDialog newInstance() {
+        LoginDialog dialog = new LoginDialog();
+        return dialog;
+    }
 
-        LayoutInflater li = LayoutInflater.from(c);
-        View prompt = li.inflate(R.layout.dialog_login, null);
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(c);
-        alertDialogBuilder.setView(prompt);
+    // Use this instance of the interface to deliver action events
+    static LoginDialogListener mListener;
 
-        passwordView = prompt.findViewById(R.id.password);
-        userNameView = prompt.findViewById(R.id.user_name);
+    // Override the Fragment.onAttach() method to instantiate the NoticeDialogListener
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        c = context;
+        // Verify that the host context implements the callback interface
+        try {
+            // Instantiate the NoticeDialogListener so we can send events to the host
+            mListener = (LoginDialogListener) context;
+        } catch (ClassCastException e) {
+            // The context doesn't implement the interface, throw exception
+            throw new ClassCastException(context.toString()
+                    + " must implement NoticeDialogListener");
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.dialog_login, container, false);
+    }
+
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        return dialog;
+    }
+
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+
+        final View dialogView = view;
+
+        /* Register button  */
+        Button registerButton = dialogView.findViewById(R.id.register);
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View dialogView) {
+                Logd(LOG_TAG, "in onRegisterClick()");
+                // TODO: Some kind of toast
+                // Call up a WebFragment
+                Utility.requestWebView(c.getString(R.string.register_url),
+                        c.getString(R.string.off_domain));
+                dismiss();
+            }
+        });
+
+        /* Login button */
+        Button loginButton = dialogView.findViewById(R.id.login);
+        loginButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View dialogView) {
+                    //check for internet connectivity
+                    if (Utility.hasConnectivity(c, false)) {
+                        final SuperActivityToast st = new SuperActivityToast(c, Utility.errorStyle());
+                        st.setText(c.getString(R.string.error_no_internet));
+                        st.show();
+                        return;
+                    }
+                    String userName = userNameView.getText().toString();
+                    String password = passwordView.getText().toString();
+                    attemptLogin(c, userName, password, false);
+                    dismiss();
+                }
+            });
+
+        /* Cancel (not now) button */
+        Button cancelButton = dialogView.findViewById(R.id.not_now);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View dialogView)
+            {
+                dismiss();
+            }
+        });
+
+        passwordView = view.findViewById(R.id.password);
+        userNameView = view.findViewById(R.id.user_name);
 
         /* get credentials */
         SharedPreferences preferences = c.getSharedPreferences(Constants.LOGIN_PREFERENCES,
@@ -70,59 +154,43 @@ public class LoginDialog {
         userNameView.setText(userName);
         passwordView.setText(password);
 
-        /* Register button */
-        alertDialogBuilder.setCancelable(false)
-            .setNeutralButton(c.getString(R.string.register),
-                    new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int id) {
-                    Logd(LOG_TAG, "in onRegisterClick()");
-                    // TODO: Some kind of toast?
-                    // Call up a WebFragment
-                    Utility.requestWebView(c.getString(R.string.register_url),
-                            c.getString(R.string.off_domain));
-                    dialog.dismiss();
-                }
-            });
-
-        /* Login button */
-        alertDialogBuilder.setPositiveButton(c.getString(R.string.login),
-                    new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface dialog, int id) {
-                    //check for internet connectivity
-                    if (Utility.hasConnectivity(c, false)) {
-                        final SuperActivityToast st = new SuperActivityToast(c, Utility.errorStyle());
-                        st.setText(c.getString(R.string.error_no_internet));
-                        st.show();
-                        showLoginDialog(c);
-
-                        return;
-                    }
-
-                    String userName = userNameView.getText().toString();
-                    String password = passwordView.getText().toString();
-                    attemptLogin(c, userName, password, false);
-
-                    dialog.dismiss();
-                }
-            });
-
-        alertDialogBuilder.setNegativeButton(c.getString(R.string.cancel_button), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id)
-            {
-                dialog.cancel();
-
-            }
-        });
-
-        alertDialogBuilder.show();
-
         if ( userName == null) userNameView.requestFocus();
         else if ( userName.length()>1 ) passwordView.requestFocus();
+
+
     }
+
+    public void onLoginClick(View view) {
+        //check for internet connectivity
+        if (Utility.hasConnectivity(c, false)) {
+            final SuperActivityToast st = new SuperActivityToast(c, Utility.errorStyle());
+            st.setText(c.getString(R.string.error_no_internet));
+            st.show();
+
+            return;
+        }
+
+        String userName = userNameView.getText().toString();
+        String password = passwordView.getText().toString();
+        attemptLogin(c, userName, password, false);
+
+        dismiss();
+    }
+
+
+    public void onRegisterClick(View view) {
+        Logd(LOG_TAG, "in onRegister");
+        // TODO: Some kind of toast
+        // Call up a WebFragment
+        Utility.requestWebView(c.getString(R.string.register_url),
+                c.getString(R.string.off_domain));
+        dismiss();
+    }
+
+    public void onLoginCancelClick(View view) {
+        dismiss();
+    }
+
 
     public static boolean attemptLogin(final Context c, final String userName,
                                        final String password, final boolean silent) {
@@ -155,6 +223,7 @@ public class LoginDialog {
 
             loginToast.setText("Logging in...");
             loginToast.show();
+
         }
 
         // This generates the POST to the login page and collects cookies, saves to SharedPrefs
@@ -230,6 +299,11 @@ public class LoginDialog {
                     prefs.putString(Constants.PASSWORD, password);
                     prefs.apply();
 
+                    /* Change Log In to Log Out */
+                    MainActivity.setLoggedIn(true);
+                    if (mListener != null) {
+                        mListener.onLogin();
+                    }
                 }
             }
 
@@ -259,6 +333,11 @@ public class LoginDialog {
             return false;
         }
     }
+
+    public interface LoginDialogListener {
+        void onLogin();
+    }
+
 }
 
 

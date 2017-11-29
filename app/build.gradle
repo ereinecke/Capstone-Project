@@ -14,7 +14,7 @@ android {
         minSdkVersion 17
         targetSdkVersion 26
         versionCode 4
-        versionName "0.71-alpha"
+        versionName "0.72-alpha"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 

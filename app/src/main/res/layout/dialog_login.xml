@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/dialog_login"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -38,4 +39,50 @@
         android:hint="@string/password"
         android:inputType="textPassword"
         android:theme="@style/Base.Theme.AppCompat.Light.Dialog" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:paddingBottom="18dp"
+        android:paddingTop="12dp">
+        android:layout_weight="1"
+        android:orientation="horizontal
+
+        <!-- TODO: Button text is invisible!! Buttons work -->
+        <Button
+            android:id="@+id/register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:onClick="onRegisterClick"
+            android:textAllCaps="true"
+            android:textColor="@color/colorAccent"
+            android:textSize="14sp"
+            tools:text="@string/register" />
+
+        <Button
+            android:id="@+id/not_now"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:onClick="onLoginCancelClick"
+            android:textAllCaps="true"
+            android:textColor="@color/colorAccent"
+            android:textSize="14sp"
+            tools:text="@string/cancel_button" />
+
+        <Button
+            android:id="@+id/login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:onClick="onLoginClick"
+            android:textAllCaps="true"
+            android:textAppearance="@style/Base.Widget.AppCompat.Button.Borderless"
+            android:textColor="@color/colorAccent"
+            android:textSize="14sp"
+            tools:text="@string/login" />
+    </LinearLayout>
+
 </LinearLayout>

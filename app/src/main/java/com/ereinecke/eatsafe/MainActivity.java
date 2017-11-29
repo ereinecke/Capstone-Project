@@ -57,7 +57,8 @@ import static com.ereinecke.eatsafe.util.Utility.infoStyle;
 
 public class MainActivity extends AppCompatActivity
         implements Callback, PhotoRequest,
-        UploadDialog.NoticeDialogListener, DeleteDialog.NoticeDialogListener {
+        UploadDialog.UploadDialogListener, DeleteDialog.NoticeDialogListener,
+        LoginDialog.LoginDialogListener {
 
     private final static String LOG_TAG = MainActivity.class.getSimpleName();
     public static boolean isTablet = false;
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity
     private final int currentFragment = 0;
     private static boolean loggedIn;
     private String photoReceived;
+    private MenuItem loginItem;
     private WebFragment webFragment;
     private BroadcastReceiver messageReceiver;
     private final IntentFilter messageFilter = new IntentFilter(Constants.MESSAGE_EVENT);
@@ -132,6 +134,10 @@ public class MainActivity extends AppCompatActivity
                 Logd(LOG_TAG, "Login failed");
             }
         }
+        // ATTENTION: This was auto-generated to handle app links.
+        Intent appLinkIntent = getIntent();
+        String appLinkAction = appLinkIntent.getAction();
+        Uri appLinkData = appLinkIntent.getData();
     }
 
     @Override
@@ -154,7 +160,7 @@ public class MainActivity extends AppCompatActivity
 
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuItem loginItem = menu.findItem(R.id.action_login);
+        loginItem = menu.findItem(R.id.action_login);
 
         if (loggedIn) {
                 loginItem.setTitle(R.string.action_logout);
@@ -215,7 +221,9 @@ public class MainActivity extends AppCompatActivity
                 if (isLoggedIn()) {
                     logOut();
                 } else {
-                    LoginDialog.showLoginDialog(this);
+                    DialogFragment loginDialog = new LoginDialog();
+                    loginDialog.show(getSupportFragmentManager(), "login");
+                    // getSupportFragmentManager().executePendingTransactions();
                 }
                 return true;
 
@@ -286,7 +294,7 @@ public class MainActivity extends AppCompatActivity
 
     // The dialog fragment receives a reference to this Activity through the
     // Fragment.onAttach() callback, which it uses to call the following methods
-    // defined by the NoticeDialog.NoticeDialogListener interface or
+    // defined by the LoginDialog.NoticeDialogListener interface or
     // UploadDialog.NoticeDialogListener
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
@@ -320,6 +328,7 @@ public class MainActivity extends AppCompatActivity
         // User touched the dialog's negative button, do nothing
     }
 
+
     @Override
     public void onItemSelected(String barcode) {
 
@@ -330,6 +339,17 @@ public class MainActivity extends AppCompatActivity
             Log.e(LOG_TAG, "Selected item contains unparseable barcode: " + barcode);
             Log.e(LOG_TAG, e.toString());
         }
+    }
+
+    /* After successful login, refresh menu to show Log Out */
+    @Override
+    public void onLogin() {
+        if (loggedIn) {
+            loginItem.setTitle(R.string.action_logout);
+        } else {
+            loginItem.setTitle(R.string.action_login);
+        }
+        invalidateOptionsMenu();
     }
     
 
@@ -367,7 +387,7 @@ public class MainActivity extends AppCompatActivity
                         } else {
                             Logd(LOG_TAG, "MessageReceiver result: " + messageKey);
                             SuperActivityToast.create(MainActivity.this, infoStyle())
-                                    .setText("Barcode " + barcode + "received.")
+                                    .setText(getString(R.string.barcode_found))
                                     .show();
 
                             launchProductFragment(barcode);
@@ -718,6 +738,10 @@ public class MainActivity extends AppCompatActivity
 
     public long getBarcode() {
         return barcode;
+    }
+
+    public static void setLoggedIn(boolean setLoggedIn) {
+        loggedIn = setLoggedIn;
     }
 
 

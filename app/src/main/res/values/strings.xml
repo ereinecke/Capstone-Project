@@ -101,5 +101,6 @@
     <string name="about_title">About EatSafe</string>
     <string name="about_text">EatSafe is an open-source project aimed at travelers and expats with dietary restrictions.\nUsing the OpenFoodFacts database (https://openfoodfacts.org), you can scan product labels and get ingredient and nutritional info in your native language. \n\n      Author: Erik Reinecke\n      Version: %1$s\n      Source code: https://github.com/ereinecke/EatSafe\n\nThanks to the following open-source components:\n</string>
     <string name="eatsafe_splash_text">EatSafe tagline and blurb</string>
+    <string name="asset_statements" translatable="false">[{\n  \"relation\": [\"delegate_permission/common.handle_all_urls\"],\n  \"target\": {\n    \"namespace\": \"web\",\n    \"site\": \"https://eatsafe.ereinecke.com\",\n  }\n}]</string>
 
 </resources>

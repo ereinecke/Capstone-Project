@@ -30,7 +30,7 @@ public class UploadDialog  extends DialogFragment {
     }
 
     // Use this instance of the interface to deliver action events
-    private NoticeDialogListener mListener;
+    private UploadDialogListener mListener;
 
     // Override the Fragment.onAttach() method to instantiate the NoticeDialogListener
     @Override
@@ -39,7 +39,7 @@ public class UploadDialog  extends DialogFragment {
         // Verify that the host context implements the callback interface
         try {
             // Instantiate the NoticeDialogListener so we can send events to the host
-            mListener = (NoticeDialogListener) context;
+            mListener = (UploadDialogListener) context;
         } catch (ClassCastException e) {
             // The context doesn't implement the interface, throw exception
             throw new ClassCastException(context.toString()
@@ -75,7 +75,7 @@ public class UploadDialog  extends DialogFragment {
     * Each method passes the DialogFragment in case the host needs to query it.
     */
    @SuppressWarnings("EmptyMethod")
-   public interface NoticeDialogListener {
+   public interface UploadDialogListener {
         void onDialogPositiveClick(DialogFragment dialog);
         void onDialogNegativeClick(DialogFragment dialog);
     }

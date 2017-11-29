@@ -66,7 +66,9 @@
                 android:paddingStart="@dimen/horizontal_padding"
                 android:paddingTop="@dimen/vertical_padding"
                 android:text="@string/eatsafe_splash_text"
-                android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:textColor="@color/textColorPrimary" />
 
         </LinearLayout>
 
