@@ -47,6 +47,7 @@ android {
 
 ext {
     supportLibVersion = "26.1.0"
+    constraintLayoutVersion = "1.0.2"
     archLifecycleVersion = "1.0.0"
     archRoomVersion = "1.0.0"
     butterKnifeVersion = "8.6.0"
@@ -69,7 +70,8 @@ dependencies {
     compile "com.android.support:support-v13:${supportLibVersion}"
     compile "com.android.support:design:${supportLibVersion}"
     compile "com.android.support:support-v4:${supportLibVersion}"
-    compile 'com.google.firebase:firebase-ads:11.6.0'
+    compile "com.android.support.constraint:constraint-layout:${constraintLayoutVersion}"
+    compile 'com.google.firebase:firebase-ads:11.6.2'
 
     /* Testing & instrumentation dependencies */
     testCompile 'junit:junit:4.12'

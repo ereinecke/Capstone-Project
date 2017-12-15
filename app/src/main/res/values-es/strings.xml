@@ -63,7 +63,7 @@
     <string name="upload_prompt">Suba el código de barras y tres fotos del producto</string>
     <string name="user_name">Nombre del usuario</string>
     <string name="widget_name">Escanear EatSafe</string>
-    <string name="product_photo">Imagen del Producto</string>
+    <string name="product_photo">Imagen de en frente</string>
     <string name="ingredients_photo">Imagen con los ingredientes</string>
     <string name="nutrition_photo">Imagen con la información nutricional</string>
     <string name="about_text">EatSafe (Come con Seguridad) es un proyecto de código abierto diseñado para viajeros y expatriados con restricciones dietéticas.\nUsando la base de datos OpenFoodFacts (https://openfoodfacts.org), se puede escanear las etiquetas de productos y obtener información de ingredientes e informactión nutrictional en su idioma nativo.\n        Autor: Erik Reinecke\n       Versión: %1$s\n       Código fuente: https://github.com/ereinecke/EatSafe\n\nDamos las gracias a estos componentes de código abierto:\n</string>

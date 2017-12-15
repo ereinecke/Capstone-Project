@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="query_suggestions">{pasta, sauce, dressing}</string-array>
+    <string-array name="units_array">
+        <item>g</item>
+        <item>mg</item>
+        <item>kg</item>
+        <item>l</item>
+        <item>ml</item>
+        <item>cl</item>
+        <item>fl oz</item>
+        <item>oz</item>
+        <item>lb</item>
+    </string-array>
 </resources>

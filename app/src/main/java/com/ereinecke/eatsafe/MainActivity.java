@@ -49,6 +49,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -65,7 +66,8 @@ public class MainActivity extends AppCompatActivity
     private long barcode = Constants.BARCODE_NONE; // most recent scanned or entered barcode
     private final int currentFragment = 0;
     private static boolean loggedIn;
-    private String photoReceived;
+    private static String barcodeRequested;
+    private Uri photoReceived;
     private MenuItem loginItem;
     private WebFragment webFragment;
     private BroadcastReceiver messageReceiver;
@@ -174,7 +176,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
 
-        savedInstanceState.putString(Constants.CURRENT_PHOTO, photoReceived);
+        if (photoReceived != null) {
+            savedInstanceState.putString(Constants.CURRENT_PHOTO, photoReceived.toString());
+        } else {
+            savedInstanceState.putString(Constants.CURRENT_PHOTO, null);
+        }
         savedInstanceState.putInt(Constants.CURRENT_FRAGMENT, currentFragment);
         savedInstanceState.putBoolean(Constants.LOGIN_STATE, loggedIn);
 
@@ -315,7 +321,7 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case Constants.DIALOG_UPLOAD:
-                launchUploadFragment();
+                launchUploadFragment(barcodeRequested);
                 break;
 
             default:
@@ -398,7 +404,7 @@ public class MainActivity extends AppCompatActivity
                         break;
 
                     case Constants.ACTION_UPLOAD_FRAGMENT:
-                        launchUploadFragment();
+                        launchUploadFragment(barcodeRequested);
                         break;
 
                     case Constants.ACTION_RESULTS_FRAGMENT:
@@ -479,7 +485,7 @@ public class MainActivity extends AppCompatActivity
             case Constants.CAMERA_IMAGE_REQUEST: {
             /* Catching result from camera */
                 if (resultCode == RESULT_OK) {
-                    scanMedia(photoReceived);
+                    scanMedia(photoReceived.toString());
                     UploadFragment.updateImage(photoReceived);
                 } else { // capture image request came back with error
                     Logd(LOG_TAG, "Error taking photo: " + resultCode);
@@ -516,14 +522,13 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    /* === Fragment management ============================================= */
-
+    /* Gets a photo from camera or gallery and returns the uri */
     @Override
-    public String PhotoRequest(int source, int photo) {
+    public Uri PhotoRequest(int source, int photo) {
 
         // TODO: check to make sure we have camera & storage permissions here.
         Logd(LOG_TAG, "PhotoRequest(" + photo + ") received.");
-        photoReceived = "";
+        photoReceived = null;
         if (source == Constants.CAMERA_IMAGE_REQUEST) {
             launchPhotoIntent(photo);
         } else if (source == Constants.GALLERY_IMAGE_REQUEST) {
@@ -532,8 +537,10 @@ public class MainActivity extends AppCompatActivity
         return photoReceived;
     }
 
+    /* === Fragment management ============================================= */
+
     /* Moves upload fragment to front   */
-    public void launchUploadFragment() {
+    public void launchUploadFragment(String barcodeRequested) {
         Logd(LOG_TAG, "Launching UploadFragment");
         if (findViewById(R.id.tab_container) != null) {
 
@@ -744,6 +751,13 @@ public class MainActivity extends AppCompatActivity
         loggedIn = setLoggedIn;
     }
 
+    public static void setBarcodeRequested(String bcRequested) {
+        barcodeRequested = bcRequested;
+    }
+
+    public static String getBarcodeRequested() {
+        return barcodeRequested;
+    }
 
     /* === Utilities ======================================================= */
     /*  TODO: candidates to move elsewhere?  */
@@ -834,7 +848,8 @@ public class MainActivity extends AppCompatActivity
 
         // Generate a file: path for use with intent
         if (imageFile != null) {
-            photoReceived = imageFile.getAbsolutePath();
+            URI uri = imageFile.toURI();
+            photoReceived = Uri.parse(uri.toString());
         }
         return imageFile;
     }

@@ -25,6 +25,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.zxing.integration.android.IntentIntegrator;
 
+import static com.ereinecke.eatsafe.MainActivity.setBarcodeRequested;
 import static com.ereinecke.eatsafe.util.Utility.Logd;
 
 /**
@@ -166,6 +167,7 @@ public class SearchFragment extends Fragment {
     private void callFetchProduct(String barcodeStr) {
         Logd(LOG_TAG, "in callFetchProduct: " + barcodeStr);
 
+        setBarcodeRequested(barcodeStr);
         // Have a (potentially) valid barcode, fetch product info
         Intent productIntent = new Intent(getActivity(), OpenFoodService.class);
         productIntent.putExtra(Constants.BARCODE_KEY, barcodeStr);

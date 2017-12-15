@@ -1,66 +1,193 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_upload"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/fragment_upload"
-    tools:context="com.ereinecke.eatsafe.ui.UploadFragment" >
+    tools:context="com.ereinecke.eatsafe.ui.UploadFragment">
 
-    <ScrollView
-        android:id="@+id/uploadScrollView"
+
+    <TextView
+        android:id="@+id/barcode_label"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/text_margin"
+        android:layout_marginStart="@dimen/text_margin"
+        android:layout_marginTop="16dp"
+        android:paddingEnd="@dimen/text_margin"
+        android:singleLine="false"
+        android:text="@string/barcode"
+        android:textSize="@dimen/abc_text_size_medium_material"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/barcode"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text=""
+        android:textSize="@dimen/abc_text_size_medium_material"
+        android:textStyle="bold"
+        app:layout_constraintBaseline_toBaselineOf="@+id/barcode_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/barcode_label" />
+
+    <LinearLayout
+        android:id="@+id/product_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/barcode_label">
+
+        <!-- Make a dialog box with a "don't show again" choice"
+        <TextView
+            android:id="@+id/upload_promptView"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:paddingBottom="12dp"
+            android:paddingEnd="8dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingStart="8dp"
+            android:singleLine="false"
+            android:text="@string/upload_prompt"
+            android:textSize="@dimen/abc_text_size_small_material"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/barcode" />
+         -->
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/upload_textView"
-                android:layout_width="wrap_content"
+                android:id="@+id/product_name_label"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="16dp"
-                android:layout_marginTop="24dp"
-                android:paddingBottom="20dp"
-                android:paddingEnd="@dimen/horizontal_padding"
-                android:paddingLeft="@dimen/horizontal_padding"
-                android:paddingRight="@dimen/horizontal_padding"
-                android:paddingStart="@dimen/horizontal_padding"
-                android:singleLine="false"
-                android:text="@string/upload_prompt"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:layout_marginBottom="@dimen/button_margin_vertical"
+                android:layout_marginStart="@dimen/text_margin"
+                android:layout_marginTop="@dimen/button_margin_vertical"
+                android:layout_weight="3"
+                android:text="Product Name"
+                android:textSize="@dimen/abc_text_size_small_material"
+                android:textStyle="bold" />
 
-            <ImageView
-                android:id="@+id/upload_imageView"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/product_images"
-                android:minHeight="@dimen/upload_image_height"
-                android:nestedScrollingEnabled="true"
-                android:scaleType="centerInside"
-                tools:targetApi="lollipop" />
+            <EditText
+                android:id="@+id/product_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/text_margin"
+                android:layout_marginTop="@dimen/button_margin_vertical"
+                android:layout_weight="7"
+                android:editable="true"
+                android:textSize="@dimen/abc_text_size_small_material" />
         </LinearLayout>
-    </ScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/size_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/button_margin_vertical"
+                android:layout_marginStart="@dimen/text_margin"
+                android:layout_marginTop="@dimen/button_margin_vertical"
+                android:layout_weight="3"
+                android:text="Quantity"
+                android:textSize="@dimen/abc_text_size_small_material"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/size"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/text_margin"
+                android:layout_weight="5"
+                android:editable="true"
+                android:textSize="@dimen/abc_text_size_small_material" />
+
+            <Spinner
+                android:id="@+id/unit_spinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2">
+
+            </Spinner>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/brand_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/button_margin_vertical"
+                android:layout_marginStart="@dimen/text_margin"
+                android:layout_marginTop="@dimen/button_margin_vertical"
+                android:layout_weight="3"
+                android:text="Product Brand"
+                android:textSize="@dimen/abc_text_size_small_material"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/brand"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/button_margin_vertical"
+                android:layout_marginStart="@dimen/text_margin"
+                android:layout_weight="7"
+                android:textSize="@dimen/abc_text_size_small_material" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/product_photos_listview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:choiceMode="singleChoice"
+        android:isScrollContainer="true"
+        android:nestedScrollingEnabled="false"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toTopOf="@+id/upload_toolbar_bottom"
+        app:layout_constraintTop_toBottomOf="@+id/product_data">
+
+    </ListView>
+
+
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/upload_toolbar_bottom"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/bottom_nav_height"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:background="@color/colorTabs"
         app:elevation="0dp"
         app:itemIconTint="@color/textColorPrimary"
         app:itemTextColor="@color/textColorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/upload_actions_menu" />
 
-</RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>

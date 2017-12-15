@@ -48,6 +48,9 @@ public class Constants {
     public static final int FRAG_UPLOAD = 1;
     public static final int FRAG_RESULTS = 2;
 
+    // Fragment arguments
+    public static final String BARCODE = "barcode";
+
     // Dialogue types
     public static final String DIALOG_TYPE = "dialog_type";
     public static final String DIALOG_UPLOAD = "upload";

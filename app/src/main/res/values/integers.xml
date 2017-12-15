@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="slider_delay">0</integer>
+    <integer name="product_photo_background_alpha">100</integer>
+
 </resources>

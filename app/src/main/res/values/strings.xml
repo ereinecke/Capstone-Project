@@ -63,7 +63,7 @@
     <string name="error_field_required">This field is required.</string>
 
     <!-- Image descriptions -->
-    <string name="product_photo">Product Image</string>
+    <string name="product_photo">Front label</string>
     <string name="ingredients_photo">Ingredients label image</string>
     <string name="nutrition_photo">Nutrition label image</string>
 

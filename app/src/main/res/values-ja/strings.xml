@@ -62,7 +62,6 @@
     <string name="error_field_required">必須項目</string>
 
     <!-- Image descriptions -->
-    <string name="product_photo">品目の画像</string>
     <string name="ingredients_photo">原料表の画像</string>
     <string name="nutrition_photo">栄養表の画像</string>
 
