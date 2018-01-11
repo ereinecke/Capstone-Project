@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ereinecke.eatsafe.R;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import static com.ereinecke.eatsafe.ui.UploadFragment.clearProductPhoto;
 import static com.ereinecke.eatsafe.ui.UploadFragment.getPhotoLabel;
 import static com.ereinecke.eatsafe.ui.UploadFragment.getProductPhoto;
+import static com.ereinecke.eatsafe.ui.UploadFragment.getSelection;
 import static com.ereinecke.eatsafe.ui.UploadFragment.setSelection;
 
 /**
@@ -29,6 +31,7 @@ import static com.ereinecke.eatsafe.ui.UploadFragment.setSelection;
 public class UploadPhotosAdapter extends ArrayAdapter<UploadPhoto> {
 
     private static CharSequence labelText;
+    private static int previousPhoto;
 
     public UploadPhotosAdapter(Context context, ArrayList<UploadPhoto> uploadPhotos) {
         super(context, 0, uploadPhotos);
@@ -38,8 +41,13 @@ public class UploadPhotosAdapter extends ArrayAdapter<UploadPhoto> {
     public View getView(final int position, View convertView, ViewGroup parent) {
         final Resources resources = getContext().getResources();
 
+        // Get the ListView
+        final ListView listView = (ListView) parent;
+
         // Get the data item for this position
         UploadPhoto whichPhoto = getItem(position);
+        previousPhoto = getSelection();
+        setSelection(position);
 
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
@@ -70,9 +78,9 @@ public class UploadPhotosAdapter extends ArrayAdapter<UploadPhoto> {
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setSelection(position);
-                listItemView.setBackgroundColor(resources.getColor(R.color.second_color));
-                // TODO: clear previously selected item
+                listItemView.requestFocusFromTouch();
+                listView.setSelection(position);
+                productPhoto.setImageURI(getProductPhoto(position));
             }
         });
 
@@ -92,5 +100,4 @@ public class UploadPhotosAdapter extends ArrayAdapter<UploadPhoto> {
         // Return the completed view to render on screen
         return convertView;
     }
-
 }
