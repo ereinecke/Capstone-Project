@@ -24,4 +24,7 @@ public class UploadPhoto {
     public void   setUploadPhoto(Uri photo) {
         this.productPhoto = photo;
     }
+    public String toString() {
+        return "PhotoLabel: " + photoLabel + "; Uri: " + productPhoto + "\n";
+    }
 }

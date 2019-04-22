@@ -11,6 +11,9 @@
     <color name="colorSelectedButton">#99ffffff</color>
     <color name="colorInactiveButton">@color/colorSelectedButton</color>
 
+    <color name="listItemSelected">#552d8941</color>
+    <color name="listItemPressed">#554cb748</color>
+
     <color name="image_background">#dddddd</color>
     <color name="white">#ffffff</color>
     <color name="textOverlayBackground">#44000000</color>

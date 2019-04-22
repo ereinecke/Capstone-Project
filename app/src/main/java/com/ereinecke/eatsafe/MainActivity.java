@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity
     public static boolean isTablet = false;
     private long barcode = Constants.BARCODE_NONE; // most recent scanned or entered barcode
     private final int currentFragment = 0;
+    private static int whichPhoto = 0;
     private static boolean loggedIn;
     private static String barcodeRequested;
     private Uri photoReceived;

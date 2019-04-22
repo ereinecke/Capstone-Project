@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
-    android:padding="6dip" >
+
+    android:layout_margin="6dip">
 
     <ImageView
         android:id="@+id/product_image"
@@ -11,8 +12,9 @@
         android:layout_height="fill_parent"
         android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="@dimen/product_list_image_margin_right"
         android:layout_marginEnd="@dimen/product_list_image_margin_right"
+        android:layout_marginRight="@dimen/product_list_image_margin_right"
+        android:alpha="0.5"
         android:contentDescription="@string/product_images"
         android:src="@mipmap/ic_launcher"
         tools:ignore="RtlHardcoded" />
@@ -21,51 +23,51 @@
         android:id="@+id/product_name"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_alignWithParentIfMissing="true"
-        android:layout_toRightOf="@id/product_image"
-        android:layout_toEndOf="@id/product_image"
-        android:gravity="center_vertical"
-        android:ellipsize="end"
-        android:layout_marginRight="@dimen/product_list_text_margin_right"
         android:layout_marginEnd="@dimen/product_list_text_margin_right"
+        android:layout_marginRight="@dimen/product_list_text_margin_right"
+        android:layout_toEndOf="@id/product_image"
+        android:layout_toRightOf="@id/product_image"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
         android:maxLines="1"
-        android:textSize="16sp"
         android:text="@string/product_name"
+        android:textSize="16sp"
         tools:ignore="RtlHardcoded" />
 
     <TextView
         android:id="@+id/product_brand"
         android:layout_width="wrap_content"
         android:layout_height="26dip"
-        android:singleLine="true"
-        android:textSize="12sp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_toEndOf="@id/product_image"
+        android:layout_toRightOf="@id/product_image"
         android:ellipsize="end"
         android:maxLines="1"
-        android:layout_marginRight="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@id/product_image"
-        android:layout_toEndOf="@id/product_image"
+        android:singleLine="true"
         android:text="@string/brands"
+        android:textSize="12sp"
         tools:ignore="RtlHardcoded" />
 
     <TextView
         android:id="@+id/code"
         android:layout_width="wrap_content"
         android:layout_height="26dip"
-        android:singleLine="true"
-        android:textSize="12sp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_toEndOf="@id/product_brand"
+        android:layout_toRightOf="@id/product_brand"
         android:ellipsize="end"
         android:maxLines="1"
-        android:layout_marginRight="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@id/product_brand"
-        android:layout_toEndOf="@id/product_brand"
+        android:singleLine="true"
         android:text="@string/barcode"
+        android:textSize="12sp"
         tools:ignore="RtlHardcoded" />
 
 </RelativeLayout>

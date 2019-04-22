@@ -37,10 +37,10 @@ public class Constants {
     public static final int GALLERY_IMAGE_REQUEST = 200;
     public static final String IMG_PREFIX = "ES_IMG_";
     public static final String WHICH_PHOTO = "which_photo";
-    public static final int PHOTO_TEST = 0;
-    public static final int PHOTO_FRONT = 1;
-    public static final int PHOTO_INGREDIENT = 2;
-    public static final int PHOTO_NUTRITION = 3;
+    public static final int PHOTO_TEST = -1;
+    public static final int PHOTO_FRONT = 0;
+    public static final int PHOTO_INGREDIENT = 1;
+    public static final int PHOTO_NUTRITION = 2;
     public static final int PHOTO_OTHER = 4;
 
     // TabPagerFragment contents

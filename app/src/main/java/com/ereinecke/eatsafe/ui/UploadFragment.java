@@ -27,6 +27,7 @@ import com.ereinecke.eatsafe.util.UploadPhotosAdapter;
 import java.util.ArrayList;
 
 import static com.ereinecke.eatsafe.MainActivity.getBarcodeRequested;
+import static com.ereinecke.eatsafe.util.Utility.Logd;
 
 /**
  * UploadFragment allows the user to take product photos, select product photos from the gallery
@@ -39,7 +40,6 @@ public class UploadFragment extends Fragment  {
     private PhotoRequest photoRequest;
     private Uri mCurrentPhoto;
     private static View rootView;
-
 
     public static ArrayList<UploadPhoto> uploadPhotoArrayList;
 
@@ -82,6 +82,7 @@ public class UploadFragment extends Fragment  {
 
             // Attach UploadPhotosAdapter to ListView
             ListView listView = rootView.findViewById(R.id.product_photos_listview);
+            listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
             listView.setAdapter(adapter);
 
             // Set up unit spinner
@@ -99,12 +100,17 @@ public class UploadFragment extends Fragment  {
             bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                    Uri photo;
                     switch (menuItem.getItemId()) {
                         case R.id.action_camera:
-                            takeProductPhotos(Constants.PHOTO_TEST);
+                            photo = takeProductPhotos(whichPhoto);
+                            uploadPhotoArrayList.get(whichPhoto).setUploadPhoto(photo);
+                            Logd(LOG_TAG, uploadPhotoArrayList.toString());
                             break;
                         case R.id.action_gallery:
-                            pickProductPhotos(Constants.PHOTO_TEST);
+                            photo = pickProductPhotos(whichPhoto);
+                            uploadPhotoArrayList.get(whichPhoto).setUploadPhoto(photo);
+                            Logd(LOG_TAG, uploadPhotoArrayList.toString());
                             break;
                         case R.id.action_upload:
                             uploadProductInfo();
@@ -167,20 +173,21 @@ public class UploadFragment extends Fragment  {
 
         Snackbar.make(rootView, "Upload not yet implemented", Snackbar.LENGTH_LONG)
             .setAction("Action", null).show();
+        // Validate that content is present
+//        if ()
+//        Logd(LOG_TAG);
     }
 
-    /* TODO: Guide user through selecting three existing photos with appropriate prompts (front, ingredients, nutrition panel.)
-     * temporarily using just one with key PHOTO_TEST.
-     */
-    private void pickProductPhotos(int photo) {
+    private Uri pickProductPhotos(int photo) {
         mCurrentPhoto = photoRequest.PhotoRequest(Constants.GALLERY_IMAGE_REQUEST, photo);
+        Logd(LOG_TAG, "In pickProductPhotos, uri: " + mCurrentPhoto);
+        return mCurrentPhoto;
     }
 
-    /* TODO: Guide user through taking three photos with appropriate prompts (front, ingredients, nutrition panel.)
-     * temporarily using just one with key PHOTO_TEST.
-     */
-    private void takeProductPhotos(int photo) {
+    private Uri takeProductPhotos(int photo) {
         mCurrentPhoto = photoRequest.PhotoRequest(Constants.CAMERA_IMAGE_REQUEST, photo);
+        Logd(LOG_TAG, "In takeProductPhotos, uri: " + mCurrentPhoto);
+        return mCurrentPhoto;
     }
 
     public interface PhotoRequest {
