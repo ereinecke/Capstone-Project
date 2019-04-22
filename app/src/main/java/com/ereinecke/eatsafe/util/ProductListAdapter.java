@@ -47,11 +47,13 @@ public class ProductListAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
 
         ViewHolder viewHolder = (ViewHolder) view.getTag();
+        Picasso picasso = Picasso.get();
 
         // TODO: Figure out how big to make the thumbnail, depends on listPreferredItemHeight
         String imgUrl = cursor.getString(cursor.getColumnIndex(OpenFoodContract.ProductEntry.IMAGE_URL));
         try {
-            Picasso.with(context).load(imgUrl)
+            /* Picasso.with(context).load(imgUrl) */
+            picasso.load(imgUrl)
                     // Want a square thumbnail: not sure how to get the right size
                     .resize(200, 200)
                     .centerCrop()

@@ -6,13 +6,13 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
 
-    compileSdkVersion 26
-    buildToolsVersion '27.0.1'
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
         applicationId "com.ereinecke.eatsafe"
         minSdkVersion 17
-        targetSdkVersion 26
+        targetSdkVersion 28
         versionCode 4
         versionName "0.72-alpha"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -36,8 +36,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     packagingOptions {
@@ -46,10 +46,10 @@ android {
 }
 
 ext {
-    supportLibVersion = "26.1.0"
-    constraintLayoutVersion = "1.0.2"
-    archLifecycleVersion = "1.0.0"
-    archRoomVersion = "1.0.0"
+    supportLibVersion = "28.0.0"
+    constraintLayoutVersion = "1.1.3"
+    archLifecycleVersion = "1.1.1"
+    archRoomVersion = "1.1.1"
     butterKnifeVersion = "8.6.0"
     retrofitVersion = "2.3.0"
     jacksonLibVersion = "2.7.3"
@@ -64,78 +64,81 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile "com.android.support:appcompat-v7:${supportLibVersion}"
-    compile "com.android.support:cardview-v7:${supportLibVersion}"
-    compile "com.android.support:support-v13:${supportLibVersion}"
-    compile "com.android.support:design:${supportLibVersion}"
-    compile "com.android.support:support-v4:${supportLibVersion}"
-    compile "com.android.support.constraint:constraint-layout:${constraintLayoutVersion}"
-    compile 'com.google.firebase:firebase-ads:11.6.2'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "com.android.support:appcompat-v7:${supportLibVersion}"
+    implementation "com.android.support:cardview-v7:${supportLibVersion}"
+    implementation "com.android.support:support-v13:${supportLibVersion}"
+    implementation "com.android.support:design:${supportLibVersion}"
+    implementation "com.android.support:support-v4:${supportLibVersion}"
+    implementation "com.android.support.constraint:constraint-layout:${constraintLayoutVersion}"
+    implementation 'com.google.firebase:firebase-ads:17.2.0'
 
     /* Testing & instrumentation dependencies */
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:1.10.19'
-    androidTestCompile "com.android.support.test.espresso:espresso-core:${espressoLibVersion}"
-    androidTestCompile "com.android.support.test.espresso:espresso-intents:${espressoLibVersion}"
-    androidTestCompile "com.android.support.test:runner:${testLibVersion}"
-    androidTestCompile "com.android.support.test:rules:${testLibVersion}"
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-core:1.10.19'
+    androidTestImplementation "com.android.support.test.espresso:espresso-core:${espressoLibVersion}"
+    androidTestImplementation "com.android.support.test.espresso:espresso-intents:${espressoLibVersion}"
+    androidTestImplementation "com.android.support.test:runner:${testLibVersion}"
+    androidTestImplementation "com.android.support.test:rules:${testLibVersion}"
 
     /* Android architecture components introduced with O */
-    compile "android.arch.lifecycle:extensions:${archLifecycleVersion}"
-    compile "android.arch.persistence.room:runtime:${archRoomVersion}"
+    implementation "android.arch.lifecycle:extensions:${archLifecycleVersion}"
+    implementation "android.arch.persistence.room:runtime:${archRoomVersion}"
     annotationProcessor "android.arch.lifecycle:compiler:${archLifecycleVersion}"
     annotationProcessor "android.arch.persistence.room:compiler:${archRoomVersion}"
 
     /* Butterknife */
-    compile "com.jakewharton:butterknife:${butterKnifeVersion}"
+    implementation "com.jakewharton:butterknife:${butterKnifeVersion}"
     annotationProcessor "com.jakewharton:butterknife-compiler:${butterKnifeVersion}"
 
     /* Retrofit */
-    compile "com.squareup.retrofit2:retrofit:${retrofitVersion}"
-    compile "com.squareup.retrofit2:converter-jackson:${retrofitVersion}"
-    compile 'com.squareup.okhttp3:logging-interceptor:3.8.0'
+    implementation "com.squareup.retrofit2:retrofit:${retrofitVersion}"
+    implementation "com.squareup.retrofit2:converter-jackson:${retrofitVersion}"
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.8.0'
+
+    /* Picasso */
+    implementation 'com.squareup.picasso:picasso:2.71828'
 
     /* GreenDAO */
-    compile 'org.greenrobot:greendao:3.2.0'
+    implementation 'org.greenrobot:greendao:3.2.0'
 
     /* Jackson for JSON */
-    compile "com.fasterxml.jackson.core:jackson-core:${jacksonLibVersion}"
-    compile "com.fasterxml.jackson.core:jackson-databind:${jacksonLibVersion}"
-    compile "com.fasterxml.jackson.core:jackson-annotations:${jacksonLibVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-core:${jacksonLibVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonLibVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-annotations:${jacksonLibVersion}"
 
     // Set this dependency to use JUnit 4 rules
-    androidTestCompile "com.android.support.test:rules:${testLibVersion}"
+    androidTestImplementation "com.android.support.test:rules:${testLibVersion}"
 
     // Set this dependency to build and run Espresso tests
-    // androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
+    // androidTestimplementation 'com.android.support.test.espresso:espresso-core:2.2.2'
     configurations.all {
         resolutionStrategy.force "com.android.support:support-annotations:23.0.1"
     }
 
     /* StreamProvider, workaround for FileProvider issues */
-    compile 'com.commonsware.cwac:provider:0.4.0'
+    implementation 'com.commonsware.cwac:provider:0.4.0'
 
     /* Sugar ORM */
-    compile 'com.github.satyan:sugar:1.5'
+    implementation 'com.github.satyan:sugar:1.5'
 
     /* ZXing barcode scanner */
-    compile 'me.dm7.barcodescanner:zxing:1.9'
-    compile 'com.journeyapps:zxing-android-embedded:3.3.0'
+    implementation 'me.dm7.barcodescanner:zxing:1.9'
+    implementation 'com.journeyapps:zxing-android-embedded:3.3.0'
 
     /* Image slider */
-    compile 'com.hkm.loyalslider:library:1.9.4'
+    implementation 'com.hkm.loyalslider:library:1.9.4'
 
     /* About page library, adds credits for all libraries used */
-    compile('com.mikepenz:aboutlibraries:5.9.6@aar') {
+    implementation('com.mikepenz:aboutlibraries:5.9.6@aar') {
         transitive = true
     }
 
     /* Material Design toast library */
-    compile 'net.steamcrafted:load-toast:1.0.10'
+    implementation 'net.steamcrafted:load-toast:1.0.10'
 
     /* SuperToasts library */
-    compile 'com.github.johnpersano:supertoasts:2.0'
+    implementation 'com.github.johnpersano:supertoasts:2.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
